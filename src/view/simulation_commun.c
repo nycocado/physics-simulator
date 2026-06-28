@@ -90,6 +90,7 @@ void simulation_window_destroy(void)
     }
     variables_simulation_wipe(app->variables->simulation);
     gtk_widget_destroy(app->window_simulation->window);
+    app->window_simulation->window = NULL;
 }
 
 void simulation_read_controls(void)

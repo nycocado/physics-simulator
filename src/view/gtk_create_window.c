@@ -495,6 +495,7 @@ void create_window_simulation_widgets(int i)
         GTK_WINDOW(app->window_simulation->window),
         GTK_WINDOW(app->window_main->window)
     );
+    gtk_window_set_modal(GTK_WINDOW(app->window_simulation->window), TRUE);
 
     g_object_unref(builder);
 }

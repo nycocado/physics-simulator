@@ -218,6 +218,8 @@ void on_dynamic_stop_button_clicked(GtkButton* button) { simulation_stop(); }
 
 void run_simulation_dynamic()
 {
+    if (app->window_simulation->window != NULL)
+        simulation_window_destroy();
     particle_dynamic_collection_start();
     create_window_simulation_widgets(SIMULATION_DYNAMIC);
     gtk_widget_show_all(app->window_simulation->window);

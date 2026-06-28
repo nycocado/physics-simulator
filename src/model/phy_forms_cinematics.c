@@ -6,7 +6,7 @@
 
 float phyc_position(float si, float v, float a, float t)
 {
-    return si + v * t + 0.5 * a * pow(t, 2);
+    return si + v * t + 0.5f * a * (t * t);
 }
 
 float phyc_velocity(float vi, float a, float t) { return (vi + a * t); }
@@ -23,7 +23,7 @@ float phyc_medium_acceleration(float vi, float vf, float t)
 
 float phyc_magnitude(float bx, float by)
 {
-    return sqrt(pow(bx, 2) + pow(by, 2));
+    return sqrt(bx * bx + by * by);
 }
 
 float phyc_displacement_x_y(float ai, float af, float bi, float bf)

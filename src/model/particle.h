@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glib.h>
+
 typedef struct _Vector* Vector;
 typedef struct _Particle_Cinematic* Particle_Cinematic;
 typedef struct _Particle_Dynamic* Particle_Dynamic;

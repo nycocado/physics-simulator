@@ -175,6 +175,8 @@ void on_cinematic_stop_button_clicked(GtkButton* button) { simulation_stop(); }
 
 void run_simulation_cinematic()
 {
+    if (app->window_simulation->window != NULL)
+        simulation_window_destroy();
     particle_cinematic_collection_start();
     create_window_simulation_widgets(SIMULATION_CINEMATIC);
     gtk_widget_show_all(app->window_simulation->window);
