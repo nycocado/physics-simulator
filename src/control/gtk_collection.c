@@ -37,12 +37,12 @@ void particle_cinematic_collection_start()
                 -1
             );
 
-            float x_float = atof(x);
-            float y_float = atof(y);
-            float vx_float = atof(vx);
-            float vy_float = atof(vy);
-            float ax_float = atof(ax);
-            float ay_float = atof(ay);
+            float x_float = (float)g_ascii_strtod(x, NULL);
+            float y_float = (float)g_ascii_strtod(y, NULL);
+            float vx_float = (float)g_ascii_strtod(vx, NULL);
+            float vy_float = (float)g_ascii_strtod(vy, NULL);
+            float ax_float = (float)g_ascii_strtod(ax, NULL);
+            float ay_float = (float)g_ascii_strtod(ay, NULL);
 
             Particle_Cinematic particle = particle_cinematic_new(
                 x_float, y_float, vx_float, vy_float, ax_float, ay_float
@@ -103,13 +103,13 @@ void particle_dynamic_collection_start()
                 -1
             );
 
-            float x_float = atof(x);
-            float y_float = atof(y);
-            float vx_float = atof(vx);
-            float vy_float = atof(vy);
-            float ax_float = atof(ax);
-            float ay_float = atof(ay);
-            float mass_float = atof(mass);
+            float x_float = (float)g_ascii_strtod(x, NULL);
+            float y_float = (float)g_ascii_strtod(y, NULL);
+            float vx_float = (float)g_ascii_strtod(vx, NULL);
+            float vy_float = (float)g_ascii_strtod(vy, NULL);
+            float ax_float = (float)g_ascii_strtod(ax, NULL);
+            float ay_float = (float)g_ascii_strtod(ay, NULL);
+            float mass_float = (float)g_ascii_strtod(mass, NULL);
 
             Particle_Dynamic particle = particle_dynamic_new(
                 x_float,
@@ -130,15 +130,15 @@ void particle_dynamic_collection_start()
                 gtk_tree_model_get(
                     GTK_TREE_MODEL(app->tree_store),
                     &child_iter,
-                    0,
+                    COL_X,
                     &force_x,
-                    1,
+                    COL_Y,
                     &force_y,
                     -1
                 );
 
-                float force_x_float = atof(force_x);
-                float force_y_float = atof(force_y);
+                float force_x_float = (float)g_ascii_strtod(force_x, NULL);
+                float force_y_float = (float)g_ascii_strtod(force_y, NULL);
 
                 Vector force = create_vector(force_x_float, force_y_float);
                 particle->forces = g_list_append(particle->forces, force);
