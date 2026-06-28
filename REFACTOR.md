@@ -31,6 +31,8 @@
 | `particle.h` now includes `<glib.h>` directly — `GList *` field no longer requires caller to include GLib first | `particle.h` |
 | Simulation window made modal (`gtk_window_set_modal`) — prevents mutating `num_particles_use` while simulation runs | `gtk_create_window.c` |
 | `simulation_window_destroy` sets `window = NULL` after destroy; `run_simulation_*` checks for non-NULL before opening — prevents leaking the first window when both modes are opened | `simulation_commun.c`, `simulation_cinematic.c`, `simulation_dynamic.c` |
+| `.sabino` now saves a `SETTINGS gravity=… time=… step=… frames=…` line; values are not wiped on destroy and are restored to spin buttons when the simulation window reopens | `gtk_variables.c`, `gtk_project.c`, `gtk_create_window.c` |
+| Particle checked state saved as 8th field on `Partícula` lines; restored on load — defaults to `1` (TRUE) for old files; `num_particles_use` only incremented for checked particles | `gtk_project.c` |
 
 ---
 
@@ -244,28 +246,7 @@ Fix:
 
 ---
 
-### 5. Persist simulation parameters and checked state in the project file
-
-#### 5.1 Simulation parameters
-
-Gravity, time, step, and frames are not saved. The user must re-enter them on every open.
-
-Proposed `.sabino` extension:
-```
-SETTINGS gravity=9.8 time=10.0 step=0.1 frames=60
-Partícula 0 0 1 0 0 0 -1
-Força 2 3
-```
-
-Parse the `SETTINGS` line by key=value pairs before the entity loop in `open_project`.
-
-#### 5.2 Checked (selected) state
-
-`open_project` forces `COL_CHECKED = TRUE` for every particle regardless of the saved state. The user's selection is lost on every round-trip. Save and restore the checked column value per particle line.
-
----
-
-### 6. File naming — remove `gtk_` prefix from project code
+### 5. File naming — remove `gtk_` prefix from project code
 
 GTK uses `gtk_` as its own namespace. Applying it to project-specific files creates confusion.
 
@@ -289,7 +270,7 @@ GTK uses `gtk_` as its own namespace. Applying it to project-specific files crea
 
 ---
 
-### 7. Directory layout
+### 6. Directory layout
 
 ```
 src/
@@ -319,7 +300,7 @@ src/
 
 ---
 
-### 8. Tests
+### 7. Tests
 
 | Test | What to verify |
 |------|---------------|
