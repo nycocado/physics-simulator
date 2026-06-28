@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 void particle_cinematic_collection_start()
 {

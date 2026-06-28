@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 Vector create_vector(float x, float y)
 {

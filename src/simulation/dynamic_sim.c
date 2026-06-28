@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr)
 {

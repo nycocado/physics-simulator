@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 Spin_Buttons_Add_Particle_Normal spin_buttons_add_particle_normal_new()
 {

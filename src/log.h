@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../model/variables.h"
+#include "variables.h"
 #include <gtk/gtk.h>
 
 char* generate_log_name_for_simulation(const char* base_name);

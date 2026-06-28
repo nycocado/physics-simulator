@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 void on_window_destroy(GtkWidget* widget)
 {

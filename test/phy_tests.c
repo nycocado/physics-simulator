@@ -1,5 +1,5 @@
-#include "../src/model/phy_forms_cinematics.h"
-#include "../src/model/phy_forms_dynamics.h"
+#include "physics/kinematics.h"
+#include "physics/dynamics.h"
 #include "math.h"
 #include "unity/unity.h"
 #include "unity/unity_internals.h"

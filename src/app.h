@@ -2,12 +2,12 @@
 
 #include <gtk/gtk.h>
 
-#include "buttons.h"
-#include "force_dialog.h"
-#include "particle_dialog.h"
+#include "particles/buttons.h"
+#include "particles/force_dialog.h"
+#include "particles/particle_dialog.h"
 #include "variables.h"
-#include "window_main.h"
-#include "window_simulation.h"
+#include "ui/window_main.h"
+#include "ui/window_simulation.h"
 
 typedef struct _GtkApp* GtkApp;
 

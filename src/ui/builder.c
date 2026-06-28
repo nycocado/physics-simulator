@@ -1,10 +1,10 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 void create_window_main_widgets()
 {
     GtkBuilder* builder = gtk_builder_new();
 
-    gtk_builder_add_from_file(builder, "src/view/ui/window_main.glade", NULL);
+    gtk_builder_add_from_file(builder, "src/ui/windows/window_main.glade", NULL);
 
     app->window_main->window =
         GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
@@ -75,7 +75,7 @@ void create_window_add_particle_normal_widgets()
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/view/ui/window_add_particle_normal.glade", NULL
+        builder, "src/ui/windows/window_add_particle_normal.glade", NULL
     );
 
     app->window_add_particle_normal->window =
@@ -192,7 +192,7 @@ void create_window_add_force_normal_widgets()
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/view/ui/window_add_force_normal.glade", NULL
+        builder, "src/ui/windows/window_add_force_normal.glade", NULL
     );
 
     app->window_add_force_normal->window =
@@ -244,7 +244,7 @@ void create_window_edit_particle_normal_widgets()
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/view/ui/window_edit_particle_normal.glade", NULL
+        builder, "src/ui/windows/window_edit_particle_normal.glade", NULL
     );
 
     app->window_edit_particle_normal->window =
@@ -361,7 +361,7 @@ void create_window_edit_force_normal_widgets()
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/view/ui/window_edit_force_normal.glade", NULL
+        builder, "src/ui/windows/window_edit_force_normal.glade", NULL
     );
 
     app->window_edit_force_normal->window =
@@ -415,13 +415,13 @@ void create_window_simulation_widgets(int i)
     if (i == SIMULATION_CINEMATIC)
     {
         gtk_builder_add_from_file(
-            builder, "src/view/ui/window_cinematic.glade", NULL
+            builder, "src/ui/windows/window_cinematic.glade", NULL
         );
     }
     else if (i == SIMULATION_DYNAMIC)
     {
         gtk_builder_add_from_file(
-            builder, "src/view/ui/window_dynamic.glade", NULL
+            builder, "src/ui/windows/window_dynamic.glade", NULL
         );
     }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "particle.h"
+#include "particles/particle.h"
 #include <gtk/gtk.h>
 
 typedef struct _Variables* Variables;

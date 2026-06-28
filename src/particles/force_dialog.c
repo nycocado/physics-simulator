@@ -1,4 +1,4 @@
-#include "../include/gtk_include_all.h"
+#include "gtk_include_all.h"
 
 Spin_Buttons_Add_Force_Normal spin_buttons_add_force_normal_new()
 {
