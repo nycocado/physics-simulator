@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -g
 GTKFLAGS = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
 MATHFLAGS = -lm
+GLIBFLAGS = `pkg-config --cflags --libs glib-2.0`
 BIN_DIR = bin
 BIN_TEST = bin/test
 BIN_BUILD = bin/build
@@ -117,6 +118,15 @@ unity.o:
 phy_tests: unity.o phy_forms_cinematics.o phy_forms_dynamics.o
 	$(CC) $(CFLAGS) $(TEST_DIR)/phy_tests.c $(BIN_DIR)/unity.o $(BIN_DIR)/phy_forms_cinematics.o $(BIN_DIR)/phy_forms_dynamics.o $(GTKFLAGS) -o $(BIN_TEST)/phy_tests $(MATHFLAGS)
 
+test_simulation: unity.o phy_forms_cinematics.o phy_forms_dynamics.o
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_simulation.c $(BIN_DIR)/unity.o $(BIN_DIR)/phy_forms_cinematics.o $(BIN_DIR)/phy_forms_dynamics.o $(GTKFLAGS) -o $(BIN_TEST)/test_simulation $(MATHFLAGS)
+
+test_locale: unity.o
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_locale.c $(BIN_DIR)/unity.o $(GLIBFLAGS) -o $(BIN_TEST)/test_locale
+
+test_validation: unity.o
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_validation.c $(BIN_DIR)/unity.o $(GLIBFLAGS) -o $(BIN_TEST)/test_validation
+
 comp: run.o $(VIEW_OBJS_COMP) $(MODEL_OBJS_COMP) $(CONTROL_OBJS_COMP)
 	$(CC) $(CFLAGS) $(BIN_DIR)/run.o $(VIEW_OBJS) $(MODEL_OBJS) $(CONTROL_OBJS) $(GTKFLAGS) -o $(BIN_BUILD)/simulation_physic $(MATHFLAGS)
 
@@ -125,6 +135,17 @@ run: comp
 
 phy_test: phy_tests
 	$(BIN_TEST)/phy_tests
+
+simulation_test: test_simulation
+	$(BIN_TEST)/test_simulation
+
+locale_test: test_locale
+	$(BIN_TEST)/test_locale
+
+validation_test: test_validation
+	$(BIN_TEST)/test_validation
+
+all_tests: phy_test simulation_test locale_test validation_test
 
 valgrind: comp
 	valgrind --leak-check=full $(BIN_BUILD)/simulation_physic
