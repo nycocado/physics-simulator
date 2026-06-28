@@ -2,7 +2,7 @@
 
 Variables variables_new()
 {
-    Variables variables = g_slice_new(struct _Variables);
+    Variables variables = g_new(struct _Variables, 1);
 
     variables->project = variables_project_new();
     variables->simulation = variables_simulation_new();
@@ -15,13 +15,13 @@ void variables_free(Variables variables)
     variables_project_free(variables->project);
     variables_simulation_free(variables->simulation);
     window_size_free(variables->window_size);
-    g_slice_free(struct _Variables, variables);
+    g_free(variables);
 }
 
 Variables_Simulation variables_simulation_new()
 {
     Variables_Simulation variables_simulation =
-        g_slice_new(struct _Variables_Simulation);
+        g_new(struct _Variables_Simulation, 1);
 
     variables_simulation->is_simulation_running = FALSE;
     variables_simulation->num_particles_use = 0;
@@ -78,13 +78,12 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
 void variables_simulation_free(Variables_Simulation variables_simulation)
 {
     variables_simulation_wipe(variables_simulation);
-    g_slice_free(struct _Variables_Simulation, variables_simulation);
+    g_free(variables_simulation);
 }
 
 Variables_Project variables_project_new()
 {
-    Variables_Project variables_project =
-        g_slice_new(struct _Variables_Project);
+    Variables_Project variables_project = g_new(struct _Variables_Project, 1);
 
     variables_project->file_path = NULL;
     variables_project->is_file_open = FALSE;
@@ -105,19 +104,16 @@ void variables_project_wipe(Variables_Project variables_project)
 void variables_project_free(Variables_Project variables_project)
 {
     variables_project_wipe(variables_project);
-    g_slice_free(struct _Variables_Project, variables_project);
+    g_free(variables_project);
 }
 
 Window_Size window_size_new()
 {
-    Window_Size window_size = g_slice_new(struct _Window_Size);
+    Window_Size window_size = g_new(struct _Window_Size, 1);
 
     window_size->width = 0;
     window_size->height = 0;
     return window_size;
 }
 
-void window_size_free(Window_Size window_size)
-{
-    g_slice_free(struct _Window_Size, window_size);
-}
+void window_size_free(Window_Size window_size) { g_free(window_size); }

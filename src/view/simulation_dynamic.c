@@ -20,7 +20,6 @@ gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr)
 
         float x = particle->position->x;
         float y = particle->position->y;
-
         float frx = particle->force_resultant->x;
         float fry = particle->force_resultant->y;
 
@@ -88,33 +87,27 @@ gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr)
 
 gboolean on_timeout_dynamic(gpointer user_data)
 {
-
     if (!GTK_IS_WIDGET(user_data))
     {
         if (app->variables->simulation->timer != NULL)
-        {
             g_timer_stop(app->variables->simulation->timer);
-        }
         return FALSE;
     }
 
     if (!app->variables->simulation->is_simulation_running)
-    {
         return FALSE;
-    }
 
+    Variables_Simulation* sim = app->variables->simulation;
     GtkWidget* drawing_area = app->window_simulation->drawing_area;
-    app->variables->simulation->last_time =
-        g_timer_elapsed(app->variables->simulation->timer, NULL);
-    double elapsed_time = app->variables->simulation->last_time;
-    float total_time = app->variables->simulation->time;
 
-    Particle_Dynamic_Collection particle_collection =
-        app->variables->simulation->particle_dynamic_collection;
+    sim->last_time = g_timer_elapsed(sim->timer, NULL);
+    double elapsed = sim->last_time;
+    float total_time = sim->time;
 
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+    Particle_Dynamic_Collection collection = sim->particle_dynamic_collection;
+    for (int i = 0; i < sim->num_particles_use; i++)
     {
-        Particle_Dynamic particle = particle_collection->particles[i];
+        Particle_Dynamic particle = collection->particles[i];
 
         float xi = particle->position_i->x;
         float yi = particle->position_i->y;
@@ -123,20 +116,21 @@ gboolean on_timeout_dynamic(gpointer user_data)
         float ax = particle->acceleration->x;
         float ay = particle->acceleration->y;
 
-        particle->position->x = phyc_position(xi, vxi, ax, elapsed_time);
-        particle->position->y = phyc_position(yi, vyi, ay, elapsed_time);
+        particle->position->x = phyc_position(xi, vxi, ax, elapsed);
+        particle->position->y = phyc_position(yi, vyi, ay, elapsed);
     }
 
-    if (elapsed_time >= total_time)
+    if (elapsed >= total_time)
     {
-        app->variables->simulation->is_simulation_running = FALSE;
-        g_timer_stop(app->variables->simulation->timer);
-        app->variables->simulation->last_time =
-            app->variables->simulation->time;
+        sim->is_simulation_running = FALSE;
+        g_timer_stop(sim->timer);
+        sim->last_time = sim->time;
+        sim->timeout_id = 0;
+        gtk_widget_queue_draw(drawing_area);
+        return FALSE;
     }
 
     gtk_widget_queue_draw(drawing_area);
-
     return TRUE;
 }
 
@@ -147,18 +141,14 @@ void on_window_dynamic_destroy(GtkWidget* widget)
 
 void on_dynamic_refresh_button_clicked(GtkButton* button)
 {
-    app->variables->simulation->is_simulation_running = FALSE;
-    if (app->variables->simulation->timer != NULL)
-    {
-        g_timer_stop(app->variables->simulation->timer);
-    }
+    simulation_stop();
     app->variables->simulation->last_time = 0;
-    Particle_Dynamic_Collection particle_collection =
+
+    Particle_Dynamic_Collection collection =
         app->variables->simulation->particle_dynamic_collection;
     for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
     {
-        Particle_Dynamic particle = particle_collection->particles[i];
-
+        Particle_Dynamic particle = collection->particles[i];
         particle->position->x = particle->position_i->x;
         particle->position->y = particle->position_i->y;
         particle->acceleration->x = particle->acceleration_i->x;
@@ -169,20 +159,17 @@ void on_dynamic_refresh_button_clicked(GtkButton* button)
 
 void forces_dynamic_apply()
 {
-    Particle_Dynamic_Collection particle_collection =
+    Particle_Dynamic_Collection collection =
         app->variables->simulation->particle_dynamic_collection;
     for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
     {
-        Particle_Dynamic particle = particle_collection->particles[i];
+        Particle_Dynamic particle = collection->particles[i];
         GList* forces = particle->forces;
 
-        particle->acceleration->x = 0;
-        particle->acceleration->y = 0;
+        particle->acceleration->x = particle->acceleration_i->x;
+        particle->acceleration->y = particle->acceleration_i->y;
         particle->force_resultant->x = 0;
         particle->force_resultant->y = 0;
-
-        particle->acceleration->x += particle->acceleration_i->x;
-        particle->acceleration->y += particle->acceleration_i->y;
 
         for (GList* l = forces; l != NULL; l = l->next)
         {
@@ -201,80 +188,33 @@ void forces_dynamic_apply()
 
 void on_dynamic_start_button_clicked(GtkButton* button)
 {
-    if (!app->variables->simulation->is_simulation_running)
-    {
-
-        app->variables->simulation->gravity = gtk_spin_button_get_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->gravity)
-        );
-        app->variables->simulation->time_step = gtk_spin_button_get_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->step)
-        );
-        app->variables->simulation->time = gtk_spin_button_get_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->time)
-        );
-        app->variables->simulation->frames = gtk_spin_button_get_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->frames)
-        );
-        forces_dynamic_apply();
-
-        if (app->variables->simulation->first_time ||
-            app->variables->simulation->gravity !=
-                app->variables->simulation->gravity_cache ||
-            app->variables->simulation->time_step !=
-                app->variables->simulation->time_step_cache ||
-            app->variables->simulation->time !=
-                app->variables->simulation->time_cache)
-        {
-            save_simulation_dynamic_log(
-                app->variables->simulation->particle_dynamic_collection,
-                app->variables->simulation->time,
-                app->variables->simulation->time_step,
-                app->variables->simulation->gravity
-            );
-        }
-
-        app->variables->simulation->first_time = FALSE;
-        app->variables->simulation->gravity_cache =
-            app->variables->simulation->gravity;
-        app->variables->simulation->time_cache =
-            app->variables->simulation->time;
-        app->variables->simulation->time_step_cache =
-            app->variables->simulation->time_step;
-
-        if (app->variables->simulation->timer == NULL)
-        {
-            app->variables->simulation->timer = g_timer_new();
-        }
-
-        if (app->variables->simulation->last_time == 0)
-        {
-            g_timer_start(app->variables->simulation->timer);
-        }
-        else
-        {
-            g_timer_continue(app->variables->simulation->timer);
-        }
-
-        app->variables->simulation->is_simulation_running = TRUE;
-
-        int timeout_interval = (int)(1000 / app->variables->simulation->frames);
-        app->variables->simulation->timeout_id = g_timeout_add(
-            timeout_interval,
-            on_timeout_dynamic,
-            app->window_simulation->drawing_area
-        );
-    }
-}
-
-void on_dynamic_stop_button_clicked(GtkButton* button)
-{
     if (app->variables->simulation->is_simulation_running)
+        return;
+
+    Variables_Simulation* sim = app->variables->simulation;
+    simulation_read_controls();
+    forces_dynamic_apply();
+
+    if (sim->first_time || sim->gravity != sim->gravity_cache ||
+        sim->time_step != sim->time_step_cache || sim->time != sim->time_cache)
     {
-        app->variables->simulation->is_simulation_running = FALSE;
-        g_timer_stop(app->variables->simulation->timer);
+        save_simulation_dynamic_log(
+            sim->particle_dynamic_collection,
+            sim->time,
+            sim->time_step,
+            sim->gravity
+        );
     }
+
+    sim->first_time = FALSE;
+    sim->gravity_cache = sim->gravity;
+    sim->time_cache = sim->time;
+    sim->time_step_cache = sim->time_step;
+
+    simulation_start_timer(on_timeout_dynamic);
 }
+
+void on_dynamic_stop_button_clicked(GtkButton* button) { simulation_stop(); }
 
 void run_simulation_dynamic()
 {

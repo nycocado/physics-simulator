@@ -18,3 +18,6 @@ void draw_particle(cairo_t* cr, float start_x, float start_y, float radius);
 void draw_title(cairo_t* cr, const char* title, float x, float y);
 void draw_time(cairo_t* cr, float time, float x, float y);
 void simulation_window_destroy(void);
+void simulation_read_controls(void);
+void simulation_stop(void);
+void simulation_start_timer(GSourceFunc timeout_fn);

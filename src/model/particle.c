@@ -2,7 +2,7 @@
 
 Vector create_vector(float x, float y)
 {
-    Vector vector = malloc(sizeof(struct _Vector));
+    Vector vector = g_new(struct _Vector, 1);
 
     vector->x = x;
     vector->y = y;
@@ -12,7 +12,7 @@ Vector create_vector(float x, float y)
 Particle_Cinematic
 particle_cinematic_new(float x, float y, float vx, float vy, float ax, float ay)
 {
-    Particle_Cinematic particle = malloc(sizeof(struct _Particle_Cinematic));
+    Particle_Cinematic particle = g_new(struct _Particle_Cinematic, 1);
 
     particle->position_i = create_vector(x, y);
     particle->position = create_vector(x, y);
@@ -24,12 +24,12 @@ particle_cinematic_new(float x, float y, float vx, float vy, float ax, float ay)
 
 void particle_cinematic_free(Particle_Cinematic particle)
 {
-    free(particle->position_i);
-    free(particle->position);
-    free(particle->velocity);
-    free(particle->velocity_i);
-    free(particle->acceleration);
-    free(particle);
+    g_free(particle->position_i);
+    g_free(particle->position);
+    g_free(particle->velocity);
+    g_free(particle->velocity_i);
+    g_free(particle->acceleration);
+    g_free(particle);
 }
 
 Particle_Dynamic particle_dynamic_new(
@@ -42,7 +42,7 @@ Particle_Dynamic particle_dynamic_new(
     float mass
 )
 {
-    Particle_Dynamic particle = malloc(sizeof(struct _Particle_Dynamic));
+    Particle_Dynamic particle = g_new(struct _Particle_Dynamic, 1);
 
     particle->position_i = create_vector(x, y);
     particle->position = create_vector(x, y);
@@ -57,25 +57,25 @@ Particle_Dynamic particle_dynamic_new(
 
 void particle_dynamic_free(Particle_Dynamic particle)
 {
-    free(particle->position_i);
-    free(particle->position);
-    free(particle->velocity_i);
-    free(particle->acceleration_i);
-    free(particle->acceleration);
-    free(particle->force_resultant);
+    g_free(particle->position_i);
+    g_free(particle->position);
+    g_free(particle->velocity_i);
+    g_free(particle->acceleration_i);
+    g_free(particle->acceleration);
+    g_free(particle->force_resultant);
     if (particle->forces != NULL)
     {
-        g_list_free_full(particle->forces, free);
+        g_list_free_full(particle->forces, g_free);
     }
-    free(particle);
+    g_free(particle);
 }
 
 Particle_Cinematic_Collection
 particle_cinematic_collection_new(int num_particles)
 {
     Particle_Cinematic_Collection collection =
-        malloc(sizeof(struct _Particle_Cinematic_Collection));
-    collection->particles = malloc(num_particles * sizeof(Particle_Cinematic));
+        g_new(struct _Particle_Cinematic_Collection, 1);
+    collection->particles = g_new(Particle_Cinematic, num_particles);
     return collection;
 }
 
@@ -87,15 +87,15 @@ void particle_cinematic_collection_free(
     {
         particle_cinematic_free(collection->particles[i]);
     }
-    free(collection->particles);
-    free(collection);
+    g_free(collection->particles);
+    g_free(collection);
 }
 
 Particle_Dynamic_Collection particle_dynamic_collection_new(int num_particles)
 {
     Particle_Dynamic_Collection collection =
-        malloc(sizeof(struct _Particle_Dynamic_Collection));
-    collection->particles = malloc(num_particles * sizeof(Particle_Dynamic));
+        g_new(struct _Particle_Dynamic_Collection, 1);
+    collection->particles = g_new(Particle_Dynamic, num_particles);
     return collection;
 }
 
@@ -105,6 +105,6 @@ void particle_dynamic_collection_free(Particle_Dynamic_Collection collection)
     {
         particle_dynamic_free(collection->particles[i]);
     }
-    free(collection->particles);
-    free(collection);
+    g_free(collection->particles);
+    g_free(collection);
 }

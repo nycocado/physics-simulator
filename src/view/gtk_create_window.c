@@ -170,7 +170,7 @@ void create_window_add_particle_normal_widgets()
     gtk_adjustment_configure(
         adjustment,
         gtk_adjustment_get_value(adjustment),
-        0.01,
+        0.001,
         G_MAXFLOAT,
         1.0,
         10.0,
@@ -339,7 +339,7 @@ void create_window_edit_particle_normal_widgets()
     gtk_adjustment_configure(
         adjustment,
         gtk_adjustment_get_value(adjustment),
-        1e-30,
+        0.001,
         G_MAXFLOAT,
         1.0,
         10.0,

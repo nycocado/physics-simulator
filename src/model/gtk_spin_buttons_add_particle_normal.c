@@ -3,7 +3,7 @@
 Spin_Buttons_Add_Particle_Normal spin_buttons_add_particle_normal_new()
 {
     Spin_Buttons_Add_Particle_Normal spin_buttons_add_normal =
-        g_slice_new(struct _Spin_Buttons_Add_Particle_Normal);
+        g_new(struct _Spin_Buttons_Add_Particle_Normal, 1);
 
     spin_buttons_add_normal->x = NULL;
     spin_buttons_add_normal->y = NULL;
@@ -19,8 +19,5 @@ void spin_buttons_add_particle_normal_free(
     Spin_Buttons_Add_Particle_Normal spin_buttons_add_particle_normal
 )
 {
-    g_slice_free(
-        struct _Spin_Buttons_Add_Particle_Normal,
-        spin_buttons_add_particle_normal
-    );
+    g_free(spin_buttons_add_particle_normal);
 }

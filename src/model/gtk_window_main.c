@@ -2,7 +2,7 @@
 
 Window_Main window_main_new()
 {
-    Window_Main window_main = g_slice_new(struct _Window_Main);
+    Window_Main window_main = g_new(struct _Window_Main, 1);
 
     window_main->buttons = buttons_main_new();
     window_main->cell_renderer = cell_renderers_new();
@@ -16,12 +16,12 @@ void window_main_free(Window_Main window_main)
     columns_free(window_main->columns);
     buttons_main_free(window_main->buttons);
     cell_renderers_free(window_main->cell_renderer);
-    g_slice_free(struct _Window_Main, window_main);
+    g_free(window_main);
 }
 
 Cell_Renderer cell_renderers_new()
 {
-    Cell_Renderer cell_renderer = g_slice_new(struct _Cell_Renderer);
+    Cell_Renderer cell_renderer = g_new(struct _Cell_Renderer, 1);
 
     cell_renderer->type = NULL;
     cell_renderer->x = NULL;
@@ -35,14 +35,11 @@ Cell_Renderer cell_renderers_new()
     return cell_renderer;
 }
 
-void cell_renderers_free(Cell_Renderer cell_renderer)
-{
-    g_slice_free(struct _Cell_Renderer, cell_renderer);
-}
+void cell_renderers_free(Cell_Renderer cell_renderer) { g_free(cell_renderer); }
 
 Columns columns_new()
 {
-    Columns columns = g_slice_new(struct _Columns);
+    Columns columns = g_new(struct _Columns, 1);
 
     columns->type = NULL;
     columns->x = NULL;
@@ -56,11 +53,11 @@ Columns columns_new()
     return columns;
 }
 
-void columns_free(Columns columns) { g_slice_free(struct _Columns, columns); }
+void columns_free(Columns columns) { g_free(columns); }
 
 Buttons_Main buttons_main_new()
 {
-    Buttons_Main buttons_main = g_slice_new(struct _Buttons_Main);
+    Buttons_Main buttons_main = g_new(struct _Buttons_Main, 1);
 
     buttons_main->add_particle = NULL;
     buttons_main->add_force = NULL;
@@ -71,7 +68,4 @@ Buttons_Main buttons_main_new()
     return buttons_main;
 }
 
-void buttons_main_free(Buttons_Main buttons_main)
-{
-    g_slice_free(struct _Buttons_Main, buttons_main);
-}
+void buttons_main_free(Buttons_Main buttons_main) { g_free(buttons_main); }

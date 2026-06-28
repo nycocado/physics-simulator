@@ -3,7 +3,7 @@
 Window_Add_Force_Normal window_add_force_normal_new()
 {
     Window_Add_Force_Normal window_add_force_normal =
-        g_slice_new(struct _Window_Add_Force_Normal);
+        g_new(struct _Window_Add_Force_Normal, 1);
 
     window_add_force_normal->buttons = buttons_add_new();
     window_add_force_normal->spin_buttons = spin_buttons_add_force_normal_new();
@@ -17,5 +17,5 @@ void window_add_force_normal_free(
 {
     spin_buttons_add_force_normal_free(window_add_force_normal->spin_buttons);
     buttons_add_free(window_add_force_normal->buttons);
-    g_slice_free(struct _Window_Add_Force_Normal, window_add_force_normal);
+    g_free(window_add_force_normal);
 }

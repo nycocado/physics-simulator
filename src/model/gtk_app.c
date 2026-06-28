@@ -4,7 +4,7 @@ GtkApp app;
 
 void gtk_app_new()
 {
-    app = g_slice_new0(struct _GtkApp);
+    app = g_new0(struct _GtkApp, 1);
 
     app->window_main = window_main_new();
     app->window_add_particle_normal = window_add_particle_normal_new();
@@ -28,5 +28,5 @@ void gtk_app_free()
     window_edit_force_normal_free(app->window_edit_force_normal);
     window_simulation_free(app->window_simulation);
     variables_free(app->variables);
-    g_slice_free(struct _GtkApp, app);
+    g_free(app);
 }

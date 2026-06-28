@@ -91,3 +91,50 @@ void simulation_window_destroy(void)
     variables_simulation_wipe(app->variables->simulation);
     gtk_widget_destroy(app->window_simulation->window);
 }
+
+void simulation_read_controls(void)
+{
+    Variables_Simulation* sim = app->variables->simulation;
+    sim->gravity = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->gravity)
+    );
+    sim->time_step = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->step)
+    );
+    sim->time = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->time)
+    );
+    sim->frames = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->frames)
+    );
+}
+
+void simulation_stop(void)
+{
+    Variables_Simulation* sim = app->variables->simulation;
+    if (!sim->is_simulation_running)
+        return;
+    sim->is_simulation_running = FALSE;
+    g_timer_stop(sim->timer);
+    if (sim->timeout_id != 0)
+    {
+        g_source_remove(sim->timeout_id);
+        sim->timeout_id = 0;
+    }
+}
+
+void simulation_start_timer(GSourceFunc timeout_fn)
+{
+    Variables_Simulation* sim = app->variables->simulation;
+    if (sim->timer == NULL)
+        sim->timer = g_timer_new();
+    if (sim->last_time == 0)
+        g_timer_start(sim->timer);
+    else
+        g_timer_continue(sim->timer);
+    sim->is_simulation_running = TRUE;
+    int interval = (int)(1000 / sim->frames);
+    sim->timeout_id = g_timeout_add(
+        interval, timeout_fn, app->window_simulation->drawing_area
+    );
+}

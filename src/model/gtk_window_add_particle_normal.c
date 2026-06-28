@@ -3,7 +3,7 @@
 Window_Add_Particle_Normal window_add_particle_normal_new()
 {
     Window_Add_Particle_Normal window_add_particle_normal =
-        g_slice_new(struct _Window_Add_Particle_Normal);
+        g_new(struct _Window_Add_Particle_Normal, 1);
 
     window_add_particle_normal->spin_buttons =
         spin_buttons_add_particle_normal_new();
@@ -20,7 +20,5 @@ void window_add_particle_normal_free(
         window_add_particle_normal->spin_buttons
     );
     buttons_add_free(window_add_particle_normal->buttons);
-    g_slice_free(
-        struct _Window_Add_Particle_Normal, window_add_particle_normal
-    );
+    g_free(window_add_particle_normal);
 }
