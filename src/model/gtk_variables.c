@@ -65,10 +65,6 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
     variables_simulation->gravity_cache = 0;
     variables_simulation->time_cache = 0;
     variables_simulation->time_step_cache = 0;
-    variables_simulation->gravity = 0;
-    variables_simulation->time = 0;
-    variables_simulation->time_step = 0;
-    variables_simulation->frames = 0;
     variables_simulation->is_simulation_running = FALSE;
     variables_simulation->particle_cinematic_collection = NULL;
     variables_simulation->particle_dynamic_collection = NULL;

@@ -9,12 +9,40 @@ void save_project()
         return;
     }
 
+    Variables_Simulation* sim = app->variables->simulation;
+    if (sim->gravity != 0 || sim->time != 0 || sim->time_step != 0 ||
+        sim->frames != 0)
+    {
+        char buf[G_ASCII_DTOSTR_BUF_SIZE];
+        fprintf(file, "SETTINGS");
+        fprintf(
+            file,
+            " gravity=%s",
+            g_ascii_dtostr(buf, sizeof(buf), sim->gravity)
+        );
+        fprintf(
+            file, " time=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time)
+        );
+        fprintf(
+            file,
+            " step=%s",
+            g_ascii_dtostr(buf, sizeof(buf), sim->time_step)
+        );
+        fprintf(
+            file,
+            " frames=%s",
+            g_ascii_dtostr(buf, sizeof(buf), sim->frames)
+        );
+        fprintf(file, "\n");
+    }
+
     GtkTreeIter iter;
     gboolean valid =
         gtk_tree_model_get_iter_first(GTK_TREE_MODEL(app->tree_store), &iter);
     while (valid)
     {
         gchar *x, *y, *vx, *vy, *ax, *ay, *mass;
+        gboolean checked;
         gtk_tree_model_get(
             GTK_TREE_MODEL(app->tree_store),
             &iter,
@@ -32,10 +60,21 @@ void save_project()
             &ay,
             COL_MASS,
             &mass,
+            COL_CHECKED,
+            &checked,
             -1
         );
         fprintf(
-            file, "Partícula %s %s %s %s %s %s %s\n", x, y, vx, vy, ax, ay, mass
+            file,
+            "Partícula %s %s %s %s %s %s %s %d\n",
+            x,
+            y,
+            vx,
+            vy,
+            ax,
+            ay,
+            mass,
+            checked ? 1 : 0
         );
 
         g_free(x);
@@ -99,7 +138,28 @@ void open_project()
         if (!type)
             continue;
 
-        if (strcmp(type, "Partícula") == 0)
+        if (strcmp(type, "SETTINGS") == 0)
+        {
+            Variables_Simulation* sim = app->variables->simulation;
+            char* token;
+            while ((token = strtok(NULL, " ")) != NULL)
+            {
+                char* eq = strchr(token, '=');
+                if (!eq)
+                    continue;
+                *eq = '\0';
+                double val = g_ascii_strtod(eq + 1, NULL);
+                if (strcmp(token, "gravity") == 0)
+                    sim->gravity = (float)val;
+                else if (strcmp(token, "time") == 0)
+                    sim->time = (float)val;
+                else if (strcmp(token, "step") == 0)
+                    sim->time_step = (float)val;
+                else if (strcmp(token, "frames") == 0)
+                    sim->frames = (float)val;
+            }
+        }
+        else if (strcmp(type, "Partícula") == 0)
         {
             char* x = strtok(NULL, " ");
             char* y = strtok(NULL, " ");
@@ -112,6 +172,9 @@ void open_project()
                 continue;
             if (g_ascii_strtod(mass, NULL) <= 0)
                 continue;
+            char* checked_str = strtok(NULL, " ");
+            gboolean checked = (checked_str == NULL) ? TRUE
+                                                     : (checked_str[0] != '0');
             gtk_tree_store_append(app->tree_store, &particle_iter, NULL);
             gtk_tree_store_set(
                 app->tree_store,
@@ -131,7 +194,7 @@ void open_project()
                 COL_MASS,
                 mass,
                 COL_CHECKED,
-                TRUE,
+                checked,
                 COL_VISIBLE,
                 TRUE,
                 COL_TYPE,
@@ -139,7 +202,8 @@ void open_project()
                 -1
             );
             has_particle = TRUE;
-            app->variables->simulation->num_particles_use++;
+            if (checked)
+                app->variables->simulation->num_particles_use++;
         }
         else if (strcmp(type, "Força") == 0)
         {
