@@ -1,16 +1,16 @@
 #include "../include/gtk_include_all.h"
 
-Variables variables_new() // Função de criação das variáveis
+Variables variables_new()
 {
-    Variables variables = g_slice_new(struct _Variables); // Aloca memória para as variáveis
-    // Inicializa as variáveis
+    Variables variables = g_slice_new(struct _Variables);
+
     variables->project = variables_project_new();
     variables->simulation = variables_simulation_new();
     variables->window_size = window_size_new();
     return variables;
 }
 
-void variables_free(Variables variables) // Função de liberação das variáveis
+void variables_free(Variables variables)
 {
     variables_project_free(variables->project);
     variables_simulation_free(variables->simulation);
@@ -18,10 +18,11 @@ void variables_free(Variables variables) // Função de liberação das variáve
     g_slice_free(struct _Variables, variables);
 }
 
-Variables_Simulation variables_simulation_new() // Função de criação das variáveis de simulação
+Variables_Simulation variables_simulation_new()
 {
-    Variables_Simulation variables_simulation = g_slice_new(struct _Variables_Simulation); // Aloca memória para as variáveis de simulação
-    // Inicializa as variáveis de simulação
+    Variables_Simulation variables_simulation =
+        g_slice_new(struct _Variables_Simulation);
+
     variables_simulation->is_simulation_running = FALSE;
     variables_simulation->num_particles_use = 0;
     variables_simulation->particle_cinematic_collection = NULL;
@@ -39,23 +40,27 @@ Variables_Simulation variables_simulation_new() // Função de criação das var
     return variables_simulation;
 }
 
-void variables_simulation_wipe(Variables_Simulation variables_simulation) // Função de limpeza das variáveis de simulação
+void variables_simulation_wipe(Variables_Simulation variables_simulation)
 {
-    if (variables_simulation->particle_cinematic_collection != NULL) // Se a coleção de partículas cinemáticas não for nula
+    if (variables_simulation->particle_cinematic_collection != NULL)
     {
-        particle_cinematic_collection_free(variables_simulation->particle_cinematic_collection); // Libera a coleção de partículas cinemáticas
+        particle_cinematic_collection_free(
+            variables_simulation->particle_cinematic_collection
+        );
     }
-    if (variables_simulation->particle_dynamic_collection != NULL) // Se a coleção de partículas dinâmicas não for nula
+    if (variables_simulation->particle_dynamic_collection != NULL)
     {
-        particle_dynamic_collection_free(variables_simulation->particle_dynamic_collection); // Libera a coleção de partículas dinâmicas
+        particle_dynamic_collection_free(
+            variables_simulation->particle_dynamic_collection
+        );
     }
-    if (variables_simulation->timer != NULL) // Se o temporizador não for nulo
+    if (variables_simulation->timer != NULL)
     {
-        g_timer_stop(variables_simulation->timer);    // Para o temporizador
-        g_timer_destroy(variables_simulation->timer); // Destroi o temporizador
-        variables_simulation->timer = NULL;           // Define o temporizador como nulo
+        g_timer_stop(variables_simulation->timer);
+        g_timer_destroy(variables_simulation->timer);
+        variables_simulation->timer = NULL;
     }
-    // Define as variáveis de simulação como nulas ou zero
+
     variables_simulation->last_time = 0;
     variables_simulation->gravity_cache = 0;
     variables_simulation->time_cache = 0;
@@ -70,48 +75,49 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation) // Fun
     variables_simulation->firts_time = TRUE;
 }
 
-void variables_simulation_free(Variables_Simulation variables_simulation) // Função de liberação das variáveis de simulação
+void variables_simulation_free(Variables_Simulation variables_simulation)
 {
     variables_simulation_wipe(variables_simulation);
     g_slice_free(struct _Variables_Simulation, variables_simulation);
 }
 
-Variables_Project variables_project_new() // Função de criação das variáveis do projeto
+Variables_Project variables_project_new()
 {
-    Variables_Project variables_project = g_slice_new(struct _Variables_Project); // Aloca memória para as variáveis do projeto\
-    // Inicializa as variáveis do projeto
+    Variables_Project variables_project =
+        g_slice_new(struct _Variables_Project);
+
     variables_project->file_path = NULL;
     variables_project->is_file_open = FALSE;
     return variables_project;
 }
 
-void variables_project_wipe(Variables_Project variables_project) // Função de limpeza das variáveis do projeto
+void variables_project_wipe(Variables_Project variables_project)
 {
-    if (variables_project->file_path != NULL) // Se o caminho do arquivo não for nulo
+    if (variables_project->file_path != NULL)
     {
-        g_free(variables_project->file_path); // Libera o caminho do arquivo
+        g_free(variables_project->file_path);
     }
-    // Define as variáveis do projeto como nulas
+
     variables_project->file_path = NULL;
     variables_project->is_file_open = FALSE;
 }
 
-void variables_project_free(Variables_Project variables_project) // Função de liberação das variáveis do projeto
+void variables_project_free(Variables_Project variables_project)
 {
     variables_project_wipe(variables_project);
     g_slice_free(struct _Variables_Project, variables_project);
 }
 
-Window_Size window_size_new() // Função de criação do tamanho da janela
+Window_Size window_size_new()
 {
-    Window_Size window_size = g_slice_new(struct _Window_Size); // Aloca memória para o tamanho da janela
-    // Inicializa o tamanho da janela
+    Window_Size window_size = g_slice_new(struct _Window_Size);
+
     window_size->width = 0;
     window_size->height = 0;
     return window_size;
 }
 
-void window_size_free(Window_Size window_size) // Função de liberação do tamanho da janela
+void window_size_free(Window_Size window_size)
 {
     g_slice_free(struct _Window_Size, window_size);
 }

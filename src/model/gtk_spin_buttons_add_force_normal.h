@@ -1,14 +1,16 @@
 #pragma once
 
-#include <gtk/gtk.h> // Inclui as bibliotecas do GTK
+#include <gtk/gtk.h>
 
-typedef struct _Spin_Buttons_Add_Force_Normal *Spin_Buttons_Add_Force_Normal; // Declaração do ponteiro dos botões de adição
+typedef struct _Spin_Buttons_Add_Force_Normal* Spin_Buttons_Add_Force_Normal;
 
-struct _Spin_Buttons_Add_Force_Normal // Estrutura dos botões de adição
+struct _Spin_Buttons_Add_Force_Normal
 {
-    GtkWidget *fx;
-    GtkWidget *fy;
+        GtkWidget* fx;
+        GtkWidget* fy;
 };
 
-Spin_Buttons_Add_Force_Normal spin_buttons_add_force_normal_new();                                    // Função de criação dos botões de adição
-void spin_buttons_add_force_normal_free(Spin_Buttons_Add_Force_Normal spin_buttons_add_force_normal); // Função de liberação dos botões de adição
+Spin_Buttons_Add_Force_Normal spin_buttons_add_force_normal_new();
+void spin_buttons_add_force_normal_free(
+    Spin_Buttons_Add_Force_Normal spin_buttons_add_force_normal
+);

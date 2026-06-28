@@ -1,179 +1,338 @@
 #include "../include/gtk_include_all.h"
 
-void on_window_destroy(GtkWidget *widget) // Função chamada quando a janela é fechada
+void on_window_destroy(GtkWidget* widget)
 {
-    GtkWidget *toplevel = gtk_widget_get_toplevel(widget); // Obtém o widget da janela
+    GtkWidget* toplevel = gtk_widget_get_toplevel(widget);
 
-    if (GTK_IS_WINDOW(toplevel)) // Se o widget é uma janela
+    if (GTK_IS_WINDOW(toplevel))
     {
-        gtk_widget_destroy(toplevel); // Fecha a janela
+        gtk_widget_destroy(toplevel);
     }
 }
 
-void on_renderer_check_toggled(GtkCellRendererToggle *renderer, gchar *path_str) // Função chamada quando o botão de seleção de uma linha é clicado
+void on_renderer_check_toggled(GtkCellRendererToggle* renderer, gchar* path_str)
 {
-    GtkTreePath *path = gtk_tree_path_new_from_string(path_str);                 // Cria um caminho da árvore
-    GtkTreeIter iter;                                                            // Cria um iterador da árvore
-    gtk_tree_model_get_iter(GTK_TREE_MODEL(app->tree_store), &iter, path);       // Obtém o iterador da árvore
-    gboolean checked;                                                            // Cria uma variável para armazenar o estado do botão de seleção
-    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1); // Obtém o estado do botão de seleção
-    checked = !checked;                                                          // Inverte o estado do botão de seleção
-    gtk_tree_store_set(app->tree_store, &iter, 7, checked, -1);                  // Define o novo estado do botão de seleção
-    if (checked)                                                                 // Se o botão de seleção foi marcado
+    GtkTreePath* path = gtk_tree_path_new_from_string(path_str);
+    GtkTreeIter iter;
+    gtk_tree_model_get_iter(GTK_TREE_MODEL(app->tree_store), &iter, path);
+    gboolean checked;
+    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1);
+    checked = !checked;
+    gtk_tree_store_set(app->tree_store, &iter, 7, checked, -1);
+    if (checked)
     {
-        app->variables->simulation->num_particles_use++; // Incrementa o número de partículas usadas
+        app->variables->simulation->num_particles_use++;
     }
-    else // Se o botão de seleção foi desmarcado
+    else
     {
-        app->variables->simulation->num_particles_use--; // Decrementa o número de partículas usadas
+        app->variables->simulation->num_particles_use--;
     }
-    gtk_tree_path_free(path); // Libera a memória alocada para o caminho da árvore
+    gtk_tree_path_free(path);
 }
 
-void on_window_main_add_particle_button_clicked(GtkButton *button) // Função chamada quando o botão de "+" da tela principal é clicado
+void on_window_main_add_particle_button_clicked(GtkButton* button)
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível adicionar partículas sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                    // Termina a função
+        create_dialog_error_message(
+            "Não é possível adicionar partículas sem um projeto aberto."
+        );
+        return;
     }
-    // Se houver um projeto aberto
-    create_window_add_particle_normal_widgets();                  // Cria os widgets da janela de adição
-    gtk_widget_show_all(app->window_add_particle_normal->window); // Mostra a janela de adição
+
+    create_window_add_particle_normal_widgets();
+    gtk_widget_show_all(app->window_add_particle_normal->window);
 }
 
-void on_window_add_particle_normal_add_button_clicked(GtkWidget *widget) // Função chamada quando o botão de adição da janela de adição de partícula é clicado
+void on_window_add_particle_normal_add_button_clicked(GtkWidget* widget)
 {
-    // Obtém os valores dos campos de entrada
-    const gchar *xi = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->x));      // Posição x
-    const gchar *yi = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->y));      // Posição y
-    const gchar *vx = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vx));     // Velocidade x
-    const gchar *vy = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vy));     // Velocidade y
-    const gchar *ax = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ax));     // Aceleração x
-    const gchar *ay = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ay));     // Aceleração y
-    const gchar *mass = gtk_entry_get_text(GTK_ENTRY(app->window_add_particle_normal->spin_buttons->mass)); // Massa
 
-    // Armazena os valores na árvore
-    GtkTreeIter iter;                                                                                                                    // Cria um iterador da árvore
-    gtk_tree_store_append(app->tree_store, &iter, NULL);                                                                                 // Adiciona uma nova linha à árvore
-    gtk_tree_store_set(app->tree_store, &iter, 0, xi, 1, yi, 2, vx, 3, vy, 4, ax, 5, ay, 6, mass, 7, TRUE, 8, TRUE, 9, "Partícula", -1); // Define os valores da nova linha
-    app->variables->simulation->num_particles_use++;                                                                                     // Incrementa o número de partículas usadas
-    gtk_widget_destroy(app->window_add_particle_normal->window);                                                                         // Fecha a janela de adição
+    const gchar* xi = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->x)
+    );
+    const gchar* yi = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->y)
+    );
+    const gchar* vx = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vx)
+    );
+    const gchar* vy = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vy)
+    );
+    const gchar* ax = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ax)
+    );
+    const gchar* ay = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ay)
+    );
+    const gchar* mass = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->mass)
+    );
+
+    GtkTreeIter iter;
+    gtk_tree_store_append(app->tree_store, &iter, NULL);
+    gtk_tree_store_set(
+        app->tree_store,
+        &iter,
+        0,
+        xi,
+        1,
+        yi,
+        2,
+        vx,
+        3,
+        vy,
+        4,
+        ax,
+        5,
+        ay,
+        6,
+        mass,
+        7,
+        TRUE,
+        8,
+        TRUE,
+        9,
+        "Partícula",
+        -1
+    );
+    app->variables->simulation->num_particles_use++;
+    gtk_widget_destroy(app->window_add_particle_normal->window);
 }
 
-void on_window_edit_particle_normal_edit_button_clicked() // Função chamada quando o botão de edição da janela de edição de partícula é clicado
+void on_window_edit_particle_normal_edit_button_clicked()
 {
-    // Obtém os valores dos campos de entrada
-    const gchar *xi = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->x));      // Posição x
-    const gchar *yi = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->y));      // Posição y
-    const gchar *vx = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vx));     // Velocidade x
-    const gchar *vy = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vy));     // Velocidade y
-    const gchar *ax = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ax));     // Aceleração x
-    const gchar *ay = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ay));     // Aceleração y
-    const gchar *mass = gtk_entry_get_text(GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->mass)); // Massa
 
-    // Armazena os valores na árvore
-    GtkTreeIter iter;                                                                                  // Cria um iterador da árvore
-    GtkTreeModel *model;                                                                               // Cria um modelo de árvore
-    gtk_tree_selection_get_selected(gtk_tree_view_get_selection(app->tree_view), &model, &iter);       // Obtém a linha selecionada
-    gtk_tree_store_set(app->tree_store, &iter, 0, xi, 1, yi, 2, vx, 3, vy, 4, ax, 5, ay, 6, mass, -1); // Define os valores da linha selecionada
-    gtk_widget_destroy(app->window_edit_particle_normal->window);                                      // Fecha a janela de edição
+    const gchar* xi = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->x)
+    );
+    const gchar* yi = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->y)
+    );
+    const gchar* vx = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vx)
+    );
+    const gchar* vy = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vy)
+    );
+    const gchar* ax = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ax)
+    );
+    const gchar* ay = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ay)
+    );
+    const gchar* mass = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->mass)
+    );
+
+    GtkTreeIter iter;
+    GtkTreeModel* model;
+    gtk_tree_selection_get_selected(
+        gtk_tree_view_get_selection(app->tree_view), &model, &iter
+    );
+    gtk_tree_store_set(
+        app->tree_store,
+        &iter,
+        0,
+        xi,
+        1,
+        yi,
+        2,
+        vx,
+        3,
+        vy,
+        4,
+        ax,
+        5,
+        ay,
+        6,
+        mass,
+        -1
+    );
+    gtk_widget_destroy(app->window_edit_particle_normal->window);
 }
 
-void on_window_main_add_force_button_clicked(GtkButton *button) // Função chamada quando o botão de "↓" da tela principal é clicado
+void on_window_main_add_force_button_clicked(GtkButton* button)
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível adicionar forças sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                // Termina a função
+        create_dialog_error_message(
+            "Não é possível adicionar forças sem um projeto aberto."
+        );
+        return;
     }
-    // Se houver um projeto aberto
-    GtkTreeModel *model;                                                       // Cria um modelo de árvore
-    GtkTreeIter iter;                                                          // Cria um iterador de árvore
-    GtkTreeSelection *selection = gtk_tree_view_get_selection(app->tree_view); // Obtém a seleção da árvore
-    if (!gtk_tree_selection_get_selected(selection, &model, &iter))            // Se não houver uma linha selecionada
+
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(app->tree_view);
+    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
     {
-        create_dialog_error_message("Não é possível adicionar uma força sem uma partícula selecionada."); // Cria uma mensagem de erro
-        return;                                                                                           // Termina a função
+        create_dialog_error_message(
+            "Não é possível adicionar uma força sem uma partícula selecionada."
+        );
+        return;
     }
-    // Se houver uma linha selecionada
-    GtkTreeIter testIter;                                    // Cria um iterador de teste
-    if (gtk_tree_model_iter_parent(model, &testIter, &iter)) // Se a linha selecionada for uma força (ou seja, se ela tiver um pai)
+
+    GtkTreeIter testIter;
+    if (gtk_tree_model_iter_parent(model, &testIter, &iter))
     {
-        create_dialog_error_message("Não é possível adicionar uma força em outra força."); // Cria uma mensagem de erro
-        return;                                                                            // Termina a função
+        create_dialog_error_message(
+            "Não é possível adicionar uma força em outra força."
+        );
+        return;
     }
-    // Se a linha selecionada for uma partícula (ou seja, se ela não tiver um pai)
-    create_window_add_force_normal_widgets();                  // Cria os widgets da janela de adição
-    gtk_widget_show_all(app->window_add_force_normal->window); // Mostra a janela de adição
+
+    create_window_add_force_normal_widgets();
+    gtk_widget_show_all(app->window_add_force_normal->window);
 }
 
-void on_window_add_force_normal_add_button_clicked(GtkWidget *widget) // Função chamada quando o botão de adição da janela de adição de força é clicado
+void on_window_add_force_normal_add_button_clicked(GtkWidget* widget)
 {
-    // Obtém os valores dos campos de entrada
-    const gchar *fx = gtk_entry_get_text(GTK_ENTRY(app->window_add_force_normal->spin_buttons->fx)); // Força x
-    const gchar *fy = gtk_entry_get_text(GTK_ENTRY(app->window_add_force_normal->spin_buttons->fy)); // Força y
 
-    // Armazena os valores na árvore
-    GtkTreeModel *model;                                                                                                                  // Cria um modelo de árvore
-    GtkTreeIter parentIter, childIter, testIter;                                                                                          // Cria iteradores de árvore
-    gtk_tree_selection_get_selected(gtk_tree_view_get_selection(app->tree_view), &model, &parentIter);                                    // Obtém a linha selecionada
-    gtk_tree_store_append(app->tree_store, &childIter, &parentIter);                                                                      // Adiciona uma nova linha à árvore
-    gtk_tree_store_set(app->tree_store, &childIter, 0, fx, 1, fy, 2, "", 3, "", 4, "", 5, "", 6, "", 7, FALSE, 8, FALSE, 9, "Força", -1); // Define os valores da nova linha
+    const gchar* fx = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_force_normal->spin_buttons->fx)
+    );
+    const gchar* fy = gtk_entry_get_text(
+        GTK_ENTRY(app->window_add_force_normal->spin_buttons->fy)
+    );
 
-    // Expande a linha selecionada (para mostrar a força sem o usuário precisar expandir manualmente)
-    GtkTreePath *path = gtk_tree_model_get_path(GTK_TREE_MODEL(app->tree_store), &parentIter); // Obtém o caminho da linha selecionada
-    gtk_tree_view_expand_row(app->tree_view, path, FALSE);                                     // Expande a linha selecionada
-    gtk_tree_path_free(path);                                                                  // Libera a memória alocada para o caminho
-    gtk_widget_destroy(app->window_add_force_normal->window);                                  // Fecha a janela de adição
+    GtkTreeModel* model;
+    GtkTreeIter parentIter, childIter, testIter;
+    gtk_tree_selection_get_selected(
+        gtk_tree_view_get_selection(app->tree_view), &model, &parentIter
+    );
+    gtk_tree_store_append(app->tree_store, &childIter, &parentIter);
+    gtk_tree_store_set(
+        app->tree_store,
+        &childIter,
+        0,
+        fx,
+        1,
+        fy,
+        2,
+        "",
+        3,
+        "",
+        4,
+        "",
+        5,
+        "",
+        6,
+        "",
+        7,
+        FALSE,
+        8,
+        FALSE,
+        9,
+        "Força",
+        -1
+    );
+
+    GtkTreePath* path =
+        gtk_tree_model_get_path(GTK_TREE_MODEL(app->tree_store), &parentIter);
+    gtk_tree_view_expand_row(app->tree_view, path, FALSE);
+    gtk_tree_path_free(path);
+    gtk_widget_destroy(app->window_add_force_normal->window);
 }
 
-void on_window_edit_force_normal_edit_button_clicked() // Função chamada quando o botão de edição da janela de edição de força é clicado
+void on_window_edit_force_normal_edit_button_clicked()
 {
-    // Obtém os valores dos campos de entrada
-    const gchar *fx = gtk_entry_get_text(GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fx)); // Força x
-    const gchar *fy = gtk_entry_get_text(GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fy)); // Força y
 
-    // Armazena os valores na árvore
-    GtkTreeIter iter;                                                                            // Cria um iterador da árvore
-    GtkTreeModel *model;                                                                         // Cria um modelo de árvore
-    gtk_tree_selection_get_selected(gtk_tree_view_get_selection(app->tree_view), &model, &iter); // Obtém a linha selecionada
-    gtk_tree_store_set(app->tree_store, &iter, 0, fx, 1, fy, -1);                                // Define os valores da linha selecionada
-    gtk_widget_destroy(app->window_edit_force_normal->window);                                   // Fecha a janela de edição
+    const gchar* fx = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fx)
+    );
+    const gchar* fy = gtk_entry_get_text(
+        GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fy)
+    );
+
+    GtkTreeIter iter;
+    GtkTreeModel* model;
+    gtk_tree_selection_get_selected(
+        gtk_tree_view_get_selection(app->tree_view), &model, &iter
+    );
+    gtk_tree_store_set(app->tree_store, &iter, 0, fx, 1, fy, -1);
+    gtk_widget_destroy(app->window_edit_force_normal->window);
 }
 
-void on_window_main_edit_button_clicked(GtkWidget *widget) // Função chamada quando o botão de edição da tela principal é clicado
+void on_window_main_edit_button_clicked(GtkWidget* widget)
 {
-    // Essa função serve para abrir a janela de edição de partículas ou forças, e preencher os campos de entrada com os valores da linha selecionada
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível editar partículas sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                 // Termina a função
+        create_dialog_error_message(
+            "Não é possível editar partículas sem um projeto aberto."
+        );
+        return;
     }
-    // Se houver um projeto aberto
-    GtkTreeModel *model;                                                                              // Cria um modelo de árvore
-    GtkTreeIter iter;                                                                                 // Cria um iterador de árvore
-    if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection(app->tree_view), &model, &iter)) // Se não houver uma linha selecionada
+
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    if (!gtk_tree_selection_get_selected(
+            gtk_tree_view_get_selection(app->tree_view), &model, &iter
+        ))
     {
-        create_dialog_error_message("Não é possível editar uma partícula sem uma partícula selecionada."); // Cria uma mensagem de erro
-        return;                                                                                            // Termina a função
+        create_dialog_error_message(
+            "Não é possível editar uma partícula sem uma partícula selecionada."
+        );
+        return;
     }
-    // Se houver uma linha selecionada
-    GtkTreeIter testIter;                                     // Cria um iterador de teste
-    if (!gtk_tree_model_iter_parent(model, &testIter, &iter)) // Se a linha selecionada for uma partícula (ou seja, se ela não tiver um pai)
+
+    GtkTreeIter testIter;
+    if (!gtk_tree_model_iter_parent(model, &testIter, &iter))
     {
-        create_window_edit_particle_normal_widgets();                                                   // Cria os widgets da janela de edição
-        gchar *xi, *yi, *vx, *vy, *ax, *ay, *mass;                                                      // Cria variáveis para armazenar os valores dos campos de entrada
-        gtk_tree_model_get(model, &iter, 0, &xi, 1, &yi, 2, &vx, 3, &vy, 4, &ax, 5, &ay, 6, &mass, -1); // Obtém os valores da linha selecionada
-        // Preenche os campos de entrada com os valores obtidos
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x), atof(xi));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y), atof(yi));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx), atof(vx));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy), atof(vy));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax), atof(ax));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay), atof(ay));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->mass), atof(mass));
-        // Libera a memória alocada para os valores dos campos de entrada
+        create_window_edit_particle_normal_widgets();
+        gchar *xi, *yi, *vx, *vy, *ax, *ay, *mass;
+        gtk_tree_model_get(
+            model,
+            &iter,
+            0,
+            &xi,
+            1,
+            &yi,
+            2,
+            &vx,
+            3,
+            &vy,
+            4,
+            &ax,
+            5,
+            &ay,
+            6,
+            &mass,
+            -1
+        );
+
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x),
+            atof(xi)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y),
+            atof(yi)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx),
+            atof(vx)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy),
+            atof(vy)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax),
+            atof(ax)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay),
+            atof(ay)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(
+                app->window_edit_particle_normal->spin_buttons->mass
+            ),
+            atof(mass)
+        );
+
         g_free(xi);
         g_free(yi);
         g_free(vx);
@@ -181,143 +340,205 @@ void on_window_main_edit_button_clicked(GtkWidget *widget) // Função chamada q
         g_free(ax);
         g_free(ay);
         g_free(mass);
-        gtk_widget_show_all(app->window_edit_particle_normal->window); // Mostra a janela de edição
+        gtk_widget_show_all(app->window_edit_particle_normal->window);
     }
-    else // Se a linha selecionada for uma força (ou seja, se ela tiver um pai)
+    else
     {
-        create_window_edit_force_normal_widgets();            // Cria os widgets da janela de edição
-        gchar *fx, *fy;                                       // Cria variáveis para armazenar os valores dos campos de entrada
-        gtk_tree_model_get(model, &iter, 0, &fx, 1, &fy, -1); // Obtém os valores da linha selecionada
-        // Preenche os campos de entrada com os valores obtidos
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx), atof(fx));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy), atof(fy));
-        // Libera a memória alocada para os valores dos campos de entrada
+        create_window_edit_force_normal_widgets();
+        gchar *fx, *fy;
+        gtk_tree_model_get(model, &iter, 0, &fx, 1, &fy, -1);
+
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx),
+            atof(fx)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy),
+            atof(fy)
+        );
+
         g_free(fx);
         g_free(fy);
-        gtk_widget_show_all(app->window_edit_force_normal->window); // Mostra a janela de edição
+        gtk_widget_show_all(app->window_edit_force_normal->window);
     }
 }
 
-void on_window_main_remove_button_clicked(GtkWidget *widget) // Função chamada quando o botão de "x" da tela principal é clicado
+void on_window_main_remove_button_clicked(GtkWidget* widget)
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível remover partículas sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                  // Termina a função
+        create_dialog_error_message(
+            "Não é possível remover partículas sem um projeto aberto."
+        );
+        return;
     }
-    // Se houver um projeto aberto
-    GtkTreeModel *model;                                                       // Cria um modelo de árvore
-    GtkTreeIter iter;                                                          // Cria um iterador de árvore
-    GtkTreeSelection *selection = gtk_tree_view_get_selection(app->tree_view); // Obtém a seleção da árvore
-    if (!gtk_tree_selection_get_selected(selection, &model, &iter))            // Se não houver uma linha selecionada
+
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(app->tree_view);
+    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
     {
-        create_dialog_error_message("Não é possível remover uma partícula sem uma partícula selecionada."); // Cria uma mensagem de erro
-        return;                                                                                             // Termina a função
+        create_dialog_error_message(
+            "Não é possível remover uma partícula sem uma partícula "
+            "selecionada."
+        );
+        return;
     }
-    // Se houver uma linha selecionada
-    gboolean checked;                                                            // Cria uma variável para armazenar o estado do botão de seleção
-    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1); // Obtém o estado do botão de seleção
-    if (checked)                                                                 // Se a linha selecionada for uma partícula
+
+    gboolean checked;
+    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1);
+    if (checked)
     {
-        app->variables->simulation->num_particles_use--; // Decrementa o número de partículas usadas
+        app->variables->simulation->num_particles_use--;
     }
-    gtk_tree_store_remove(app->tree_store, &iter); // Remove a linha selecionada
+    gtk_tree_store_remove(app->tree_store, &iter);
 }
 
-void on_selection_change_abrir(GtkFileChooser *chooser) // Função chamada quando a seleção do arquivo é alterada no diálogo de abrir
+void on_selection_change_abrir(GtkFileChooser* chooser)
 {
-    // Essa função serve para habilitar ou desabilitar o botão de seleção do diálogo de abrir, consoante se o arquivo selecionado é válido ou não
-    GtkWidget *dialog = GTK_WIDGET(chooser);                                                                // Obtém o widget do diálogo
-    GtkWidget *select_button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT); // Obtém o botão de seleção
 
-    gchar *filename = gtk_file_chooser_get_filename(chooser);                                                                                                            // Obtém o nome do arquivo selecionado
-    gboolean is_valid = filename && g_file_test(filename, G_FILE_TEST_IS_REGULAR) && g_file_test(filename, G_FILE_TEST_EXISTS) && g_str_has_suffix(filename, ".sabino"); // Verifica se o arquivo é válido
-    // O arquivo é válido se ele existir, for um arquivo regular e tiver a extensão ".sabino"
+    GtkWidget* dialog = GTK_WIDGET(chooser);
+    GtkWidget* select_button = gtk_dialog_get_widget_for_response(
+        GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT
+    );
 
-    gtk_widget_set_sensitive(select_button, is_valid); // Define se o botão de seleção está habilitado ou não
+    gchar* filename = gtk_file_chooser_get_filename(chooser);
+    gboolean is_valid = filename &&
+                        g_file_test(filename, G_FILE_TEST_IS_REGULAR) &&
+                        g_file_test(filename, G_FILE_TEST_EXISTS) &&
+                        g_str_has_suffix(filename, ".sabino");
 
-    if (filename) // Se o nome do arquivo não for nulo
+    gtk_widget_set_sensitive(select_button, is_valid);
+
+    if (filename)
     {
-        g_free(filename); // Libera a memória alocada para o nome do arquivo
+        g_free(filename);
     }
 }
 
-void on_menu_projetos_abrir_activate() // Função chamada quando o item de menu "Abrir" é clicado
+void on_menu_projetos_abrir_activate()
 {
-    if (app->variables->project->is_file_open) // Se já houver um projeto aberto
+    if (app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Já existe um projeto aberto, feche-o antes de abrir outro."); // Cria uma mensagem de erro
-        return;                                                                                    // Termina a função
+        create_dialog_error_message(
+            "Já existe um projeto aberto, feche-o antes de abrir outro."
+        );
+        return;
     }
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Abrir Arquivo", GTK_WINDOW(app->window_main->window), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancelar", GTK_RESPONSE_CANCEL, "_Abrir", GTK_RESPONSE_ACCEPT, NULL); // Cria um diálogo de abrir arquivo
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);                                                                                                                                                              // Define o diálogo como modal (ou seja, ele bloqueia a interação com a janela principal)
-    g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(gtk_response_projetos_abrir), app);                                                                                                                // Conecta o sinal de resposta do diálogo à função de resposta
-    g_signal_connect(G_OBJECT(dialog), "selection-changed", G_CALLBACK(on_selection_change_abrir), NULL);                                                                                                        // Conecta o sinal de mudança de seleção do diálogo à função de mudança de seleção
-    gtk_widget_show_all(dialog);                                                                                                                                                                                 // Mostra o diálogo
+    GtkWidget* dialog = gtk_file_chooser_dialog_new(
+        "Abrir Arquivo",
+        GTK_WINDOW(app->window_main->window),
+        GTK_FILE_CHOOSER_ACTION_OPEN,
+        "_Cancelar",
+        GTK_RESPONSE_CANCEL,
+        "_Abrir",
+        GTK_RESPONSE_ACCEPT,
+        NULL
+    );
+    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    g_signal_connect(
+        G_OBJECT(dialog),
+        "response",
+        G_CALLBACK(gtk_response_projetos_abrir),
+        app
+    );
+    g_signal_connect(
+        G_OBJECT(dialog),
+        "selection-changed",
+        G_CALLBACK(on_selection_change_abrir),
+        NULL
+    );
+    gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_salvar_activate() // Função chamada quando o item de menu "Salvar" é clicado
+void on_menu_projetos_salvar_activate()
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não existe um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                       // Termina a função
+        create_dialog_error_message("Não existe um projeto aberto.");
+        return;
     }
-    save_project(); // Salva o projeto
+    save_project();
 }
 
-void on_menu_projetos_novo_activate() // Função chamada quando o item de menu "Novo" é clicado
+void on_menu_projetos_novo_activate()
 {
-    if (app->variables->project->is_file_open) // Se já houver um projeto aberto
+    if (app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Já existe um projeto aberto, feche-o antes de abrir outro."); // Cria uma mensagem de erro
-        return;                                                                                    // Termina a função
+        create_dialog_error_message(
+            "Já existe um projeto aberto, feche-o antes de abrir outro."
+        );
+        return;
     }
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Salvar Arquivo", GTK_WINDOW(app->window_main->window), GTK_FILE_CHOOSER_ACTION_SAVE, "_Cancelar", GTK_RESPONSE_CANCEL, "_Salvar", GTK_RESPONSE_ACCEPT, NULL); // Cria um diálogo de salvar arquivo
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);                                                                                                                                                                // Define o diálogo como modal (ou seja, ele bloqueia a interação com a janela principal)
-    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);                                                                                                                                // Define que o diálogo deve pedir confirmação para sobrescrever um arquivo
-    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "andre.sabino");                                                                                                                                   // Define o nome padrão do arquivo
-    g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(gtk_response_projetos_novo), app);                                                                                                                   // Conecta o sinal de resposta do diálogo à função de resposta
-    // Não é necessário conectar o sinal de mudança de seleção do diálogo à função de mudança de seleção, pois o diálogo de salvar arquivo não precisa verificar a validade do arquivo
-    gtk_widget_show_all(dialog); // Mostra o diálogo
+    GtkWidget* dialog = gtk_file_chooser_dialog_new(
+        "Salvar Arquivo",
+        GTK_WINDOW(app->window_main->window),
+        GTK_FILE_CHOOSER_ACTION_SAVE,
+        "_Cancelar",
+        GTK_RESPONSE_CANCEL,
+        "_Salvar",
+        GTK_RESPONSE_ACCEPT,
+        NULL
+    );
+    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    gtk_file_chooser_set_do_overwrite_confirmation(
+        GTK_FILE_CHOOSER(dialog), TRUE
+    );
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "andre.sabino");
+    g_signal_connect(
+        G_OBJECT(dialog),
+        "response",
+        G_CALLBACK(gtk_response_projetos_novo),
+        app
+    );
+
+    gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_fechar_activate() // Função chamada quando o item de menu "Fechar" é clicado
+void on_menu_projetos_fechar_activate()
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não existe um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                       // Termina a função
+        create_dialog_error_message("Não existe um projeto aberto.");
+        return;
     }
-    close_project(); // Fecha o projeto
+    close_project();
 }
 
-void on_window_main_cinematic_button_clicked(GtkButton *button) // Função chamada quando o botão de simulação cinemática é clicado
+void on_window_main_cinematic_button_clicked(GtkButton* button)
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível iniciar a simulação sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                   // Termina a função
+        create_dialog_error_message(
+            "Não é possível iniciar a simulação sem um projeto aberto."
+        );
+        return;
     }
-    if (app->variables->simulation->num_particles_use == 0) // Se não houver partículas selecionadas
+    if (app->variables->simulation->num_particles_use == 0)
     {
-        create_dialog_error_message("Não é possível iniciar a simulação sem partículas."); // Cria uma mensagem de erro
-        return;                                                                            // Termina a função
+        create_dialog_error_message(
+            "Não é possível iniciar a simulação sem partículas."
+        );
+        return;
     }
-    run_simulation_cinematic(); // Executa a simulação cinemática
+    run_simulation_cinematic();
 }
 
-void on_window_main_dynamic_button_clicked(GtkButton *button) // Função chamada quando o botão de simulação dinâmica é clicado
+void on_window_main_dynamic_button_clicked(GtkButton* button)
 {
-    if (!app->variables->project->is_file_open) // Se não houver um projeto aberto
+    if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não é possível iniciar a simulação sem um projeto aberto."); // Cria uma mensagem de erro
-        return;                                                                                   // Termina a função
+        create_dialog_error_message(
+            "Não é possível iniciar a simulação sem um projeto aberto."
+        );
+        return;
     }
-    if (app->variables->simulation->num_particles_use == 0) // Se não houver partículas selecionadas
+    if (app->variables->simulation->num_particles_use == 0)
     {
-        create_dialog_error_message("Não é possível iniciar a simulação sem partículas."); // Cria uma mensagem de erro
-        return;                                                                            // Termina a função
+        create_dialog_error_message(
+            "Não é possível iniciar a simulação sem partículas."
+        );
+        return;
     }
-    run_simulation_dynamic(); // Executa a simulação dinâmica
+    run_simulation_dynamic();
 }

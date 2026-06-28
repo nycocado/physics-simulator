@@ -1,63 +1,76 @@
 #include "../include/gtk_include_all.h"
 
-char *generate_log_name_for_simulation(const char *base_name) // Função de gerar o nome do log da simulação
+char* generate_log_name_for_simulation(const char* base_name)
 {
-    int index = 1;                                                        // Declara o índice
-    gchar *filename = NULL;                                               // Declara o nome do arquivo
-    gchar *path = g_path_get_dirname(app->variables->project->file_path); // Obtém o diretório do projeto
-    gchar *new_path = NULL;                                               // Declara o novo caminho
-    FILE *file;                                                           // Declara o arquivo
+    int index = 1;
+    gchar* filename = NULL;
+    gchar* path = g_path_get_dirname(app->variables->project->file_path);
+    gchar* new_path = NULL;
+    FILE* file;
 
     do
     {
-        filename = g_strdup_printf("%s_%d.csv", base_name, index); // Gera o nome do arquivo
-        new_path = g_build_filename(path, filename, NULL);         // Gera o caminho do arquivo
-        file = fopen(new_path, "r");                               // Abre o arquivo
-        if (file != NULL)                                          // Verifica se o arquivo foi aberto
+        filename = g_strdup_printf("%s_%d.csv", base_name, index);
+        new_path = g_build_filename(path, filename, NULL);
+        file = fopen(new_path, "r");
+        if (file != NULL)
         {
-            fclose(file); // Fecha o arquivo
-            // Libera a memória do nome do arquivo e do caminho
+            fclose(file);
+
             g_free(filename);
             g_free(new_path);
         }
-        index++; // Incrementa o índice
-    } while (file != NULL); // Repete enquanto o arquivo existir
+        index++;
+    } while (file != NULL);
 
-    g_free(filename); // Libera a memória do nome do arquivo
-    g_free(path);     // Libera a memória do diretório
-    return new_path;  // Retorna o caminho do arquivo
+    g_free(filename);
+    g_free(path);
+    return new_path;
 }
 
-void replace_dot_with_comma(char *str) // Função de substituir ponto por vírgula
+void replace_dot_with_comma(char* str)
 {
-    for (char *p = str; *p != '\0'; p++) // Itera sobre a string
+    for (char* p = str; *p != '\0'; p++)
     {
-        if (*p == '.') // Verifica se é um ponto
+        if (*p == '.')
         {
-            *p = ','; // Substitui por vírgula
+            *p = ',';
         }
     }
 }
 
-void save_simulation_cinematic_log(Particle_Cinematic_Collection particle_collection, float time, float time_step, float gravity) // Função de salvar o log da simulação cinemática
+void save_simulation_cinematic_log(
+    Particle_Cinematic_Collection particle_collection,
+    float time,
+    float time_step,
+    float gravity
+)
 {
-    gchar *filename = generate_log_name_for_simulation("simulacao_cinematica"); // Gera o nome do arquivo
-    FILE *file = fopen(filename, "w");                                          // Abre o arquivo
-    if (file == NULL)                                                           // Verifica se o arquivo foi aberto corretamente
+    gchar* filename = generate_log_name_for_simulation("simulacao_cinematica");
+    FILE* file = fopen(filename, "w");
+    if (file == NULL)
     {
-        create_dialog_error_message("Erro ao salvar o log da simulação"); // Cria uma mensagem de erro
-        return;                                                           // Termina a função
+        create_dialog_error_message("Erro ao salvar o log da simulação");
+        return;
     }
-    // Cabeçalho
-    fprintf(file, "\"Simulacao Cinematica\"\n");                                                                  // Escreve o tipo de simulação
-    fprintf(file, "\"Tempo Total: %.2f - Passos de Tempo: %.2f - Gravidade: %.2f\"\n", time, time_step, gravity); // Escreve as informações da simulação
-    fprintf(file, "\n");                                                                                          // Pula uma linha
-    fprintf(file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;deslocamento\n");                              // Escreve o cabeçalho
 
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++) // Itera sobre as partículas
+    fprintf(file, "\"Simulacao Cinematica\"\n");
+    fprintf(
+        file,
+        "\"Tempo Total: %.2f - Passos de Tempo: %.2f - Gravidade: %.2f\"\n",
+        time,
+        time_step,
+        gravity
+    );
+    fprintf(file, "\n");
+    fprintf(
+        file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;deslocamento\n"
+    );
+
+    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
     {
-        Particle_Cinematic particle = particle_collection->particles[i]; // Obtém a partícula
-        // Obtém as variáveis da partícula
+        Particle_Cinematic particle = particle_collection->particles[i];
+
         float xi = particle->position_i->x;
         float yi = particle->position_i->y;
         float vxi = particle->velocity_i->x;
@@ -65,71 +78,96 @@ void save_simulation_cinematic_log(Particle_Cinematic_Collection particle_collec
         float ax = particle->acceleration->x;
         float ay = particle->acceleration->y;
         float g = gravity;
-        for (float t = 0; t <= time; t += time_step) // Faz calculos para cada passo de tempo
+        for (float t = 0; t <= time; t += time_step)
         {
-            float x = phyc_position(xi, vxi, ax, t);                   // Calcula a posição x
-            float y = phyc_position(yi, vyi, ay - g, t);               // Calcula a posição y
-            float vx = phyc_velocity(vxi, ax, t);                      // Calcula a velocidade x
-            float vy = phyc_velocity(vyi, ay - g, t);                  // Calcula a velocidade y
-            float v = phyc_magnitude_velocity(vx, vy);                 // Calcula a magnitude da velocidade
-            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy)); // Calcula o ângulo da velocidade em graus
-            float a = phyc_magnitude_acceleration(ax, ay);             // Calcula a magnitude da aceleração
-            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay)); // Calcula o ângulo da aceleração em graus
-            float deslocamento = phyc_displacement_x_y(xi, x, yi, y);  // Calcula o deslocamento
+            float x = phyc_position(xi, vxi, ax, t);
+            float y = phyc_position(yi, vyi, ay - g, t);
+            float vx = phyc_velocity(vxi, ax, t);
+            float vy = phyc_velocity(vyi, ay - g, t);
+            float v = phyc_magnitude_velocity(vx, vy);
+            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
+            float a = phyc_magnitude_acceleration(ax, ay);
+            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
+            float deslocamento = phyc_displacement_x_y(xi, x, yi, y);
 
-            gchar *line = g_strdup_printf("%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", i, t, x, y, vx, vy, v, v_angle, ax, ay, a, a_angle, deslocamento); // Gera a linha
-            replace_dot_with_comma(line);                                                                                                                                      // Substitui o ponto por vírgula
-            fprintf(file, "%s\n", line);                                                                                                                                       // Escreve a linha no arquivo
-            g_free(line);                                                                                                                                                      // Libera a memória da linha
+            gchar* line = g_strdup_printf(
+                "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
+                "2f",
+                i,
+                t,
+                x,
+                y,
+                vx,
+                vy,
+                v,
+                v_angle,
+                ax,
+                ay,
+                a,
+                a_angle,
+                deslocamento
+            );
+            replace_dot_with_comma(line);
+            fprintf(file, "%s\n", line);
+            g_free(line);
         }
-        fprintf(file, "\n"); // Pula uma linha
+        fprintf(file, "\n");
     }
-    fclose(file); // Fecha o arquivo
+    fclose(file);
 }
 
-int calc_num_forces_max(Particle_Dynamic_Collection particle_collection) // Função de calcular o número total de forças
+int calc_num_forces_max(Particle_Dynamic_Collection particle_collection)
 {
-    int max_forces = 0;                                                     // Declara o número total de forças
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++) // Itera sobre as partículas
+    int max_forces = 0;
+    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
     {
-        Particle_Dynamic particle = particle_collection->particles[i]; // Obtém a partícula
-        int num_forces = g_list_length(particle->forces);              // Calcula o número de forças
-        if (num_forces > max_forces)                                   // Verifica se o número de forças é maior que o máximo
+        Particle_Dynamic particle = particle_collection->particles[i];
+        int num_forces = g_list_length(particle->forces);
+        if (num_forces > max_forces)
         {
-            max_forces = num_forces; // Atualiza o máximo
+            max_forces = num_forces;
         }
     }
-    return max_forces; // Retorna o número total de forças
+    return max_forces;
 }
 
-void save_simulation_dynamic_log(Particle_Dynamic_Collection particle_collection, float time, float time_step, float gravity) // Função de salvar o log da simulação dinâmica
+void save_simulation_dynamic_log(
+    Particle_Dynamic_Collection particle_collection,
+    float time,
+    float time_step,
+    float gravity
+)
 {
-    gchar *filename = generate_log_name_for_simulation("simulacao_dinamica"); // Gera o nome do arquivo
-    FILE *file = fopen(filename, "w");                                        // Abre o arquivo
-    if (file == NULL)                                                         // Verifica se o arquivo foi aberto corretamente
+    gchar* filename = generate_log_name_for_simulation("simulacao_dinamica");
+    FILE* file = fopen(filename, "w");
+    if (file == NULL)
     {
-        create_dialog_error_message("Erro ao salvar o log da simulação"); // Cria uma mensagem de erro
-        return;                                                           // Termina a função
+        create_dialog_error_message("Erro ao salvar o log da simulação");
+        return;
     }
 
-    // Cabeçalho
-    fprintf(file, "\"Simulacao Dinamica\"\n");                                                                    // Escreve o tipo de simulação
-    fprintf(file, "\"Tempo Total: %.2f - Passos de Tempo: %.2f - Gravidade: %.2f\"\n", time, time_step, gravity); // Escreve as informações da simulação
-    fprintf(file, "\n");                                                                                          // Pula uma linha
-    fprintf(file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;m;");                                          // Escreve o cabeçalho
+    fprintf(file, "\"Simulacao Dinamica\"\n");
+    fprintf(
+        file,
+        "\"Tempo Total: %.2f - Passos de Tempo: %.2f - Gravidade: %.2f\"\n",
+        time,
+        time_step,
+        gravity
+    );
+    fprintf(file, "\n");
+    fprintf(file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;m;");
 
-    // Calcular o número total de forças para o cabeçalho
     int max_forces = calc_num_forces_max(particle_collection);
-    for (int i = 1; i <= max_forces; i++) // Itera sobre o número total de forças
+    for (int i = 1; i <= max_forces; i++)
     {
-        fprintf(file, "fx%d;fy%d;f%d;f%d angle;", i, i, i, i); // Escreve o cabeçalho das forças
+        fprintf(file, "fx%d;fy%d;f%d;f%d angle;", i, i, i, i);
     }
-    fprintf(file, "frx;fry;fr;fr angle\n"); // Escreve o cabeçalho da força resultante
+    fprintf(file, "frx;fry;fr;fr angle\n");
 
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++) // Itera sobre as partículas
+    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
     {
-        Particle_Dynamic particle = particle_collection->particles[i]; // Obtém a partícula
-        // Obtém as variáveis da partícula
+        Particle_Dynamic particle = particle_collection->particles[i];
+
         float xi = particle->position_i->x;
         float yi = particle->position_i->y;
         float vxi = particle->velocity_i->x;
@@ -139,52 +177,80 @@ void save_simulation_dynamic_log(Particle_Dynamic_Collection particle_collection
         float m = particle->mass;
         float g = gravity;
 
-        for (float t = 0; t <= time; t += time_step) // Faz calculos para cada passo de tempo
+        for (float t = 0; t <= time; t += time_step)
         {
-            float x = phyc_position(xi, vxi, ax, t);                   // Calcula a posição x
-            float y = phyc_position(yi, vyi, ay - g, t);               // Calcula a posição y
-            float vx = phyc_velocity(vxi, ax, t);                      // Calcula a velocidade x
-            float vy = phyc_velocity(vyi, ay - g, t);                  // Calcula a velocidade y
-            float v = phyc_magnitude_velocity(vx, vy);                 // Calcula a magnitude da velocidade
-            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy)); // Calcula o ângulo da velocidade em graus
-            float a = phyc_magnitude_acceleration(ax, ay);             // Calcula a magnitude da aceleração
-            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay)); // Calcula o ângulo da aceleração em graus
-            float frx = 0;                                             // Inicializa a força resultante x
-            float fry = -phyd_force_p(m, g);                           // Calcula a força resultante y
+            float x = phyc_position(xi, vxi, ax, t);
+            float y = phyc_position(yi, vyi, ay - g, t);
+            float vx = phyc_velocity(vxi, ax, t);
+            float vy = phyc_velocity(vyi, ay - g, t);
+            float v = phyc_magnitude_velocity(vx, vy);
+            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
+            float a = phyc_magnitude_acceleration(ax, ay);
+            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
+            float frx = 0;
+            float fry = -phyd_force_p(m, g);
 
-            gchar *line = g_strdup_printf("%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;", i, t, x, y, vx, vy, v, v_angle, ax, ay, a, a_angle, m); // Gera a linha
-            GList *forces = particle->forces;                                                                                                                        // Obtém a lista de forças
-            for (GList *l = forces; l != NULL; l = l->next)                                                                                                          // Percorre a lista de forças
+            gchar* line = g_strdup_printf(
+                "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
+                "2f;",
+                i,
+                t,
+                x,
+                y,
+                vx,
+                vy,
+                v,
+                v_angle,
+                ax,
+                ay,
+                a,
+                a_angle,
+                m
+            );
+            GList* forces = particle->forces;
+            for (GList* l = forces; l != NULL; l = l->next)
             {
-                Vector force = l->data;                                                                                                                 // Obtém a força
-                float fx = force->x;                                                                                                                    // Obtém a força x
-                float fy = force->y;                                                                                                                    // Obtém a força y
-                frx += fx;                                                                                                                              // Atualiza a força resultante x
-                fry += fy;                                                                                                                              // Atualiza a força resultante y
-                gchar *force_line = g_strdup_printf("%.2f;%.2f;%.2f;%.2f;", fx, fy, phyc_magnitude(fx, fy), phyc_radian_to_degree(phyc_angle(fx, fy))); // Gera a linha da força
-                gchar *new_line = g_strconcat(line, force_line, NULL);                                                                                  // Concatena as linhas
-                g_free(line);                                                                                                                           // Libera a memória da linha
-                g_free(force_line);                                                                                                                     // Libera a memória da linha da força
-                line = new_line;                                                                                                                        // Atualiza a linha
+                Vector force = l->data;
+                float fx = force->x;
+                float fy = force->y;
+                frx += fx;
+                fry += fy;
+                gchar* force_line = g_strdup_printf(
+                    "%.2f;%.2f;%.2f;%.2f;",
+                    fx,
+                    fy,
+                    phyc_magnitude(fx, fy),
+                    phyc_radian_to_degree(phyc_angle(fx, fy))
+                );
+                gchar* new_line = g_strconcat(line, force_line, NULL);
+                g_free(line);
+                g_free(force_line);
+                line = new_line;
             }
-            // Adicionar zeros para forças ausentes
-            for (int k = g_list_length(forces); k < max_forces; k++) // Itera sobre as forças ausentes
+
+            for (int k = g_list_length(forces); k < max_forces; k++)
             {
-                gchar *force_line = g_strdup_printf("0.00;0.00;0.00;0.00;"); // Gera a linha da força
-                gchar *new_line = g_strconcat(line, force_line, NULL);       // Concatena as linhas
-                g_free(line);                                                // Libera a memória da linha
-                g_free(force_line);                                          // Libera a memória da linha da força
-                line = new_line;                                             // Atualiza a linha
+                gchar* force_line = g_strdup_printf("0.00;0.00;0.00;0.00;");
+                gchar* new_line = g_strconcat(line, force_line, NULL);
+                g_free(line);
+                g_free(force_line);
+                line = new_line;
             }
-            gchar *force_result_line = g_strdup_printf("%.2f;%.2f;%.2f;%.2f", frx, fry, phyc_magnitude_velocity(frx, fry), phyc_radian_to_degree(phyc_angle(frx, fry))); // Gera a linha da força resultante
-            gchar *new_line = g_strconcat(line, force_result_line, NULL);                                                                                                // Concatena as linhas (LINHA FINAL)
-            replace_dot_with_comma(new_line);                                                                                                                            // Substitui o ponto por vírgula
-            fprintf(file, "%s\n", new_line);                                                                                                                             // Escreve a linha no arquivo
-            g_free(force_result_line);                                                                                                                                   // Libera a memória da linha da força resultante
-            g_free(new_line);                                                                                                                                            // Libera a memória da linha
-            g_free(line);                                                                                                                                                // Libera a memória da linha
+            gchar* force_result_line = g_strdup_printf(
+                "%.2f;%.2f;%.2f;%.2f",
+                frx,
+                fry,
+                phyc_magnitude_velocity(frx, fry),
+                phyc_radian_to_degree(phyc_angle(frx, fry))
+            );
+            gchar* new_line = g_strconcat(line, force_result_line, NULL);
+            replace_dot_with_comma(new_line);
+            fprintf(file, "%s\n", new_line);
+            g_free(force_result_line);
+            g_free(new_line);
+            g_free(line);
         }
-        fprintf(file, "\n"); // Pula uma linha
+        fprintf(file, "\n");
     }
-    fclose(file); // Fecha o arquivo
+    fclose(file);
 }
