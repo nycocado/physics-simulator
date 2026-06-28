@@ -76,25 +76,25 @@ void on_window_add_particle_normal_add_button_clicked(GtkWidget* widget)
     gtk_tree_store_set(
         app->tree_store,
         &iter,
-        0,
+        COL_X,
         xi,
-        1,
+        COL_Y,
         yi,
-        2,
+        COL_VX,
         vx,
-        3,
+        COL_VY,
         vy,
-        4,
+        COL_AX,
         ax,
-        5,
+        COL_AY,
         ay,
-        6,
+        COL_MASS,
         mass,
-        7,
+        COL_CHECKED,
         TRUE,
-        8,
+        COL_VISIBLE,
         TRUE,
-        9,
+        COL_TYPE,
         "Partícula",
         -1
     );
@@ -135,19 +135,19 @@ void on_window_edit_particle_normal_edit_button_clicked()
     gtk_tree_store_set(
         app->tree_store,
         &iter,
-        0,
+        COL_X,
         xi,
-        1,
+        COL_Y,
         yi,
-        2,
+        COL_VX,
         vx,
-        3,
+        COL_VY,
         vy,
-        4,
+        COL_AX,
         ax,
-        5,
+        COL_AY,
         ay,
-        6,
+        COL_MASS,
         mass,
         -1
     );
@@ -287,52 +287,52 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
         gtk_tree_model_get(
             model,
             &iter,
-            0,
+            COL_X,
             &xi,
-            1,
+            COL_Y,
             &yi,
-            2,
+            COL_VX,
             &vx,
-            3,
+            COL_VY,
             &vy,
-            4,
+            COL_AX,
             &ax,
-            5,
+            COL_AY,
             &ay,
-            6,
+            COL_MASS,
             &mass,
             -1
         );
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x),
-            atof(xi)
+            g_ascii_strtod(xi, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y),
-            atof(yi)
+            g_ascii_strtod(yi, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx),
-            atof(vx)
+            g_ascii_strtod(vx, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy),
-            atof(vy)
+            g_ascii_strtod(vy, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax),
-            atof(ax)
+            g_ascii_strtod(ax, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay),
-            atof(ay)
+            g_ascii_strtod(ay, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(
                 app->window_edit_particle_normal->spin_buttons->mass
             ),
-            atof(mass)
+            g_ascii_strtod(mass, NULL)
         );
 
         g_free(xi);
@@ -352,11 +352,11 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx),
-            atof(fx)
+            g_ascii_strtod(fx, NULL)
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy),
-            atof(fy)
+            g_ascii_strtod(fy, NULL)
         );
 
         g_free(fx);
