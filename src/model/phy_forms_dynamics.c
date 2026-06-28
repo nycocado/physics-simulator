@@ -1,6 +1,8 @@
 #include "phy_forms_dynamics.h"
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
 
 float phyd_force_p(float m, float g) { return m * g; }
 

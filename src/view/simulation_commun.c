@@ -83,6 +83,11 @@ void draw_time(cairo_t* cr, float time, float x, float y)
 }
 void simulation_window_destroy(void)
 {
+    if (app->variables->simulation->timeout_id != 0)
+    {
+        g_source_remove(app->variables->simulation->timeout_id);
+        app->variables->simulation->timeout_id = 0;
+    }
     variables_simulation_wipe(app->variables->simulation);
     gtk_widget_destroy(app->window_simulation->window);
 }

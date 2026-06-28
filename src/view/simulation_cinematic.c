@@ -211,7 +211,7 @@ void on_cinematic_start_button_clicked(GtkButton* button)
         app->variables->simulation->is_simulation_running = TRUE;
 
         int timeout_interval = (int)(1000 / app->variables->simulation->frames);
-        g_timeout_add(
+        app->variables->simulation->timeout_id = g_timeout_add(
             timeout_interval,
             on_timeout_cinematic,
             app->window_simulation->drawing_area
@@ -231,6 +231,6 @@ void on_cinematic_stop_button_clicked(GtkButton* button)
 void run_simulation_cinematic()
 {
     particle_cinematic_collection_start();
-    create_window_simulation_widgets(CINEMATIC);
+    create_window_simulation_widgets(SIMULATION_CINEMATIC);
     gtk_widget_show_all(app->window_simulation->window);
 }

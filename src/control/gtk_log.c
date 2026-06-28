@@ -180,9 +180,9 @@ void save_simulation_dynamic_log(
         for (float t = 0; t <= time; t += time_step)
         {
             float x = phyc_position(xi, vxi, ax, t);
-            float y = phyc_position(yi, vyi, ay - g, t);
+            float y = phyc_position(yi, vyi, ay, t);
             float vx = phyc_velocity(vxi, ax, t);
-            float vy = phyc_velocity(vyi, ay - g, t);
+            float vy = phyc_velocity(vyi, ay, t);
             float v = phyc_magnitude_velocity(vx, vy);
             float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
             float a = phyc_magnitude_acceleration(ax, ay);

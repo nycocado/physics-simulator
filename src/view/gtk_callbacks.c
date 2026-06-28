@@ -20,7 +20,7 @@ void on_renderer_check_toggled(GtkCellRendererToggle* renderer, gchar* path_str)
         GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
     );
     checked = !checked;
-    gtk_tree_store_set(app->tree_store, &iter, 7, checked, -1);
+    gtk_tree_store_set(app->tree_store, &iter, COL_CHECKED, checked, -1);
     if (checked)
     {
         app->variables->simulation->num_particles_use++;
@@ -207,25 +207,25 @@ void on_window_add_force_normal_add_button_clicked(GtkWidget* widget)
     gtk_tree_store_set(
         app->tree_store,
         &childIter,
-        0,
+        COL_X,
         fx,
-        1,
+        COL_Y,
         fy,
-        2,
+        COL_VX,
         "",
-        3,
+        COL_VY,
         "",
-        4,
+        COL_AX,
         "",
-        5,
+        COL_AY,
         "",
-        6,
+        COL_MASS,
         "",
-        7,
+        COL_CHECKED,
         FALSE,
-        8,
+        COL_VISIBLE,
         FALSE,
-        9,
+        COL_TYPE,
         "Força",
         -1
     );
@@ -252,7 +252,7 @@ void on_window_edit_force_normal_edit_button_clicked()
     gtk_tree_selection_get_selected(
         gtk_tree_view_get_selection(app->tree_view), &model, &iter
     );
-    gtk_tree_store_set(app->tree_store, &iter, 0, fx, 1, fy, -1);
+    gtk_tree_store_set(app->tree_store, &iter, COL_X, fx, COL_Y, fy, -1);
     gtk_widget_destroy(app->window_edit_force_normal->window);
 }
 
@@ -348,7 +348,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
     {
         create_window_edit_force_normal_widgets();
         gchar *fx, *fy;
-        gtk_tree_model_get(model, &iter, 0, &fx, 1, &fy, -1);
+        gtk_tree_model_get(model, &iter, COL_X, &fx, COL_Y, &fy, -1);
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx),

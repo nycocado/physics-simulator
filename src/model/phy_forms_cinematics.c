@@ -1,6 +1,8 @@
 #include "phy_forms_cinematics.h"
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
 
 float phyc_position(float si, float v, float a, float t)
 {

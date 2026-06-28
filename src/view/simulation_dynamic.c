@@ -259,7 +259,7 @@ void on_dynamic_start_button_clicked(GtkButton* button)
         app->variables->simulation->is_simulation_running = TRUE;
 
         int timeout_interval = (int)(1000 / app->variables->simulation->frames);
-        g_timeout_add(
+        app->variables->simulation->timeout_id = g_timeout_add(
             timeout_interval,
             on_timeout_dynamic,
             app->window_simulation->drawing_area
@@ -279,6 +279,6 @@ void on_dynamic_stop_button_clicked(GtkButton* button)
 void run_simulation_dynamic()
 {
     particle_dynamic_collection_start();
-    create_window_simulation_widgets(DYNAMIC);
+    create_window_simulation_widgets(SIMULATION_DYNAMIC);
     gtk_widget_show_all(app->window_simulation->window);
 }

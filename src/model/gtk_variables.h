@@ -30,6 +30,7 @@ struct _Variables_Simulation
         float frames;
         float last_time;
         GTimer* timer;
+        guint timeout_id;
         gboolean first_time;
 };
 

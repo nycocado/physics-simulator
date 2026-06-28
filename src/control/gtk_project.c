@@ -18,19 +18,19 @@ void save_project()
         gtk_tree_model_get(
             GTK_TREE_MODEL(app->tree_store),
             &iter,
-            0,
+            COL_X,
             &x,
-            1,
+            COL_Y,
             &y,
-            2,
+            COL_VX,
             &vx,
-            3,
+            COL_VY,
             &vy,
-            4,
+            COL_AX,
             &ax,
-            5,
+            COL_AY,
             &ay,
-            6,
+            COL_MASS,
             &mass,
             -1
         );
@@ -57,9 +57,9 @@ void save_project()
                 gtk_tree_model_get(
                     GTK_TREE_MODEL(app->tree_store),
                     &childIter,
-                    0,
+                    COL_X,
                     &fx,
-                    1,
+                    COL_Y,
                     &fy,
                     -1
                 );
@@ -87,74 +87,88 @@ void open_project()
     }
     char* line = NULL;
     size_t len = 0;
+    GtkTreeIter particle_iter;
+    gboolean has_particle = FALSE;
     while (getline(&line, &len, file) != -1)
     {
-        char *type, *x, *y, *vx, *vy, *ax, *ay, *mass;
-        line[strlen(line) - 1] = '\0';
+        size_t line_len = strlen(line);
+        if (line_len > 0 && line[line_len - 1] == '\n')
+            line[line_len - 1] = '\0';
 
-        type = strtok(line, " ");
-        x = strtok(NULL, " ");
-        y = strtok(NULL, " ");
-        vx = strtok(NULL, " ");
-        vy = strtok(NULL, " ");
-        ax = strtok(NULL, " ");
-        ay = strtok(NULL, " ");
-        mass = strtok(NULL, " ");
-
-        if (!type || !x || !y || !vx || !vy || !ax || !ay || !mass)
+        char* type = strtok(line, " ");
+        if (!type)
             continue;
 
-        GtkTreeIter iter, childIter;
         if (strcmp(type, "Partícula") == 0)
         {
-            gtk_tree_store_append(app->tree_store, &iter, NULL);
+            char* x = strtok(NULL, " ");
+            char* y = strtok(NULL, " ");
+            char* vx = strtok(NULL, " ");
+            char* vy = strtok(NULL, " ");
+            char* ax = strtok(NULL, " ");
+            char* ay = strtok(NULL, " ");
+            char* mass = strtok(NULL, " ");
+            if (!x || !y || !vx || !vy || !ax || !ay || !mass)
+                continue;
+            if (g_ascii_strtod(mass, NULL) <= 0)
+                continue;
+            gtk_tree_store_append(app->tree_store, &particle_iter, NULL);
             gtk_tree_store_set(
                 app->tree_store,
-                &iter,
-                0,
+                &particle_iter,
+                COL_X,
                 x,
-                1,
+                COL_Y,
                 y,
-                2,
+                COL_VX,
                 vx,
-                3,
+                COL_VY,
                 vy,
-                4,
+                COL_AX,
                 ax,
-                5,
+                COL_AY,
                 ay,
-                6,
+                COL_MASS,
                 mass,
-                7,
+                COL_CHECKED,
                 TRUE,
-                8,
+                COL_VISIBLE,
                 TRUE,
-                9,
+                COL_TYPE,
                 type,
                 -1
             );
+            has_particle = TRUE;
             app->variables->simulation->num_particles_use++;
         }
         else if (strcmp(type, "Força") == 0)
         {
-            gtk_tree_store_append(app->tree_store, &childIter, &iter);
+            if (!has_particle)
+                continue;
+            char* x = strtok(NULL, " ");
+            char* y = strtok(NULL, " ");
+            if (!x || !y)
+                continue;
+            GtkTreeIter child_iter;
+            gtk_tree_store_append(app->tree_store, &child_iter, &particle_iter);
             gtk_tree_store_set(
                 app->tree_store,
-                &childIter,
-                0,
+                &child_iter,
+                COL_X,
                 x,
-                1,
+                COL_Y,
                 y,
-                7,
+                COL_CHECKED,
                 FALSE,
-                8,
+                COL_VISIBLE,
                 FALSE,
-                9,
+                COL_TYPE,
                 type,
                 -1
             );
         }
     }
+    free(line);
     fclose(file);
 }
 
