@@ -1,5 +1,5 @@
 CC = gcc
-# CFLAGS = -Wall -Wextra -Werror -g # Os únicos warnings que estão dando, é variaveis inutilizadas, mas é por causa da forma como o GTK é estruturado, então não é um problema
+CFLAGS = -Wall -Wextra -Wno-unused-parameter -g
 GTKFLAGS = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
 MATHFLAGS = -lm
 BIN_DIR = bin
@@ -129,5 +129,5 @@ phy_test: phy_tests
 valgrind: comp
 	valgrind --leak-check=full $(BIN_BUILD)/simulation_physic
 
-clear:
+clean:
 	rm -rf $(BIN_DIR)

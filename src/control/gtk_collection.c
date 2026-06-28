@@ -14,7 +14,7 @@ void particle_cinematic_collection_start()
     {
         gboolean checked;
         gtk_tree_model_get(
-            GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1
+            GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
         );
         if (checked)
         {
@@ -78,7 +78,7 @@ void particle_dynamic_collection_start()
     {
         gboolean checked;
         gtk_tree_model_get(
-            GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1
+            GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
         );
         if (checked)
         {

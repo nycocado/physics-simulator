@@ -127,8 +127,7 @@ gboolean on_timeout_cinematic(gpointer user_data)
 
 void on_window_cinematic_destroy(GtkWidget* widget)
 {
-    variables_simulation_wipe(app->variables->simulation);
-    gtk_widget_destroy(app->window_simulation->window);
+    simulation_window_destroy();
 }
 
 void on_cinematic_refresh_button_clicked(GtkButton* button)
@@ -171,7 +170,7 @@ void on_cinematic_start_button_clicked(GtkButton* button)
             GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->frames)
         );
 
-        if (app->variables->simulation->firts_time ||
+        if (app->variables->simulation->first_time ||
             app->variables->simulation->gravity !=
                 app->variables->simulation->gravity_cache ||
             app->variables->simulation->time_step !=
@@ -187,7 +186,7 @@ void on_cinematic_start_button_clicked(GtkButton* button)
             );
         }
 
-        app->variables->simulation->firts_time = FALSE;
+        app->variables->simulation->first_time = FALSE;
         app->variables->simulation->gravity_cache =
             app->variables->simulation->gravity;
         app->variables->simulation->time_cache =

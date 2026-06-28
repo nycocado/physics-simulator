@@ -142,8 +142,7 @@ gboolean on_timeout_dynamic(gpointer user_data)
 
 void on_window_dynamic_destroy(GtkWidget* widget)
 {
-    variables_simulation_wipe(app->variables->simulation);
-    gtk_widget_destroy(app->window_simulation->window);
+    simulation_window_destroy();
 }
 
 void on_dynamic_refresh_button_clicked(GtkButton* button)
@@ -191,13 +190,12 @@ void forces_dynamic_apply()
             particle->force_resultant->x += force->x;
             particle->force_resultant->y += force->y;
         }
+        particle->force_resultant->y -=
+            phyd_force_p(particle->mass, app->variables->simulation->gravity);
         particle->acceleration->x +=
             phyd_acceleration(particle->force_resultant->x, particle->mass);
         particle->acceleration->y +=
             phyd_acceleration(particle->force_resultant->y, particle->mass);
-        particle->acceleration->y -= app->variables->simulation->gravity;
-        particle->force_resultant->y -=
-            phyd_force_p(particle->mass, app->variables->simulation->gravity);
     }
 }
 
@@ -220,7 +218,7 @@ void on_dynamic_start_button_clicked(GtkButton* button)
         );
         forces_dynamic_apply();
 
-        if (app->variables->simulation->firts_time ||
+        if (app->variables->simulation->first_time ||
             app->variables->simulation->gravity !=
                 app->variables->simulation->gravity_cache ||
             app->variables->simulation->time_step !=
@@ -236,7 +234,7 @@ void on_dynamic_start_button_clicked(GtkButton* button)
             );
         }
 
-        app->variables->simulation->firts_time = FALSE;
+        app->variables->simulation->first_time = FALSE;
         app->variables->simulation->gravity_cache =
             app->variables->simulation->gravity;
         app->variables->simulation->time_cache =

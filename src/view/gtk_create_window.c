@@ -412,13 +412,13 @@ void create_window_simulation_widgets(int i)
 {
     GtkBuilder* builder = gtk_builder_new();
 
-    if (i == CINEMATIC)
+    if (i == SIMULATION_CINEMATIC)
     {
         gtk_builder_add_from_file(
             builder, "src/view/ui/window_cinematic.glade", NULL
         );
     }
-    else if (i == DYNAMIC)
+    else if (i == SIMULATION_DYNAMIC)
     {
         gtk_builder_add_from_file(
             builder, "src/view/ui/window_dynamic.glade", NULL

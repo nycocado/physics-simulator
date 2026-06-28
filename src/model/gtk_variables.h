@@ -30,7 +30,7 @@ struct _Variables_Simulation
         float frames;
         float last_time;
         GTimer* timer;
-        gboolean firts_time;
+        gboolean first_time;
 };
 
 struct _Variables_Project

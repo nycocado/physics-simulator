@@ -16,7 +16,9 @@ void on_renderer_check_toggled(GtkCellRendererToggle* renderer, gchar* path_str)
     GtkTreeIter iter;
     gtk_tree_model_get_iter(GTK_TREE_MODEL(app->tree_store), &iter, path);
     gboolean checked;
-    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1);
+    gtk_tree_model_get(
+        GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
+    );
     checked = !checked;
     gtk_tree_store_set(app->tree_store, &iter, 7, checked, -1);
     if (checked)
@@ -386,7 +388,9 @@ void on_window_main_remove_button_clicked(GtkWidget* widget)
     }
 
     gboolean checked;
-    gtk_tree_model_get(GTK_TREE_MODEL(app->tree_store), &iter, 7, &checked, -1);
+    gtk_tree_model_get(
+        GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
+    );
     if (checked)
     {
         app->variables->simulation->num_particles_use--;

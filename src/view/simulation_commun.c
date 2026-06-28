@@ -81,3 +81,8 @@ void draw_time(cairo_t* cr, float time, float x, float y)
     draw_title(cr, str, x, y);
     g_free(str);
 }
+void simulation_window_destroy(void)
+{
+    variables_simulation_wipe(app->variables->simulation);
+    gtk_widget_destroy(app->window_simulation->window);
+}

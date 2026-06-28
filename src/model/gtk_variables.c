@@ -36,7 +36,7 @@ Variables_Simulation variables_simulation_new()
     variables_simulation->frames = 0;
     variables_simulation->timer = NULL;
     variables_simulation->last_time = 0;
-    variables_simulation->firts_time = TRUE;
+    variables_simulation->first_time = TRUE;
     return variables_simulation;
 }
 
@@ -72,7 +72,7 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
     variables_simulation->is_simulation_running = FALSE;
     variables_simulation->particle_cinematic_collection = NULL;
     variables_simulation->particle_dynamic_collection = NULL;
-    variables_simulation->firts_time = TRUE;
+    variables_simulation->first_time = TRUE;
 }
 
 void variables_simulation_free(Variables_Simulation variables_simulation)

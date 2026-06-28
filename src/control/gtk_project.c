@@ -100,6 +100,10 @@ void open_project()
         ax = strtok(NULL, " ");
         ay = strtok(NULL, " ");
         mass = strtok(NULL, " ");
+
+        if (!type || !x || !y || !vx || !vy || !ax || !ay || !mass)
+            continue;
+
         GtkTreeIter iter, childIter;
         if (strcmp(type, "Partícula") == 0)
         {
