@@ -34,6 +34,7 @@
 | `.sabino` now saves a `SETTINGS gravity=… time=… step=… frames=…` line; values are not wiped on destroy and are restored to spin buttons when the simulation window reopens | `gtk_variables.c`, `gtk_project.c`, `gtk_create_window.c` |
 | Particle checked state saved as 8th field on `Partícula` lines; restored on load — defaults to `1` (TRUE) for old files; `num_particles_use` only incremented for checked particles | `gtk_project.c` |
 | `atof` → `g_ascii_strtod` in all tree-store reads (collection, callbacks); literal `0–6` force column indices → `COL_*` enum in collection and callbacks; remaining `atof` in edit-dialog prefill also replaced | `gtk_collection.c`, `gtk_callbacks.c` |
+| `test_simulation.c` (7 tests), `test_locale.c` (4 tests), `test_validation.c` (4 tests) added; `GLIBFLAGS` + per-suite targets in Makefile; `all_tests` runs 33 tests total | `test/`, `Makefile` |
 
 ---
 
@@ -301,12 +302,12 @@ src/
 
 ### 7. Tests
 
+`test_simulation.c`, `test_locale.c`, and `test_validation.c` are done (see "Already done").
+
+Remaining:
 | Test | What to verify |
 |------|---------------|
-| `test_project_io.c` | save + load round-trip with forces; forces must survive the round-trip (regression for the dropped-forces bug) |
-| `test_locale.c` | write a `.sabino` with dot-decimal values, read under a comma-decimal locale; must parse correctly via `g_ascii_strtod` |
-| `test_validation.c` | mass ≤ 0 rejected in parser; corrupted `.sabino` lines skipped without crash; blank lines do not underflow |
-| `test_simulation.c` | kinematic position at t=1 matches formula; dynamic acceleration with known forces matches `F/m`; CSV log `ay` matches screen `ay` (double-gravity regression) |
+| `test_project_io.c` | save + load round-trip with forces; forces must survive the round-trip (regression for the dropped-forces bug). **Blocked**: `save_project`/`open_project` are coupled to `GtkTreeStore` — requires GTK or a refactor to extract I/O logic from the UI layer. |
 
 ---
 
