@@ -33,6 +33,7 @@
 | `simulation_window_destroy` sets `window = NULL` after destroy; `run_simulation_*` checks for non-NULL before opening — prevents leaking the first window when both modes are opened | `simulation_commun.c`, `simulation_cinematic.c`, `simulation_dynamic.c` |
 | `.sabino` now saves a `SETTINGS gravity=… time=… step=… frames=…` line; values are not wiped on destroy and are restored to spin buttons when the simulation window reopens | `gtk_variables.c`, `gtk_project.c`, `gtk_create_window.c` |
 | Particle checked state saved as 8th field on `Partícula` lines; restored on load — defaults to `1` (TRUE) for old files; `num_particles_use` only incremented for checked particles | `gtk_project.c` |
+| `atof` → `g_ascii_strtod` in all tree-store reads (collection, callbacks); literal `0–6` force column indices → `COL_*` enum in collection and callbacks; remaining `atof` in edit-dialog prefill also replaced | `gtk_collection.c`, `gtk_callbacks.c` |
 
 ---
 
@@ -235,14 +236,12 @@ Proposed change: pass `GtkApp *` as the first parameter to every function that n
 
 ### 4. Locale safety — store numbers as native types in TreeStore
 
-All numeric TreeStore columns are `gchararray`. Values are written with `fprintf` and read back with `atof`. In a `pt_BR` locale the decimal separator is a comma; `atof` is locale-sensitive. The workaround `replace_dot_with_comma` in `gtk_log.c:31` confirms this is already an active bug.
+`atof` is fully removed from the project. All tree-store string reads now use `g_ascii_strtod` (locale-independent). The remaining locale issue is deeper: all numeric columns are still `gchararray`.
 
-Fix:
-1. Change numeric TreeStore columns to `G_TYPE_DOUBLE`.
-2. Use `g_ascii_strtod` / `g_ascii_formatd` in all file I/O (always dot-decimal regardless of locale).
-3. Replace `atof` in `gtk_project.c`, `gtk_collection.c`, and `gtk_log.c` with `g_ascii_strtod`.
-4. Remove `replace_dot_with_comma`.
-5. Use `gtk_spin_button_get_value()` directly instead of `gtk_entry_get_text` + `atof` for spin buttons.
+Remaining:
+1. Change numeric TreeStore columns to `G_TYPE_DOUBLE` (requires Glade column-type edits and cascading changes in `gtk_callbacks.c`, `gtk_collection.c`, `gtk_project.c`).
+2. `replace_dot_with_comma` in `gtk_log.c` is intentional — the CSV uses `;` separator and `,` decimal for pt_BR spreadsheet compatibility. If the output format is ever changed to standard CSV (dot decimal), remove it.
+3. Add/edit particle dialogs still call `gtk_entry_get_text(GTK_ENTRY(spin_button))` instead of `gtk_spin_button_get_value` — minor style, harmless since values are stored as strings anyway.
 
 ---
 
