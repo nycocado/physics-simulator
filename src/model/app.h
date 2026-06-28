@@ -2,13 +2,12 @@
 
 #include <gtk/gtk.h>
 
-#include "gtk_variables.h"
-#include "gtk_window_add_force_normal.h"
-#include "gtk_window_add_particle_normal.h"
-#include "gtk_window_edit_force_normal.h"
-#include "gtk_window_edit_particle_normal.h"
-#include "gtk_window_main.h"
-#include "gtk_window_simulation.h"
+#include "buttons.h"
+#include "force_dialog.h"
+#include "particle_dialog.h"
+#include "variables.h"
+#include "window_main.h"
+#include "window_simulation.h"
 
 typedef struct _GtkApp* GtkApp;
 

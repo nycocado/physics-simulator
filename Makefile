@@ -18,36 +18,34 @@ _BUILD_BIN::=$(shell mkdir -p $(BIN_DIR))
 _BUILD_TESTS_BIN::=$(shell mkdir -p $(BIN_TEST))
 _BUILD_BUILD_BIN::=$(shell mkdir -p $(BIN_BUILD))
 
-VIEW_OBJS = $(BIN_DIR)/gtk_main.o $(BIN_DIR)/gtk_callbacks.o $(BIN_DIR)/gtk_create_window.o \
+VIEW_OBJS = $(BIN_DIR)/main_window.o $(BIN_DIR)/callbacks.o $(BIN_DIR)/builder.o \
             $(BIN_DIR)/simulation_cinematic.o $(BIN_DIR)/simulation_dynamic.o $(BIN_DIR)/simulation_commun.o
 
-MODEL_OBJS = $(BIN_DIR)/gtk_app.o $(BIN_DIR)/gtk_button_add.o $(BIN_DIR)/gtk_button_edit.o \
-             $(BIN_DIR)/gtk_spin_buttons_add_force_normal.o $(BIN_DIR)/gtk_spin_buttons_add_particle_normal.o \
-             $(BIN_DIR)/gtk_variables.o $(BIN_DIR)/gtk_window_add_force_normal.o \
-             $(BIN_DIR)/gtk_window_add_particle_normal.o $(BIN_DIR)/gtk_window_simulation.o \
-             $(BIN_DIR)/gtk_window_edit_force_normal.o $(BIN_DIR)/gtk_window_edit_particle_normal.o \
-             $(BIN_DIR)/gtk_window_main.o $(BIN_DIR)/particle.o $(BIN_DIR)/phy_forms_cinematics.o \
-             $(BIN_DIR)/phy_forms_dynamics.o
+MODEL_OBJS = $(BIN_DIR)/app.o $(BIN_DIR)/buttons.o \
+             $(BIN_DIR)/force_dialog.o $(BIN_DIR)/particle_dialog.o \
+             $(BIN_DIR)/variables.o $(BIN_DIR)/window_simulation.o \
+             $(BIN_DIR)/window_main.o $(BIN_DIR)/particle.o \
+             $(BIN_DIR)/phy_forms_cinematics.o $(BIN_DIR)/phy_forms_dynamics.o
 
-CONTROL_OBJS = $(BIN_DIR)/gtk_project.o $(BIN_DIR)/gtk_log.o $(BIN_DIR)/gtk_collection.o
+CONTROL_OBJS = $(BIN_DIR)/project.o $(BIN_DIR)/log.o $(BIN_DIR)/collection.o
 
-VIEW_OBJS_COMP = gtk_main.o gtk_callbacks.o gtk_create_window.o simulation_cinematic.o simulation_dynamic.o simulation_commun.o
+VIEW_OBJS_COMP = main_window.o callbacks.o builder.o simulation_cinematic.o simulation_dynamic.o simulation_commun.o
 
-MODEL_OBJS_COMP = gtk_app.o gtk_button_add.o gtk_button_edit.o gtk_spin_buttons_add_force_normal.o gtk_spin_buttons_add_particle_normal.o gtk_variables.o gtk_window_add_force_normal.o gtk_window_add_particle_normal.o gtk_window_simulation.o gtk_window_edit_force_normal.o gtk_window_edit_particle_normal.o gtk_window_main.o particle.o phy_forms_cinematics.o phy_forms_dynamics.o
+MODEL_OBJS_COMP = app.o buttons.o force_dialog.o particle_dialog.o variables.o window_simulation.o window_main.o particle.o phy_forms_cinematics.o phy_forms_dynamics.o
 
-CONTROL_OBJS_COMP = gtk_project.o gtk_log.o gtk_collection.o
+CONTROL_OBJS_COMP = project.o log.o collection.o
 
-run.o: $(SRC_DIR)/run.c gtk_main.o
+run.o: $(SRC_DIR)/run.c main_window.o
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/run.c $(GTKFLAGS) -o $(BIN_DIR)/run.o
 
-gtk_main.o: $(VIEW_DIR)/gtk_main.c $(INCLUDE_DIR)/gtk_main.h
-	$(CC) $(CFLAGS) -c $(VIEW_DIR)/gtk_main.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_main.o
+main_window.o: $(VIEW_DIR)/main_window.c $(INCLUDE_DIR)/main_window.h
+	$(CC) $(CFLAGS) -c $(VIEW_DIR)/main_window.c $(GTKFLAGS) -o $(BIN_DIR)/main_window.o
 
-gtk_callbacks.o: $(VIEW_DIR)/gtk_callbacks.c $(INCLUDE_DIR)/gtk_callbacks.h
-	$(CC) $(CFLAGS) -c $(VIEW_DIR)/gtk_callbacks.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_callbacks.o
+callbacks.o: $(VIEW_DIR)/callbacks.c $(INCLUDE_DIR)/callbacks.h
+	$(CC) $(CFLAGS) -c $(VIEW_DIR)/callbacks.c $(GTKFLAGS) -o $(BIN_DIR)/callbacks.o
 
-gtk_create_window.o: $(VIEW_DIR)/gtk_create_window.c $(INCLUDE_DIR)/gtk_create_window.h
-	$(CC) $(CFLAGS) -c $(VIEW_DIR)/gtk_create_window.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_create_window.o
+builder.o: $(VIEW_DIR)/builder.c $(INCLUDE_DIR)/builder.h
+	$(CC) $(CFLAGS) -c $(VIEW_DIR)/builder.c $(GTKFLAGS) -o $(BIN_DIR)/builder.o
 
 simulation_cinematic.o: $(VIEW_DIR)/simulation_cinematic.c $(INCLUDE_DIR)/simulation_cinematic.h
 	$(CC) $(CFLAGS) -c $(VIEW_DIR)/simulation_cinematic.c $(GTKFLAGS) -o $(BIN_DIR)/simulation_cinematic.o
@@ -58,53 +56,38 @@ simulation_dynamic.o: $(VIEW_DIR)/simulation_dynamic.c $(INCLUDE_DIR)/simulation
 simulation_commun.o: $(VIEW_DIR)/simulation_commun.c $(INCLUDE_DIR)/simulation_commun.h
 	$(CC) $(CFLAGS) -c $(VIEW_DIR)/simulation_commun.c $(GTKFLAGS) -o $(BIN_DIR)/simulation_commun.o
 
-gtk_app.o: $(MODEL_DIR)/gtk_app.c $(MODEL_DIR)/gtk_app.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_app.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_app.o
+app.o: $(MODEL_DIR)/app.c $(MODEL_DIR)/app.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/app.c $(GTKFLAGS) -o $(BIN_DIR)/app.o
 
-gtk_button_add.o: $(MODEL_DIR)/gtk_button_add.c $(MODEL_DIR)/gtk_button_add.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_button_add.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_button_add.o
+buttons.o: $(MODEL_DIR)/buttons.c $(MODEL_DIR)/buttons.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/buttons.c $(GTKFLAGS) -o $(BIN_DIR)/buttons.o
 
-gtk_button_edit.o: $(MODEL_DIR)/gtk_button_edit.c $(MODEL_DIR)/gtk_button_edit.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_button_edit.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_button_edit.o
+force_dialog.o: $(MODEL_DIR)/force_dialog.c $(MODEL_DIR)/force_dialog.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/force_dialog.c $(GTKFLAGS) -o $(BIN_DIR)/force_dialog.o
 
-gtk_spin_buttons_add_force_normal.o: $(MODEL_DIR)/gtk_spin_buttons_add_force_normal.c $(MODEL_DIR)/gtk_spin_buttons_add_force_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_spin_buttons_add_force_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_spin_buttons_add_force_normal.o
+particle_dialog.o: $(MODEL_DIR)/particle_dialog.c $(MODEL_DIR)/particle_dialog.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/particle_dialog.c $(GTKFLAGS) -o $(BIN_DIR)/particle_dialog.o
 
-gtk_spin_buttons_add_particle_normal.o: $(MODEL_DIR)/gtk_spin_buttons_add_particle_normal.c $(MODEL_DIR)/gtk_spin_buttons_add_particle_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_spin_buttons_add_particle_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_spin_buttons_add_particle_normal.o
+variables.o: $(MODEL_DIR)/variables.c $(MODEL_DIR)/variables.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/variables.c $(GTKFLAGS) -o $(BIN_DIR)/variables.o
 
-gtk_variables.o: $(MODEL_DIR)/gtk_variables.c $(MODEL_DIR)/gtk_variables.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_variables.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_variables.o
+window_simulation.o: $(MODEL_DIR)/window_simulation.c $(MODEL_DIR)/window_simulation.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/window_simulation.c $(GTKFLAGS) -o $(BIN_DIR)/window_simulation.o
 
-gtk_window_add_force_normal.o: $(MODEL_DIR)/gtk_window_add_force_normal.c $(MODEL_DIR)/gtk_window_add_force_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_add_force_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_add_force_normal.o
-
-gtk_window_add_particle_normal.o: $(MODEL_DIR)/gtk_window_add_particle_normal.c $(MODEL_DIR)/gtk_window_add_particle_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_add_particle_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_add_particle_normal.o
-
-gtk_window_simulation.o: $(MODEL_DIR)/gtk_window_simulation.c $(MODEL_DIR)/gtk_window_simulation.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_simulation.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_simulation.o
-
-gtk_window_edit_force_normal.o: $(MODEL_DIR)/gtk_window_edit_force_normal.c $(MODEL_DIR)/gtk_window_edit_force_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_edit_force_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_edit_force_normal.o
-
-gtk_window_edit_particle_normal.o: $(MODEL_DIR)/gtk_window_edit_particle_normal.c $(MODEL_DIR)/gtk_window_edit_particle_normal.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_edit_particle_normal.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_edit_particle_normal.o
-
-gtk_window_main.o: $(MODEL_DIR)/gtk_window_main.c $(MODEL_DIR)/gtk_window_main.h
-	$(CC) $(CFLAGS) -c $(MODEL_DIR)/gtk_window_main.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_window_main.o
+window_main.o: $(MODEL_DIR)/window_main.c $(MODEL_DIR)/window_main.h
+	$(CC) $(CFLAGS) -c $(MODEL_DIR)/window_main.c $(GTKFLAGS) -o $(BIN_DIR)/window_main.o
 
 particle.o: $(MODEL_DIR)/particle.c $(MODEL_DIR)/particle.h
 	$(CC) $(CFLAGS) -c $(MODEL_DIR)/particle.c $(GTKFLAGS) -o $(BIN_DIR)/particle.o
 
-gtk_project.o: $(CONTROL_DIR)/gtk_project.c $(CONTROL_DIR)/gtk_project.h
-	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/gtk_project.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_project.o
+project.o: $(CONTROL_DIR)/project.c $(CONTROL_DIR)/project.h
+	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/project.c $(GTKFLAGS) -o $(BIN_DIR)/project.o
 
-gtk_log.o: $(CONTROL_DIR)/gtk_log.c $(CONTROL_DIR)/gtk_log.h
-	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/gtk_log.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_log.o
+log.o: $(CONTROL_DIR)/log.c $(CONTROL_DIR)/log.h
+	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/log.c $(GTKFLAGS) -o $(BIN_DIR)/log.o
 
-gtk_collection.o: $(CONTROL_DIR)/gtk_collection.c $(CONTROL_DIR)/gtk_collection.h
-	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/gtk_collection.c $(GTKFLAGS) -o $(BIN_DIR)/gtk_collection.o
+collection.o: $(CONTROL_DIR)/collection.c $(CONTROL_DIR)/collection.h
+	$(CC) $(CFLAGS) -c $(CONTROL_DIR)/collection.c $(GTKFLAGS) -o $(BIN_DIR)/collection.o
 
 phy_forms_cinematics.o: $(MODEL_DIR)/phy_forms_cinematics.c $(MODEL_DIR)/phy_forms_cinematics.h
 	$(CC) $(CFLAGS) -c $(MODEL_DIR)/phy_forms_cinematics.c $(GTKFLAGS) -o $(BIN_DIR)/phy_forms_cinematics.o
