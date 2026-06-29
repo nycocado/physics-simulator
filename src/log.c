@@ -194,7 +194,9 @@ void save_simulation_dynamic_log(
             double frx = 0;
             double fry = -phyd_force_p(m, g);
 
-            gchar* line = g_strdup_printf(
+            GString* line = g_string_new("");
+            g_string_printf(
+                line,
                 "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
                 "2f;",
                 i,
@@ -219,40 +221,31 @@ void save_simulation_dynamic_log(
                 double fy = force->y;
                 frx += fx;
                 fry += fy;
-                gchar* force_line = g_strdup_printf(
+                g_string_append_printf(
+                    line,
                     "%.2f;%.2f;%.2f;%.2f;",
                     fx,
                     fy,
                     phyc_magnitude(fx, fy),
                     phyc_radian_to_degree(phyc_angle(fx, fy))
                 );
-                gchar* new_line = g_strconcat(line, force_line, NULL);
-                g_free(line);
-                g_free(force_line);
-                line = new_line;
             }
 
             for (int k = g_list_length(forces); k < max_forces; k++)
             {
-                gchar* force_line = g_strdup_printf("0.00;0.00;0.00;0.00;");
-                gchar* new_line = g_strconcat(line, force_line, NULL);
-                g_free(line);
-                g_free(force_line);
-                line = new_line;
+                g_string_append(line, "0.00;0.00;0.00;0.00;");
             }
-            gchar* force_result_line = g_strdup_printf(
+            g_string_append_printf(
+                line,
                 "%.2f;%.2f;%.2f;%.2f",
                 frx,
                 fry,
                 phyc_magnitude_velocity(frx, fry),
                 phyc_radian_to_degree(phyc_angle(frx, fry))
             );
-            gchar* new_line = g_strconcat(line, force_result_line, NULL);
-            g_strdelimit(new_line, ".", ',');
-            fprintf(file, "%s\n", new_line);
-            g_free(force_result_line);
-            g_free(new_line);
-            g_free(line);
+            g_strdelimit(line->str, ".", ',');
+            fprintf(file, "%s\n", line->str);
+            g_string_free(line, TRUE);
         }
         fprintf(file, "\n");
     }
