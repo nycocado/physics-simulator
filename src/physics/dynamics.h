@@ -2,8 +2,8 @@
 
 #include <math.h>
 
-float phyd_force_p(float m, float g);
-float phyd_force_r(float m, float a);
-float phyd_decompose_force_x(float b, float angle);
-float phyd_decompose_force_y(float b, float angle);
-float phyd_acceleration(float f, float m);
+double phyd_force_p(double m, double g);
+double phyd_force_r(double m, double a);
+double phyd_decompose_force_x(double b, double angle);
+double phyd_decompose_force_y(double b, double angle);
+double phyd_acceleration(double f, double m);

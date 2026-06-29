@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-Vector create_vector(float x, float y)
+Vector create_vector(double x, double y)
 {
     Vector vector = g_new(struct _Vector, 1);
 
@@ -10,7 +10,7 @@ Vector create_vector(float x, float y)
 }
 
 Particle_Cinematic
-particle_cinematic_new(float x, float y, float vx, float vy, float ax, float ay)
+particle_cinematic_new(double x, double y, double vx, double vy, double ax, double ay)
 {
     Particle_Cinematic particle = g_new(struct _Particle_Cinematic, 1);
 
@@ -33,13 +33,13 @@ void particle_cinematic_free(Particle_Cinematic particle)
 }
 
 Particle_Dynamic particle_dynamic_new(
-    float x,
-    float y,
-    float vx,
-    float vy,
-    float ax,
-    float ay,
-    float mass
+    double x,
+    double y,
+    double vx,
+    double vy,
+    double ax,
+    double ay,
+    double mass
 )
 {
     Particle_Dynamic particle = g_new(struct _Particle_Dynamic, 1);

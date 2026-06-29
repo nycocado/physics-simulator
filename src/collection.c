@@ -38,7 +38,7 @@ void particle_cinematic_collection_start(GtkApp app)
             );
 
             Particle_Cinematic particle = particle_cinematic_new(
-                (float)x, (float)y, (float)vx, (float)vy, (float)ax, (float)ay
+                x, y, vx, vy, ax, ay
             );
             particle_collection->particles[i] = particle;
             i++;
@@ -90,13 +90,13 @@ void particle_dynamic_collection_start(GtkApp app)
             );
 
             Particle_Dynamic particle = particle_dynamic_new(
-                (float)x,
-                (float)y,
-                (float)vx,
-                (float)vy,
-                (float)ax,
-                (float)ay,
-                (float)mass
+                x,
+                y,
+                vx,
+                vy,
+                ax,
+                ay,
+                mass
             );
             GtkTreeIter child_iter;
             gboolean child_valid = gtk_tree_model_iter_children(
@@ -115,7 +115,7 @@ void particle_dynamic_collection_start(GtkApp app)
                     -1
                 );
 
-                Vector force = create_vector((float)force_x, (float)force_y);
+                Vector force = create_vector(force_x, force_y);
                 particle->forces = g_list_append(particle->forces, force);
 
                 child_valid = gtk_tree_model_iter_next(

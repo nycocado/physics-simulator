@@ -50,21 +50,21 @@ void set_background_color(cairo_t* cr, double r, double g, double b)
     cairo_paint(cr);
 }
 
-void draw_particle(cairo_t* cr, float start_x, float start_y, float radius)
+void draw_particle(cairo_t* cr, double start_x, double start_y, double radius)
 {
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_arc(cr, start_x, start_y, radius, 0, 2 * G_PI);
     cairo_fill(cr);
 }
 
-void draw_title(cairo_t* cr, const char* text, float x, float y)
+void draw_title(cairo_t* cr, const char* text, double x, double y)
 {
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_move_to(cr, x, y);
     cairo_show_text(cr, text);
 }
 
-void draw_time(cairo_t* cr, float time, float x, float y)
+void draw_time(cairo_t* cr, double time, double x, double y)
 {
     char* str = g_strdup_printf("Tempo: %.2f s", time);
     draw_title(cr, str, x, y);

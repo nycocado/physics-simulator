@@ -4,12 +4,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-float phyd_force_p(float m, float g) { return m * g; }
+double phyd_force_p(double m, double g) { return m * g; }
 
-float phyd_force_r(float m, float a) { return m * a; }
+double phyd_force_r(double m, double a) { return m * a; }
 
-float phyd_decompose_force_x(float b, float angle) { return b * cos(angle); }
+double phyd_decompose_force_x(double b, double angle) { return b * cos(angle); }
 
-float phyd_decompose_force_y(float b, float angle) { return b * sin(angle); }
+double phyd_decompose_force_y(double b, double angle) { return b * sin(angle); }
 
-float phyd_acceleration(float f, float m) { return f / m; }
+double phyd_acceleration(double f, double m) { return f / m; }

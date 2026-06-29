@@ -23,16 +23,16 @@ void on_draw_dynamic(
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 
-        float x = particle->position->x;
-        float y = particle->position->y;
-        float frx = particle->force_resultant->x;
-        float fry = particle->force_resultant->y;
+        double x = particle->position->x;
+        double y = particle->position->y;
+        double frx = particle->force_resultant->x;
+        double fry = particle->force_resultant->y;
 
-        float start_x = (float)x_center + x;
-        float start_y = (float)y_center - y;
+        double start_x = (double)x_center + x;
+        double start_y = (double)y_center - y;
 
-        float end_frx = start_x + frx;
-        float end_fry = start_y - fry;
+        double end_frx = start_x + frx;
+        double end_fry = start_y - fry;
 
         draw_particle(cr, start_x, start_y, 5);
 
@@ -107,19 +107,19 @@ gboolean on_timeout_dynamic(gpointer user_data)
 
     sim->last_time = g_timer_elapsed(sim->timer, NULL);
     double elapsed = sim->last_time;
-    float total_time = sim->time;
+    double total_time = sim->time;
 
     Particle_Dynamic_Collection collection = sim->particle_dynamic_collection;
     for (int i = 0; i < sim->num_particles_use; i++)
     {
         Particle_Dynamic particle = collection->particles[i];
 
-        float xi = particle->position_i->x;
-        float yi = particle->position_i->y;
-        float vxi = particle->velocity_i->x;
-        float vyi = particle->velocity_i->y;
-        float ax = particle->acceleration->x;
-        float ay = particle->acceleration->y;
+        double xi = particle->position_i->x;
+        double yi = particle->position_i->y;
+        double vxi = particle->velocity_i->x;
+        double vyi = particle->velocity_i->y;
+        double ax = particle->acceleration->x;
+        double ay = particle->acceleration->y;
 
         particle->position->x = phyc_position(xi, vxi, ax, elapsed);
         particle->position->y = phyc_position(yi, vyi, ay, elapsed);

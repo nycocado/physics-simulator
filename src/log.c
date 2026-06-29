@@ -41,9 +41,9 @@ void replace_dot_with_comma(char* str)
 
 void save_simulation_cinematic_log(
     Particle_Cinematic_Collection particle_collection,
-    float time,
-    float time_step,
-    float gravity,
+    double time,
+    double time_step,
+    double gravity,
     GtkApp app
 )
 {
@@ -72,24 +72,24 @@ void save_simulation_cinematic_log(
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
-        float xi = particle->position_i->x;
-        float yi = particle->position_i->y;
-        float vxi = particle->velocity_i->x;
-        float vyi = particle->velocity_i->y;
-        float ax = particle->acceleration->x;
-        float ay = particle->acceleration->y;
-        float g = gravity;
-        for (float t = 0; t <= time; t += time_step)
+        double xi = particle->position_i->x;
+        double yi = particle->position_i->y;
+        double vxi = particle->velocity_i->x;
+        double vyi = particle->velocity_i->y;
+        double ax = particle->acceleration->x;
+        double ay = particle->acceleration->y;
+        double g = gravity;
+        for (double t = 0; t <= time; t += time_step)
         {
-            float x = phyc_position(xi, vxi, ax, t);
-            float y = phyc_position(yi, vyi, ay - g, t);
-            float vx = phyc_velocity(vxi, ax, t);
-            float vy = phyc_velocity(vyi, ay - g, t);
-            float v = phyc_magnitude_velocity(vx, vy);
-            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
-            float a = phyc_magnitude_acceleration(ax, ay);
-            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
-            float deslocamento = phyc_displacement_x_y(xi, x, yi, y);
+            double x = phyc_position(xi, vxi, ax, t);
+            double y = phyc_position(yi, vyi, ay - g, t);
+            double vx = phyc_velocity(vxi, ax, t);
+            double vy = phyc_velocity(vyi, ay - g, t);
+            double v = phyc_magnitude_velocity(vx, vy);
+            double v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
+            double a = phyc_magnitude_acceleration(ax, ay);
+            double a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
+            double deslocamento = phyc_displacement_x_y(xi, x, yi, y);
 
             gchar* line = g_strdup_printf(
                 "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
@@ -134,9 +134,9 @@ static int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, 
 
 void save_simulation_dynamic_log(
     Particle_Dynamic_Collection particle_collection,
-    float time,
-    float time_step,
-    float gravity,
+    double time,
+    double time_step,
+    double gravity,
     GtkApp app
 )
 {
@@ -170,27 +170,27 @@ void save_simulation_dynamic_log(
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 
-        float xi = particle->position_i->x;
-        float yi = particle->position_i->y;
-        float vxi = particle->velocity_i->x;
-        float vyi = particle->velocity_i->y;
-        float ax = particle->acceleration->x;
-        float ay = particle->acceleration->y;
-        float m = particle->mass;
-        float g = gravity;
+        double xi = particle->position_i->x;
+        double yi = particle->position_i->y;
+        double vxi = particle->velocity_i->x;
+        double vyi = particle->velocity_i->y;
+        double ax = particle->acceleration->x;
+        double ay = particle->acceleration->y;
+        double m = particle->mass;
+        double g = gravity;
 
-        for (float t = 0; t <= time; t += time_step)
+        for (double t = 0; t <= time; t += time_step)
         {
-            float x = phyc_position(xi, vxi, ax, t);
-            float y = phyc_position(yi, vyi, ay, t);
-            float vx = phyc_velocity(vxi, ax, t);
-            float vy = phyc_velocity(vyi, ay, t);
-            float v = phyc_magnitude_velocity(vx, vy);
-            float v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
-            float a = phyc_magnitude_acceleration(ax, ay);
-            float a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
-            float frx = 0;
-            float fry = -phyd_force_p(m, g);
+            double x = phyc_position(xi, vxi, ax, t);
+            double y = phyc_position(yi, vyi, ay, t);
+            double vx = phyc_velocity(vxi, ax, t);
+            double vy = phyc_velocity(vyi, ay, t);
+            double v = phyc_magnitude_velocity(vx, vy);
+            double v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
+            double a = phyc_magnitude_acceleration(ax, ay);
+            double a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
+            double frx = 0;
+            double fry = -phyd_force_p(m, g);
 
             gchar* line = g_strdup_printf(
                 "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
@@ -213,8 +213,8 @@ void save_simulation_dynamic_log(
             for (GList* l = forces; l != NULL; l = l->next)
             {
                 Vector force = l->data;
-                float fx = force->x;
-                float fy = force->y;
+                double fx = force->x;
+                double fy = force->y;
                 frx += fx;
                 fry += fy;
                 gchar* force_line = g_strdup_printf(

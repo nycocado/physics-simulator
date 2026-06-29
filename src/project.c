@@ -139,13 +139,13 @@ void open_project(GtkApp app)
                 *eq = '\0';
                 double val = g_ascii_strtod(eq + 1, NULL);
                 if (strcmp(token, "gravity") == 0)
-                    sim->gravity = (float)val;
+                    sim->gravity = val;
                 else if (strcmp(token, "time") == 0)
-                    sim->time = (float)val;
+                    sim->time = val;
                 else if (strcmp(token, "step") == 0)
-                    sim->time_step = (float)val;
+                    sim->time_step = val;
                 else if (strcmp(token, "frames") == 0)
-                    sim->frames = (float)val;
+                    sim->frames = val;
             }
         }
         else if (strcmp(type, "Partícula") == 0)

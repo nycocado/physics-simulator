@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Wno-unused-parameter -g -I$(SRC_DIR)
+CFLAGS = -Wall -Wextra -Wno-unused-parameter -g -I$(SRC_DIR) -DUNITY_INCLUDE_DOUBLE
 GTKFLAGS = `pkg-config --cflags --libs gtk4` -rdynamic
 MATHFLAGS = -lm
 GLIBFLAGS = `pkg-config --cflags --libs glib-2.0`

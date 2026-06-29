@@ -4,49 +4,49 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-float phyc_position(float si, float v, float a, float t)
+double phyc_position(double si, double v, double a, double t)
 {
     return si + v * t + 0.5f * a * (t * t);
 }
 
-float phyc_velocity(float vi, float a, float t) { return (vi + a * t); }
+double phyc_velocity(double vi, double a, double t) { return (vi + a * t); }
 
-float phyc_medium_velocity(float pi, float pf, float ti, float tf)
+double phyc_medium_velocity(double pi, double pf, double ti, double tf)
 {
     return (pf - pi) / (tf - ti);
 }
 
-float phyc_medium_acceleration(float vi, float vf, float t)
+double phyc_medium_acceleration(double vi, double vf, double t)
 {
     return (vf - vi) / t;
 }
 
-float phyc_magnitude(float bx, float by)
+double phyc_magnitude(double bx, double by)
 {
     return sqrt(bx * bx + by * by);
 }
 
-float phyc_displacement_x_y(float ai, float af, float bi, float bf)
+double phyc_displacement_x_y(double ai, double af, double bi, double bf)
 {
     return phyc_magnitude(af - ai, bf - bi);
 }
 
-float phyc_magnitude_velocity(float vx, float vy)
+double phyc_magnitude_velocity(double vx, double vy)
 {
     return phyc_magnitude(vx, vy);
 }
 
-float phyc_magnitude_acceleration(float ax, float ay)
+double phyc_magnitude_acceleration(double ax, double ay)
 {
     return phyc_magnitude(ax, ay);
 }
 
-float phyc_decompose_x(float b, float angle) { return b * cos(angle); }
+double phyc_decompose_x(double b, double angle) { return b * cos(angle); }
 
-float phyc_decompose_y(float b, float angle) { return b * sin(angle); }
+double phyc_decompose_y(double b, double angle) { return b * sin(angle); }
 
-float phyc_angle(float fx, float fy) { return atan2(fy, fx); }
+double phyc_angle(double fx, double fy) { return atan2(fy, fx); }
 
-float phyc_degree_to_radian(float degree) { return degree * (M_PI / 180.0); }
+double phyc_degree_to_radian(double degree) { return degree * (M_PI / 180.0); }
 
-float phyc_radian_to_degree(float radian) { return radian * (180.0 / M_PI); }
+double phyc_radian_to_degree(double radian) { return radian * (180.0 / M_PI); }

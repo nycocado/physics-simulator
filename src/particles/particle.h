@@ -10,8 +10,8 @@ typedef struct _Particle_Dynamic_Collection* Particle_Dynamic_Collection;
 
 struct _Vector
 {
-        float x;
-        float y;
+        double x;
+        double y;
 };
 
 struct _Particle_Cinematic
@@ -31,7 +31,7 @@ struct _Particle_Dynamic
         Vector acceleration_i;
         Vector acceleration;
         Vector force_resultant;
-        float mass;
+        double mass;
         GList* forces;
 };
 
@@ -47,24 +47,24 @@ struct _Particle_Dynamic_Collection
         int num_particles;
 };
 
-Vector create_vector(float x, float y);
+Vector create_vector(double x, double y);
 Particle_Cinematic particle_cinematic_new(
-    float x,
-    float y,
-    float vx,
-    float vy,
-    float ax,
-    float ay
+    double x,
+    double y,
+    double vx,
+    double vy,
+    double ax,
+    double ay
 );
 void particle_cinematic_free(Particle_Cinematic particle_cinematic);
 Particle_Dynamic particle_dynamic_new(
-    float x,
-    float y,
-    float vx,
-    float vy,
-    float ax,
-    float ay,
-    float mass
+    double x,
+    double y,
+    double vx,
+    double vy,
+    double ax,
+    double ay,
+    double mass
 );
 void particle_dynamic_free(Particle_Dynamic particle);
 Particle_Cinematic_Collection

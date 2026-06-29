@@ -23,16 +23,16 @@ void on_draw_cinematic(
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
-        float x = particle->position->x;
-        float y = particle->position->y;
-        float vx = particle->velocity->x;
-        float vy = particle->velocity->y;
+        double x = particle->position->x;
+        double y = particle->position->y;
+        double vx = particle->velocity->x;
+        double vy = particle->velocity->y;
 
-        float start_x = (float)x_center + x;
-        float start_y = (float)y_center - y;
+        double start_x = (double)x_center + x;
+        double start_y = (double)y_center - y;
 
-        float end_vx = start_x + vx;
-        float end_vy = start_y - vy;
+        double end_vx = start_x + vx;
+        double end_vy = start_y - vy;
 
         draw_particle(cr, start_x, start_y, 5);
 
@@ -89,7 +89,7 @@ gboolean on_timeout_cinematic(gpointer user_data)
 
     sim->last_time = g_timer_elapsed(sim->timer, NULL);
     double elapsed = sim->last_time;
-    float total_time = sim->time;
+    double total_time = sim->time;
 
     Particle_Cinematic_Collection collection =
         sim->particle_cinematic_collection;
@@ -97,13 +97,13 @@ gboolean on_timeout_cinematic(gpointer user_data)
     {
         Particle_Cinematic particle = collection->particles[i];
 
-        float xi = particle->position_i->x;
-        float yi = particle->position_i->y;
-        float vxi = particle->velocity_i->x;
-        float vyi = particle->velocity_i->y;
-        float ax = particle->acceleration->x;
-        float ay = particle->acceleration->y;
-        float g = sim->gravity;
+        double xi = particle->position_i->x;
+        double yi = particle->position_i->y;
+        double vxi = particle->velocity_i->x;
+        double vyi = particle->velocity_i->y;
+        double ax = particle->acceleration->x;
+        double ay = particle->acceleration->y;
+        double g = sim->gravity;
 
         particle->velocity->x = phyc_velocity(vxi, ax, elapsed);
         particle->velocity->y = phyc_velocity(vyi, ay - g, elapsed);

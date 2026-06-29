@@ -13,9 +13,9 @@ void draw_arrow(
     double arrow_angle
 );
 void set_background_color(cairo_t* cr, double r, double g, double b);
-void draw_particle(cairo_t* cr, float start_x, float start_y, float radius);
-void draw_title(cairo_t* cr, const char* title, float x, float y);
-void draw_time(cairo_t* cr, float time, float x, float y);
+void draw_particle(cairo_t* cr, double start_x, double start_y, double radius);
+void draw_title(cairo_t* cr, const char* title, double x, double y);
+void draw_time(cairo_t* cr, double time, double x, double y);
 void simulation_window_destroy(GtkApp app);
 void simulation_read_controls(GtkApp app);
 void simulation_stop(GtkApp app);
