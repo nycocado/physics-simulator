@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-void get_window_size(GtkWidget* widget)
+void get_window_size(GtkWidget* widget, GtkApp app)
 {
     GtkAllocation allocation;
     gtk_widget_get_allocation(widget, &allocation);
@@ -8,9 +8,8 @@ void get_window_size(GtkWidget* widget)
     app->variables->window_size->height = allocation.height;
 }
 
-void draw_axes(cairo_t* cr, int x_center, int y_bottom)
+void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app)
 {
-
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_set_line_width(cr, 2);
 
@@ -33,7 +32,6 @@ void draw_arrow(
     double arrow_angle
 )
 {
-
     double angle = phyc_angle(end_x - start_x, end_y - start_y);
 
     double x1 = end_x - phyc_decompose_x(arrow_length, angle - arrow_angle);
@@ -76,12 +74,12 @@ void draw_title(cairo_t* cr, const char* text, float x, float y)
 
 void draw_time(cairo_t* cr, float time, float x, float y)
 {
-    char* str;
-    str = g_strdup_printf("Tempo: %.2f s", time);
+    char* str = g_strdup_printf("Tempo: %.2f s", time);
     draw_title(cr, str, x, y);
     g_free(str);
 }
-void simulation_window_destroy(void)
+
+void simulation_window_destroy(GtkApp app)
 {
     if (app->variables->simulation->timeout_id != 0)
     {
@@ -93,7 +91,7 @@ void simulation_window_destroy(void)
     app->window_simulation->window = NULL;
 }
 
-void simulation_read_controls(void)
+void simulation_read_controls(GtkApp app)
 {
     Variables_Simulation* sim = app->variables->simulation;
     sim->gravity = gtk_spin_button_get_value(
@@ -110,7 +108,7 @@ void simulation_read_controls(void)
     );
 }
 
-void simulation_stop(void)
+void simulation_stop(GtkApp app)
 {
     Variables_Simulation* sim = app->variables->simulation;
     if (!sim->is_simulation_running)
@@ -124,7 +122,7 @@ void simulation_stop(void)
     }
 }
 
-void simulation_start_timer(GSourceFunc timeout_fn)
+void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app)
 {
     Variables_Simulation* sim = app->variables->simulation;
     if (sim->timer == NULL)
@@ -135,7 +133,5 @@ void simulation_start_timer(GSourceFunc timeout_fn)
         g_timer_continue(sim->timer);
     sim->is_simulation_running = TRUE;
     int interval = (int)(1000 / sim->frames);
-    sim->timeout_id = g_timeout_add(
-        interval, timeout_fn, app->window_simulation->drawing_area
-    );
+    sim->timeout_id = g_timeout_add(interval, timeout_fn, app);
 }

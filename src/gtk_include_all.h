@@ -25,24 +25,27 @@ typedef enum
     COL_TYPE = 9,
 } ParticleColumn;
 
-#include "ui/callbacks.h"
-#include "ui/builder.h"
-#include "ui/main_window.h"
-#include "simulation/kinematic_sim.h"
-#include "simulation/simulation.h"
-#include "simulation/dynamic_sim.h"
-
-#include "app.h"
+/* Foundational structs — no project-header dependencies */
 #include "particles/buttons.h"
+#include "particles/particle.h"
 #include "particles/force_dialog.h"
 #include "particles/particle_dialog.h"
+#include "physics/kinematics.h"
+#include "physics/dynamics.h"
 #include "variables.h"
 #include "ui/window_main.h"
 #include "ui/window_simulation.h"
-#include "particles/particle.h"
-#include "physics/kinematics.h"
-#include "physics/dynamics.h"
 
+/* GtkApp struct — depends on the foundational structs above */
+#include "app.h"
+
+/* Everything that references GtkApp */
 #include "collection.h"
 #include "log.h"
 #include "project.h"
+#include "simulation/simulation.h"
+#include "simulation/kinematic_sim.h"
+#include "simulation/dynamic_sim.h"
+#include "ui/builder.h"
+#include "ui/callbacks.h"
+#include "ui/main_window.h"

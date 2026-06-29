@@ -1,10 +1,8 @@
 #include "gtk_include_all.h"
 
-GtkApp app;
-
-void gtk_app_new()
+GtkApp gtk_app_new()
 {
-    app = g_new0(struct _GtkApp, 1);
+    GtkApp app = g_new0(struct _GtkApp, 1);
 
     app->window_main = window_main_new();
     app->window_add_particle_normal = window_add_particle_normal_new();
@@ -16,11 +14,11 @@ void gtk_app_new()
     app->tree_store = NULL;
     app->tree_view = NULL;
     app->selection = NULL;
+    return app;
 }
 
-void gtk_app_free()
+void gtk_app_free(GtkApp app)
 {
-
     window_main_free(app->window_main);
     window_add_particle_normal_free(app->window_add_particle_normal);
     window_add_force_normal_free(app->window_add_force_normal);

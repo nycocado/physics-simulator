@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-void create_window_main_widgets()
+void create_window_main_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -70,7 +70,7 @@ void create_window_main_widgets()
     g_object_unref(builder);
 }
 
-void create_window_add_particle_normal_widgets()
+void create_window_add_particle_normal_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -187,7 +187,7 @@ void create_window_add_particle_normal_widgets()
     g_object_unref(builder);
 }
 
-void create_window_add_force_normal_widgets()
+void create_window_add_force_normal_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -239,7 +239,7 @@ void create_window_add_force_normal_widgets()
     g_object_unref(builder);
 }
 
-void create_window_edit_particle_normal_widgets()
+void create_window_edit_particle_normal_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -356,7 +356,7 @@ void create_window_edit_particle_normal_widgets()
     g_object_unref(builder);
 }
 
-void create_window_edit_force_normal_widgets()
+void create_window_edit_force_normal_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -408,7 +408,7 @@ void create_window_edit_force_normal_widgets()
     g_object_unref(builder);
 }
 
-void create_window_simulation_widgets(int i)
+void create_window_simulation_widgets(int i, GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
@@ -522,7 +522,7 @@ void create_window_simulation_widgets(int i)
     g_object_unref(builder);
 }
 
-void create_dialog_error_message(const gchar* message)
+void create_dialog_error_message(const gchar* message, GtkApp app)
 {
     GtkWidget* dialog_error = gtk_message_dialog_new(
         GTK_WINDOW(app->window_main->window),

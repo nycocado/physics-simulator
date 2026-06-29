@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gtk/gtk.h>
+#include "gtk_include_all.h"
 
-void particle_cinematic_collection_start();
-void particle_dynamic_collection_start();
+void particle_cinematic_collection_start(GtkApp app);
+void particle_dynamic_collection_start(GtkApp app);

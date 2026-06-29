@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-char* generate_log_name_for_simulation(const char* base_name)
+char* generate_log_name_for_simulation(const char* base_name, GtkApp app)
 {
     int index = 1;
     gchar* filename = NULL;
@@ -43,14 +43,15 @@ void save_simulation_cinematic_log(
     Particle_Cinematic_Collection particle_collection,
     float time,
     float time_step,
-    float gravity
+    float gravity,
+    GtkApp app
 )
 {
-    gchar* filename = generate_log_name_for_simulation("simulacao_cinematica");
+    gchar* filename = generate_log_name_for_simulation("simulacao_cinematica", app);
     FILE* file = fopen(filename, "w");
     if (file == NULL)
     {
-        create_dialog_error_message("Erro ao salvar o log da simulação");
+        create_dialog_error_message("Erro ao salvar o log da simulação", app);
         return;
     }
 
@@ -116,7 +117,7 @@ void save_simulation_cinematic_log(
     fclose(file);
 }
 
-int calc_num_forces_max(Particle_Dynamic_Collection particle_collection)
+int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
 {
     int max_forces = 0;
     for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
@@ -135,14 +136,15 @@ void save_simulation_dynamic_log(
     Particle_Dynamic_Collection particle_collection,
     float time,
     float time_step,
-    float gravity
+    float gravity,
+    GtkApp app
 )
 {
-    gchar* filename = generate_log_name_for_simulation("simulacao_dinamica");
+    gchar* filename = generate_log_name_for_simulation("simulacao_dinamica", app);
     FILE* file = fopen(filename, "w");
     if (file == NULL)
     {
-        create_dialog_error_message("Erro ao salvar o log da simulação");
+        create_dialog_error_message("Erro ao salvar o log da simulação", app);
         return;
     }
 
@@ -157,7 +159,7 @@ void save_simulation_dynamic_log(
     fprintf(file, "\n");
     fprintf(file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;m;");
 
-    int max_forces = calc_num_forces_max(particle_collection);
+    int max_forces = calc_num_forces_max(particle_collection, app);
     for (int i = 1; i <= max_forces; i++)
     {
         fprintf(file, "fx%d;fy%d;f%d;f%d angle;", i, i, i, i);

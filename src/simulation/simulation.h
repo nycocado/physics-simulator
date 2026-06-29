@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtk/gtk.h>
+#include "gtk_include_all.h"
 
-void get_window_size(GtkWidget* widget);
-void draw_axes(cairo_t* cr, int x_center, int y_bottom);
+void get_window_size(GtkWidget* widget, GtkApp app);
+void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app);
 void draw_arrow(
     cairo_t* cr,
     double start_x,
@@ -17,7 +17,7 @@ void set_background_color(cairo_t* cr, double r, double g, double b);
 void draw_particle(cairo_t* cr, float start_x, float start_y, float radius);
 void draw_title(cairo_t* cr, const char* title, float x, float y);
 void draw_time(cairo_t* cr, float time, float x, float y);
-void simulation_window_destroy(void);
-void simulation_read_controls(void);
-void simulation_stop(void);
-void simulation_start_timer(GSourceFunc timeout_fn);
+void simulation_window_destroy(GtkApp app);
+void simulation_read_controls(GtkApp app);
+void simulation_stop(GtkApp app);
+void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app);

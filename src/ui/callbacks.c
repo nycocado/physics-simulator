@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-void on_window_destroy(GtkWidget* widget)
+void on_window_destroy(GtkWidget* widget, gpointer data)
 {
     GtkWidget* toplevel = gtk_widget_get_toplevel(widget);
 
@@ -10,8 +10,13 @@ void on_window_destroy(GtkWidget* widget)
     }
 }
 
-void on_renderer_check_toggled(GtkCellRendererToggle* renderer, gchar* path_str)
+void on_renderer_check_toggled(
+    GtkCellRendererToggle* renderer,
+    gchar* path_str,
+    gpointer data
+)
 {
+    GtkApp app = (GtkApp)data;
     GtkTreePath* path = gtk_tree_path_new_from_string(path_str);
     GtkTreeIter iter;
     gtk_tree_model_get_iter(GTK_TREE_MODEL(app->tree_store), &iter, path);
@@ -32,23 +37,27 @@ void on_renderer_check_toggled(GtkCellRendererToggle* renderer, gchar* path_str)
     gtk_tree_path_free(path);
 }
 
-void on_window_main_add_particle_button_clicked(GtkButton* button)
+void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível adicionar partículas sem um projeto aberto."
+            "Não é possível adicionar partículas sem um projeto aberto.", app
         );
         return;
     }
 
-    create_window_add_particle_normal_widgets();
+    create_window_add_particle_normal_widgets(app);
     gtk_widget_show_all(app->window_add_particle_normal->window);
 }
 
-void on_window_add_particle_normal_add_button_clicked(GtkWidget* widget)
+void on_window_add_particle_normal_add_button_clicked(
+    GtkWidget* widget,
+    gpointer data
+)
 {
-
+    GtkApp app = (GtkApp)data;
     const gchar* xi = gtk_entry_get_text(
         GTK_ENTRY(app->window_add_particle_normal->spin_buttons->x)
     );
@@ -102,9 +111,12 @@ void on_window_add_particle_normal_add_button_clicked(GtkWidget* widget)
     gtk_widget_destroy(app->window_add_particle_normal->window);
 }
 
-void on_window_edit_particle_normal_edit_button_clicked()
+void on_window_edit_particle_normal_edit_button_clicked(
+    GtkWidget* widget,
+    gpointer data
+)
 {
-
+    GtkApp app = (GtkApp)data;
     const gchar* xi = gtk_entry_get_text(
         GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->x)
     );
@@ -154,12 +166,13 @@ void on_window_edit_particle_normal_edit_button_clicked()
     gtk_widget_destroy(app->window_edit_particle_normal->window);
 }
 
-void on_window_main_add_force_button_clicked(GtkButton* button)
+void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível adicionar forças sem um projeto aberto."
+            "Não é possível adicionar forças sem um projeto aberto.", app
         );
         return;
     }
@@ -170,7 +183,8 @@ void on_window_main_add_force_button_clicked(GtkButton* button)
     if (!gtk_tree_selection_get_selected(selection, &model, &iter))
     {
         create_dialog_error_message(
-            "Não é possível adicionar uma força sem uma partícula selecionada."
+            "Não é possível adicionar uma força sem uma partícula selecionada.",
+            app
         );
         return;
     }
@@ -179,18 +193,21 @@ void on_window_main_add_force_button_clicked(GtkButton* button)
     if (gtk_tree_model_iter_parent(model, &testIter, &iter))
     {
         create_dialog_error_message(
-            "Não é possível adicionar uma força em outra força."
+            "Não é possível adicionar uma força em outra força.", app
         );
         return;
     }
 
-    create_window_add_force_normal_widgets();
+    create_window_add_force_normal_widgets(app);
     gtk_widget_show_all(app->window_add_force_normal->window);
 }
 
-void on_window_add_force_normal_add_button_clicked(GtkWidget* widget)
+void on_window_add_force_normal_add_button_clicked(
+    GtkWidget* widget,
+    gpointer data
+)
 {
-
+    GtkApp app = (GtkApp)data;
     const gchar* fx = gtk_entry_get_text(
         GTK_ENTRY(app->window_add_force_normal->spin_buttons->fx)
     );
@@ -237,9 +254,12 @@ void on_window_add_force_normal_add_button_clicked(GtkWidget* widget)
     gtk_widget_destroy(app->window_add_force_normal->window);
 }
 
-void on_window_edit_force_normal_edit_button_clicked()
+void on_window_edit_force_normal_edit_button_clicked(
+    GtkWidget* widget,
+    gpointer data
+)
 {
-
+    GtkApp app = (GtkApp)data;
     const gchar* fx = gtk_entry_get_text(
         GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fx)
     );
@@ -256,13 +276,13 @@ void on_window_edit_force_normal_edit_button_clicked()
     gtk_widget_destroy(app->window_edit_force_normal->window);
 }
 
-void on_window_main_edit_button_clicked(GtkWidget* widget)
+void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
 {
-
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível editar partículas sem um projeto aberto."
+            "Não é possível editar partículas sem um projeto aberto.", app
         );
         return;
     }
@@ -274,7 +294,8 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
         ))
     {
         create_dialog_error_message(
-            "Não é possível editar uma partícula sem uma partícula selecionada."
+            "Não é possível editar uma partícula sem uma partícula selecionada.",
+            app
         );
         return;
     }
@@ -282,7 +303,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
     GtkTreeIter testIter;
     if (!gtk_tree_model_iter_parent(model, &testIter, &iter))
     {
-        create_window_edit_particle_normal_widgets();
+        create_window_edit_particle_normal_widgets(app);
         gchar *xi, *yi, *vx, *vy, *ax, *ay, *mass;
         gtk_tree_model_get(
             model,
@@ -346,7 +367,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
     }
     else
     {
-        create_window_edit_force_normal_widgets();
+        create_window_edit_force_normal_widgets(app);
         gchar *fx, *fy;
         gtk_tree_model_get(model, &iter, COL_X, &fx, COL_Y, &fy, -1);
 
@@ -365,12 +386,13 @@ void on_window_main_edit_button_clicked(GtkWidget* widget)
     }
 }
 
-void on_window_main_remove_button_clicked(GtkWidget* widget)
+void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível remover partículas sem um projeto aberto."
+            "Não é possível remover partículas sem um projeto aberto.", app
         );
         return;
     }
@@ -382,7 +404,8 @@ void on_window_main_remove_button_clicked(GtkWidget* widget)
     {
         create_dialog_error_message(
             "Não é possível remover uma partícula sem uma partícula "
-            "selecionada."
+            "selecionada.",
+            app
         );
         return;
     }
@@ -398,9 +421,8 @@ void on_window_main_remove_button_clicked(GtkWidget* widget)
     gtk_tree_store_remove(app->tree_store, &iter);
 }
 
-void on_selection_change_abrir(GtkFileChooser* chooser)
+void on_selection_change_abrir(GtkFileChooser* chooser, gpointer data)
 {
-
     GtkWidget* dialog = GTK_WIDGET(chooser);
     GtkWidget* select_button = gtk_dialog_get_widget_for_response(
         GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT
@@ -420,12 +442,13 @@ void on_selection_change_abrir(GtkFileChooser* chooser)
     }
 }
 
-void on_menu_projetos_abrir_activate()
+void on_menu_projetos_abrir_activate(GtkMenuItem* item, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Já existe um projeto aberto, feche-o antes de abrir outro."
+            "Já existe um projeto aberto, feche-o antes de abrir outro.", app
         );
         return;
     }
@@ -455,22 +478,24 @@ void on_menu_projetos_abrir_activate()
     gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_salvar_activate()
+void on_menu_projetos_salvar_activate(GtkMenuItem* item, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não existe um projeto aberto.");
+        create_dialog_error_message("Não existe um projeto aberto.", app);
         return;
     }
-    save_project();
+    save_project(app);
 }
 
-void on_menu_projetos_novo_activate()
+void on_menu_projetos_novo_activate(GtkMenuItem* item, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Já existe um projeto aberto, feche-o antes de abrir outro."
+            "Já existe um projeto aberto, feche-o antes de abrir outro.", app
         );
         return;
     }
@@ -499,50 +524,53 @@ void on_menu_projetos_novo_activate()
     gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_fechar_activate()
+void on_menu_projetos_fechar_activate(GtkMenuItem* item, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
-        create_dialog_error_message("Não existe um projeto aberto.");
+        create_dialog_error_message("Não existe um projeto aberto.", app);
         return;
     }
-    close_project();
+    close_project(app);
 }
 
-void on_window_main_cinematic_button_clicked(GtkButton* button)
+void on_window_main_cinematic_button_clicked(GtkButton* button, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível iniciar a simulação sem um projeto aberto."
+            "Não é possível iniciar a simulação sem um projeto aberto.", app
         );
         return;
     }
     if (app->variables->simulation->num_particles_use == 0)
     {
         create_dialog_error_message(
-            "Não é possível iniciar a simulação sem partículas."
+            "Não é possível iniciar a simulação sem partículas.", app
         );
         return;
     }
-    run_simulation_cinematic();
+    run_simulation_cinematic(app);
 }
 
-void on_window_main_dynamic_button_clicked(GtkButton* button)
+void on_window_main_dynamic_button_clicked(GtkButton* button, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
         create_dialog_error_message(
-            "Não é possível iniciar a simulação sem um projeto aberto."
+            "Não é possível iniciar a simulação sem um projeto aberto.", app
         );
         return;
     }
     if (app->variables->simulation->num_particles_use == 0)
     {
         create_dialog_error_message(
-            "Não é possível iniciar a simulação sem partículas."
+            "Não é possível iniciar a simulação sem partículas.", app
         );
         return;
     }
-    run_simulation_dynamic();
+    run_simulation_dynamic(app);
 }

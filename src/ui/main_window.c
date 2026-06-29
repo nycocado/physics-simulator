@@ -1,8 +1,7 @@
 #include "gtk_include_all.h"
 
-void set_columns_attribute()
+void set_columns_attribute(GtkApp app)
 {
-
     gtk_tree_view_column_set_fixed_width(app->window_main->columns->type, 100);
 
     gtk_tree_view_column_set_alignment(app->window_main->columns->type, 0.5);
@@ -102,8 +101,13 @@ void set_columns_attribute()
     );
 }
 
-void gtk_response_projetos_abrir(GtkDialog* dialog, gint response_id)
+void gtk_response_projetos_abrir(
+    GtkDialog* dialog,
+    gint response_id,
+    gpointer data
+)
 {
+    GtkApp app = (GtkApp)data;
     if (response_id == GTK_RESPONSE_ACCEPT)
     {
         GtkWidget* file_chooser = GTK_WIDGET(dialog);
@@ -115,13 +119,18 @@ void gtk_response_projetos_abrir(GtkDialog* dialog, gint response_id)
             app->variables->project->is_file_open = TRUE;
             g_free(filename);
         }
-        open_project();
+        open_project(app);
     }
     gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
-void gtk_response_projetos_novo(GtkDialog* dialog, gint response_id)
+void gtk_response_projetos_novo(
+    GtkDialog* dialog,
+    gint response_id,
+    gpointer data
+)
 {
+    GtkApp app = (GtkApp)data;
     if (response_id == GTK_RESPONSE_ACCEPT)
     {
         gchar* filename =
@@ -147,19 +156,12 @@ void gtk_response_projetos_novo(GtkDialog* dialog, gint response_id)
     gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
-int run_gtk(int argc, char* argv[])
+int run_gtk(int argc, char* argv[], GtkApp app)
 {
-    gtk_app_new();
-
     gtk_init(&argc, &argv);
-
     create_window_main_widgets(app);
-
     set_columns_attribute(app);
-
     gtk_widget_show(app->window_main->window);
     gtk_main();
-
-    gtk_app_free();
     return 0;
 }

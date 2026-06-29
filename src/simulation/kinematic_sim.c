@@ -1,14 +1,15 @@
 #include "gtk_include_all.h"
 
-gboolean on_draw_cinematic(GtkWidget* widget, cairo_t* cr)
+gboolean on_draw_cinematic(GtkWidget* widget, cairo_t* cr, gpointer data)
 {
-    get_window_size(widget);
+    GtkApp app = (GtkApp)data;
+    get_window_size(widget, app);
     set_background_color(cr, 0.2, 0.2, 0.2);
 
     int x_center = app->variables->window_size->width / 2;
     int y_center = app->variables->window_size->height / 2;
 
-    draw_axes(cr, x_center, y_center);
+    draw_axes(cr, x_center, y_center, app);
 
     draw_time(cr, app->variables->simulation->last_time, 10, 20);
 
@@ -69,7 +70,8 @@ gboolean on_draw_cinematic(GtkWidget* widget, cairo_t* cr)
 
 gboolean on_timeout_cinematic(gpointer user_data)
 {
-    if (!GTK_IS_WIDGET(user_data))
+    GtkApp app = (GtkApp)user_data;
+    if (app->window_simulation->window == NULL)
     {
         if (app->variables->simulation->timer != NULL)
             g_timer_stop(app->variables->simulation->timer);
@@ -121,14 +123,16 @@ gboolean on_timeout_cinematic(gpointer user_data)
     return TRUE;
 }
 
-void on_window_cinematic_destroy(GtkWidget* widget)
+void on_window_cinematic_destroy(GtkWidget* widget, gpointer data)
 {
-    simulation_window_destroy();
+    GtkApp app = (GtkApp)data;
+    simulation_window_destroy(app);
 }
 
-void on_cinematic_refresh_button_clicked(GtkButton* button)
+void on_cinematic_refresh_button_clicked(GtkButton* button, gpointer data)
 {
-    simulation_stop();
+    GtkApp app = (GtkApp)data;
+    simulation_stop(app);
     app->variables->simulation->last_time = 0;
 
     Particle_Cinematic_Collection collection =
@@ -144,13 +148,14 @@ void on_cinematic_refresh_button_clicked(GtkButton* button)
     gtk_widget_queue_draw(app->window_simulation->drawing_area);
 }
 
-void on_cinematic_start_button_clicked(GtkButton* button)
+void on_cinematic_start_button_clicked(GtkButton* button, gpointer data)
 {
+    GtkApp app = (GtkApp)data;
     if (app->variables->simulation->is_simulation_running)
         return;
 
     Variables_Simulation* sim = app->variables->simulation;
-    simulation_read_controls();
+    simulation_read_controls(app);
 
     if (sim->first_time || sim->gravity != sim->gravity_cache ||
         sim->time_step != sim->time_step_cache || sim->time != sim->time_cache)
@@ -159,7 +164,8 @@ void on_cinematic_start_button_clicked(GtkButton* button)
             sim->particle_cinematic_collection,
             sim->time,
             sim->time_step,
-            sim->gravity
+            sim->gravity,
+            app
         );
     }
 
@@ -168,16 +174,20 @@ void on_cinematic_start_button_clicked(GtkButton* button)
     sim->time_cache = sim->time;
     sim->time_step_cache = sim->time_step;
 
-    simulation_start_timer(on_timeout_cinematic);
+    simulation_start_timer(on_timeout_cinematic, app);
 }
 
-void on_cinematic_stop_button_clicked(GtkButton* button) { simulation_stop(); }
+void on_cinematic_stop_button_clicked(GtkButton* button, gpointer data)
+{
+    GtkApp app = (GtkApp)data;
+    simulation_stop(app);
+}
 
-void run_simulation_cinematic()
+void run_simulation_cinematic(GtkApp app)
 {
     if (app->window_simulation->window != NULL)
-        simulation_window_destroy();
-    particle_cinematic_collection_start();
-    create_window_simulation_widgets(SIMULATION_CINEMATIC);
+        simulation_window_destroy(app);
+    particle_cinematic_collection_start(app);
+    create_window_simulation_widgets(SIMULATION_CINEMATIC, app);
     gtk_widget_show_all(app->window_simulation->window);
 }

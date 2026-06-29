@@ -1,11 +1,11 @@
 #include "gtk_include_all.h"
 
-void save_project()
+void save_project(GtkApp app)
 {
     FILE* file = fopen(app->variables->project->file_path, "w");
     if (file == NULL)
     {
-        create_dialog_error_message("Erro ao salvar o projeto");
+        create_dialog_error_message("Erro ao salvar o projeto", app);
         return;
     }
 
@@ -116,12 +116,12 @@ void save_project()
     fclose(file);
 }
 
-void open_project()
+void open_project(GtkApp app)
 {
     FILE* file = fopen(app->variables->project->file_path, "r");
     if (file == NULL)
     {
-        create_dialog_error_message("Erro ao abrir o projeto");
+        create_dialog_error_message("Erro ao abrir o projeto", app);
         return;
     }
     char* line = NULL;
@@ -236,7 +236,7 @@ void open_project()
     fclose(file);
 }
 
-void close_project()
+void close_project(GtkApp app)
 {
     variables_project_wipe(app->variables->project);
     app->variables->simulation->num_particles_use = 0;

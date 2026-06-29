@@ -25,7 +25,5 @@ struct _GtkApp
         Variables variables;
 };
 
-extern GtkApp app;
-
-void gtk_app_new();
-void gtk_app_free();
+GtkApp gtk_app_new();
+void gtk_app_free(GtkApp app);

@@ -1,6 +1,6 @@
 #include "gtk_include_all.h"
 
-void particle_cinematic_collection_start()
+void particle_cinematic_collection_start(GtkApp app)
 {
     Particle_Cinematic_Collection particle_collection =
         particle_cinematic_collection_new(
@@ -64,7 +64,7 @@ void particle_cinematic_collection_start()
         particle_collection;
 }
 
-void particle_dynamic_collection_start()
+void particle_dynamic_collection_start(GtkApp app)
 {
     Particle_Dynamic_Collection particle_dynamic_collection =
         particle_dynamic_collection_new(
