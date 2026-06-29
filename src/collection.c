@@ -18,7 +18,7 @@ void particle_cinematic_collection_start(GtkApp app)
         );
         if (checked)
         {
-            gchar *x, *y, *vx, *vy, *ax, *ay;
+            gdouble x, y, vx, vy, ax, ay;
             gtk_tree_model_get(
                 GTK_TREE_MODEL(app->tree_store),
                 &iter,
@@ -37,25 +37,11 @@ void particle_cinematic_collection_start(GtkApp app)
                 -1
             );
 
-            float x_float = (float)g_ascii_strtod(x, NULL);
-            float y_float = (float)g_ascii_strtod(y, NULL);
-            float vx_float = (float)g_ascii_strtod(vx, NULL);
-            float vy_float = (float)g_ascii_strtod(vy, NULL);
-            float ax_float = (float)g_ascii_strtod(ax, NULL);
-            float ay_float = (float)g_ascii_strtod(ay, NULL);
-
             Particle_Cinematic particle = particle_cinematic_new(
-                x_float, y_float, vx_float, vy_float, ax_float, ay_float
+                (float)x, (float)y, (float)vx, (float)vy, (float)ax, (float)ay
             );
             particle_collection->particles[i] = particle;
             i++;
-
-            g_free(x);
-            g_free(y);
-            g_free(vx);
-            g_free(vy);
-            g_free(ax);
-            g_free(ay);
         }
         valid =
             gtk_tree_model_iter_next(GTK_TREE_MODEL(app->tree_store), &iter);
@@ -82,7 +68,7 @@ void particle_dynamic_collection_start(GtkApp app)
         );
         if (checked)
         {
-            gchar *x, *y, *vx, *vy, *ax, *ay, *mass;
+            gdouble x, y, vx, vy, ax, ay, mass;
             gtk_tree_model_get(
                 GTK_TREE_MODEL(app->tree_store),
                 &iter,
@@ -103,22 +89,14 @@ void particle_dynamic_collection_start(GtkApp app)
                 -1
             );
 
-            float x_float = (float)g_ascii_strtod(x, NULL);
-            float y_float = (float)g_ascii_strtod(y, NULL);
-            float vx_float = (float)g_ascii_strtod(vx, NULL);
-            float vy_float = (float)g_ascii_strtod(vy, NULL);
-            float ax_float = (float)g_ascii_strtod(ax, NULL);
-            float ay_float = (float)g_ascii_strtod(ay, NULL);
-            float mass_float = (float)g_ascii_strtod(mass, NULL);
-
             Particle_Dynamic particle = particle_dynamic_new(
-                x_float,
-                y_float,
-                vx_float,
-                vy_float,
-                ax_float,
-                ay_float,
-                mass_float
+                (float)x,
+                (float)y,
+                (float)vx,
+                (float)vy,
+                (float)ax,
+                (float)ay,
+                (float)mass
             );
             GtkTreeIter child_iter;
             gboolean child_valid = gtk_tree_model_iter_children(
@@ -126,7 +104,7 @@ void particle_dynamic_collection_start(GtkApp app)
             );
             while (child_valid)
             {
-                gchar *force_x, *force_y;
+                gdouble force_x, force_y;
                 gtk_tree_model_get(
                     GTK_TREE_MODEL(app->tree_store),
                     &child_iter,
@@ -137,14 +115,8 @@ void particle_dynamic_collection_start(GtkApp app)
                     -1
                 );
 
-                float force_x_float = (float)g_ascii_strtod(force_x, NULL);
-                float force_y_float = (float)g_ascii_strtod(force_y, NULL);
-
-                Vector force = create_vector(force_x_float, force_y_float);
+                Vector force = create_vector((float)force_x, (float)force_y);
                 particle->forces = g_list_append(particle->forces, force);
-
-                g_free(force_x);
-                g_free(force_y);
 
                 child_valid = gtk_tree_model_iter_next(
                     GTK_TREE_MODEL(app->tree_store), &child_iter
@@ -152,14 +124,6 @@ void particle_dynamic_collection_start(GtkApp app)
             }
             particle_dynamic_collection->particles[i] = particle;
             i++;
-
-            g_free(x);
-            g_free(y);
-            g_free(vx);
-            g_free(vy);
-            g_free(ax);
-            g_free(ay);
-            g_free(mass);
         }
         valid =
             gtk_tree_model_iter_next(GTK_TREE_MODEL(app->tree_store), &iter);

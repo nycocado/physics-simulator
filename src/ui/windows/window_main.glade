@@ -25,19 +25,19 @@
   <object class="GtkTreeStore" id="tree_store">
     <columns>
       <!-- column-name x -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name y -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name vx -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name vy -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name ax -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name ay -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name mass -->
-      <column type="gchararray"/>
+      <column type="gdouble"/>
       <!-- column-name check -->
       <column type="gboolean"/>
       <!-- column-name visible -->

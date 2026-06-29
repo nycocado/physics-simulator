@@ -58,26 +58,26 @@ void on_window_add_particle_normal_add_button_clicked(
 )
 {
     GtkApp app = (GtkApp)data;
-    const gchar* xi = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->x)
+    gdouble xi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->x)
     );
-    const gchar* yi = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->y)
+    gdouble yi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->y)
     );
-    const gchar* vx = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vx)
+    gdouble vx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->vx)
     );
-    const gchar* vy = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->vy)
+    gdouble vy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->vy)
     );
-    const gchar* ax = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ax)
+    gdouble ax = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->ax)
     );
-    const gchar* ay = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->ay)
+    gdouble ay = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->ay)
     );
-    const gchar* mass = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_particle_normal->spin_buttons->mass)
+    gdouble mass = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->mass)
     );
 
     GtkTreeIter iter;
@@ -117,26 +117,26 @@ void on_window_edit_particle_normal_edit_button_clicked(
 )
 {
     GtkApp app = (GtkApp)data;
-    const gchar* xi = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->x)
+    gdouble xi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x)
     );
-    const gchar* yi = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->y)
+    gdouble yi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y)
     );
-    const gchar* vx = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vx)
+    gdouble vx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx)
     );
-    const gchar* vy = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->vy)
+    gdouble vy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy)
     );
-    const gchar* ax = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ax)
+    gdouble ax = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax)
     );
-    const gchar* ay = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->ay)
+    gdouble ay = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay)
     );
-    const gchar* mass = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_particle_normal->spin_buttons->mass)
+    gdouble mass = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->mass)
     );
 
     GtkTreeIter iter;
@@ -208,11 +208,11 @@ void on_window_add_force_normal_add_button_clicked(
 )
 {
     GtkApp app = (GtkApp)data;
-    const gchar* fx = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_force_normal->spin_buttons->fx)
+    gdouble fx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons->fx)
     );
-    const gchar* fy = gtk_entry_get_text(
-        GTK_ENTRY(app->window_add_force_normal->spin_buttons->fy)
+    gdouble fy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons->fy)
     );
 
     GtkTreeModel* model;
@@ -229,15 +229,15 @@ void on_window_add_force_normal_add_button_clicked(
         COL_Y,
         fy,
         COL_VX,
-        "",
+        0.0,
         COL_VY,
-        "",
+        0.0,
         COL_AX,
-        "",
+        0.0,
         COL_AY,
-        "",
+        0.0,
         COL_MASS,
-        "",
+        0.0,
         COL_CHECKED,
         FALSE,
         COL_VISIBLE,
@@ -260,11 +260,11 @@ void on_window_edit_force_normal_edit_button_clicked(
 )
 {
     GtkApp app = (GtkApp)data;
-    const gchar* fx = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fx)
+    gdouble fx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx)
     );
-    const gchar* fy = gtk_entry_get_text(
-        GTK_ENTRY(app->window_edit_force_normal->spin_buttons->fy)
+    gdouble fy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy)
     );
 
     GtkTreeIter iter;
@@ -304,7 +304,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
     if (!gtk_tree_model_iter_parent(model, &testIter, &iter))
     {
         create_window_edit_particle_normal_widgets(app);
-        gchar *xi, *yi, *vx, *vy, *ax, *ay, *mass;
+        gdouble xi, yi, vx, vy, ax, ay, mass;
         gtk_tree_model_get(
             model,
             &iter,
@@ -327,61 +327,52 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x),
-            g_ascii_strtod(xi, NULL)
+            xi
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y),
-            g_ascii_strtod(yi, NULL)
+            yi
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx),
-            g_ascii_strtod(vx, NULL)
+            vx
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy),
-            g_ascii_strtod(vy, NULL)
+            vy
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax),
-            g_ascii_strtod(ax, NULL)
+            ax
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay),
-            g_ascii_strtod(ay, NULL)
+            ay
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(
                 app->window_edit_particle_normal->spin_buttons->mass
             ),
-            g_ascii_strtod(mass, NULL)
+            mass
         );
 
-        g_free(xi);
-        g_free(yi);
-        g_free(vx);
-        g_free(vy);
-        g_free(ax);
-        g_free(ay);
-        g_free(mass);
         gtk_widget_show_all(app->window_edit_particle_normal->window);
     }
     else
     {
         create_window_edit_force_normal_widgets(app);
-        gchar *fx, *fy;
+        gdouble fx, fy;
         gtk_tree_model_get(model, &iter, COL_X, &fx, COL_Y, &fy, -1);
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx),
-            g_ascii_strtod(fx, NULL)
+            fx
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy),
-            g_ascii_strtod(fy, NULL)
+            fy
         );
 
-        g_free(fx);
-        g_free(fy);
         gtk_widget_show_all(app->window_edit_force_normal->window);
     }
 }

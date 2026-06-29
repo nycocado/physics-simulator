@@ -41,7 +41,7 @@ void save_project(GtkApp app)
         gtk_tree_model_get_iter_first(GTK_TREE_MODEL(app->tree_store), &iter);
     while (valid)
     {
-        gchar *x, *y, *vx, *vy, *ax, *ay, *mass;
+        gdouble x, y, vx, vy, ax, ay, mass;
         gboolean checked;
         gtk_tree_model_get(
             GTK_TREE_MODEL(app->tree_store),
@@ -66,7 +66,7 @@ void save_project(GtkApp app)
         );
         fprintf(
             file,
-            "Partícula %s %s %s %s %s %s %s %d\n",
+            "Partícula %g %g %g %g %g %g %g %d\n",
             x,
             y,
             vx,
@@ -77,14 +77,6 @@ void save_project(GtkApp app)
             checked ? 1 : 0
         );
 
-        g_free(x);
-        g_free(y);
-        g_free(vx);
-        g_free(vy);
-        g_free(ax);
-        g_free(ay);
-        g_free(mass);
-
         GtkTreeIter childIter;
         if (gtk_tree_model_iter_children(
                 GTK_TREE_MODEL(app->tree_store), &childIter, &iter
@@ -92,7 +84,7 @@ void save_project(GtkApp app)
         {
             do
             {
-                gchar *fx, *fy;
+                gdouble fx, fy;
                 gtk_tree_model_get(
                     GTK_TREE_MODEL(app->tree_store),
                     &childIter,
@@ -102,10 +94,7 @@ void save_project(GtkApp app)
                     &fy,
                     -1
                 );
-                fprintf(file, "Força %s %s\n", fx, fy);
-
-                g_free(fx);
-                g_free(fy);
+                fprintf(file, "Força %g %g\n", fx, fy);
             } while (gtk_tree_model_iter_next(
                 GTK_TREE_MODEL(app->tree_store), &childIter
             ));
@@ -170,7 +159,14 @@ void open_project(GtkApp app)
             char* mass = strtok(NULL, " ");
             if (!x || !y || !vx || !vy || !ax || !ay || !mass)
                 continue;
-            if (g_ascii_strtod(mass, NULL) <= 0)
+            gdouble dx = g_ascii_strtod(x, NULL);
+            gdouble dy = g_ascii_strtod(y, NULL);
+            gdouble dvx = g_ascii_strtod(vx, NULL);
+            gdouble dvy = g_ascii_strtod(vy, NULL);
+            gdouble dax = g_ascii_strtod(ax, NULL);
+            gdouble day = g_ascii_strtod(ay, NULL);
+            gdouble dmass = g_ascii_strtod(mass, NULL);
+            if (dmass <= 0)
                 continue;
             char* checked_str = strtok(NULL, " ");
             gboolean checked = (checked_str == NULL) ? TRUE
@@ -180,19 +176,19 @@ void open_project(GtkApp app)
                 app->tree_store,
                 &particle_iter,
                 COL_X,
-                x,
+                dx,
                 COL_Y,
-                y,
+                dy,
                 COL_VX,
-                vx,
+                dvx,
                 COL_VY,
-                vy,
+                dvy,
                 COL_AX,
-                ax,
+                dax,
                 COL_AY,
-                ay,
+                day,
                 COL_MASS,
-                mass,
+                dmass,
                 COL_CHECKED,
                 checked,
                 COL_VISIBLE,
@@ -209,19 +205,31 @@ void open_project(GtkApp app)
         {
             if (!has_particle)
                 continue;
-            char* x = strtok(NULL, " ");
-            char* y = strtok(NULL, " ");
-            if (!x || !y)
+            char* fx_str = strtok(NULL, " ");
+            char* fy_str = strtok(NULL, " ");
+            if (!fx_str || !fy_str)
                 continue;
+            gdouble dfx = g_ascii_strtod(fx_str, NULL);
+            gdouble dfy = g_ascii_strtod(fy_str, NULL);
             GtkTreeIter child_iter;
             gtk_tree_store_append(app->tree_store, &child_iter, &particle_iter);
             gtk_tree_store_set(
                 app->tree_store,
                 &child_iter,
                 COL_X,
-                x,
+                dfx,
                 COL_Y,
-                y,
+                dfy,
+                COL_VX,
+                0.0,
+                COL_VY,
+                0.0,
+                COL_AX,
+                0.0,
+                COL_AY,
+                0.0,
+                COL_MASS,
+                0.0,
                 COL_CHECKED,
                 FALSE,
                 COL_VISIBLE,
