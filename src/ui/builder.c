@@ -1,5 +1,10 @@
 #include "gtk_include_all.h"
 
+static GListModel* create_model_func_wrapper(gpointer item, gpointer user_data) {
+    (void)user_data;
+    return phys_item_get_children(PHYS_ITEM(item));
+}
+
 void create_window_main_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
@@ -8,55 +13,41 @@ void create_window_main_widgets(GtkApp app)
 
     app->window_main->window =
         GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
-    app->window_main->columns.type =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_type"));
-    app->window_main->columns.x =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_x"));
-    app->window_main->columns.y =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_y"));
-    app->window_main->columns.vx =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_vx"));
-    app->window_main->columns.vy =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_vy"));
-    app->window_main->columns.ax =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_ax"));
-    app->window_main->columns.ay =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_ay"));
-    app->window_main->columns.mass =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_mass"));
-    app->window_main->columns.check =
-        GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "column_check"));
-    app->window_main->cell_renderer.type = GTK_CELL_RENDERER(
-        gtk_builder_get_object(builder, "renderer_text_type")
+    app->window_main->factories.type =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_type"));
+    app->window_main->factories.x =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_x"));
+    app->window_main->factories.y =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_y"));
+    app->window_main->factories.vx =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_vx"));
+    app->window_main->factories.vy =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_vy"));
+    app->window_main->factories.ax =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_ax"));
+    app->window_main->factories.ay =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_ay"));
+    app->window_main->factories.mass =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_mass"));
+    app->window_main->factories.check =
+        GTK_LIST_ITEM_FACTORY(gtk_builder_get_object(builder, "factory_check"));
+
+    app->column_view =
+        GTK_COLUMN_VIEW(gtk_builder_get_object(builder, "column_view"));
+
+    app->root_store = g_list_store_new(PHYS_TYPE_ITEM);
+
+    app->tree_model = gtk_tree_list_model_new(
+        G_LIST_MODEL(app->root_store),
+        FALSE,
+        TRUE,
+        create_model_func_wrapper,
+        NULL,
+        NULL
     );
-    app->window_main->cell_renderer.x =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_x"));
-    app->window_main->cell_renderer.y =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_y"));
-    app->window_main->cell_renderer.vx =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_vx"));
-    app->window_main->cell_renderer.vy =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_vy"));
-    app->window_main->cell_renderer.ax =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_ax"));
-    app->window_main->cell_renderer.ay =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_text_ay"));
-    app->window_main->cell_renderer.mass = GTK_CELL_RENDERER(
-        gtk_builder_get_object(builder, "renderer_text_mass")
-    );
-    app->window_main->cell_renderer.check =
-        GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_check"));
-    app->tree_view =
-        GTK_TREE_VIEW(gtk_builder_get_object(builder, "tree_view"));
-    app->tree_store = gtk_tree_store_new(
-        10,
-        G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE,
-        G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE,
-        G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_STRING
-    );
-    gtk_tree_view_set_model(app->tree_view, GTK_TREE_MODEL(app->tree_store));
-    g_object_unref(app->tree_store);
-    app->selection = gtk_tree_view_get_selection(app->tree_view);
+
+    app->selection_model = GTK_SELECTION_MODEL(gtk_single_selection_new(G_LIST_MODEL(app->tree_model)));
+    gtk_column_view_set_model(app->column_view, app->selection_model);
     app->window_main->buttons.add_particle =
         GTK_WIDGET(gtk_builder_get_object(builder, "add_particle_button"));
     app->window_main->buttons.add_force =
@@ -70,7 +61,6 @@ void create_window_main_widgets(GtkApp app)
     app->window_main->buttons.dynamic =
         GTK_WIDGET(gtk_builder_get_object(builder, "dynamic_button"));
 
-    g_signal_connect(app->window_main->cell_renderer.check, "toggled", G_CALLBACK(on_renderer_check_toggled), app);
     g_signal_connect(app->window_main->buttons.add_particle, "clicked", G_CALLBACK(on_window_main_add_particle_button_clicked), app);
     g_signal_connect(app->window_main->buttons.add_force, "clicked", G_CALLBACK(on_window_main_add_force_button_clicked), app);
     g_signal_connect(app->window_main->buttons.remove, "clicked", G_CALLBACK(on_window_main_remove_button_clicked), app);

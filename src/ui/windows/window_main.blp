@@ -48,92 +48,70 @@ Window window_main {
         hexpand: true;
         vexpand: true;
 
-        TreeView tree_view {
-          enable-grid-lines: horizontal;
+        ColumnView column_view {
+          show-row-separators: true;
+          show-column-separators: true;
 
           [column]
-          TreeViewColumn column_type {
+          ColumnViewColumn column_type {
             title: _("tipo");
-
-            CellRendererText renderer_text_type {}
+            factory: SignalListItemFactory factory_type {};
           }
 
           [column]
-          TreeViewColumn column_x {
+          ColumnViewColumn column_x {
             title: _("x");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_x {}
+            factory: SignalListItemFactory factory_x {};
           }
 
           [column]
-          TreeViewColumn column_y {
-            sizing: autosize;
+          ColumnViewColumn column_y {
             title: _("y");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_y {
-              alignment: center;
-            }
+            factory: SignalListItemFactory factory_y {};
           }
 
           [column]
-          TreeViewColumn column_vx {
-            sizing: autosize;
+          ColumnViewColumn column_vx {
             title: _("vx");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_vx {}
+            factory: SignalListItemFactory factory_vx {};
           }
 
           [column]
-          TreeViewColumn column_vy {
+          ColumnViewColumn column_vy {
             title: _("vy");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_vy {}
+            factory: SignalListItemFactory factory_vy {};
           }
 
           [column]
-          TreeViewColumn column_ax {
+          ColumnViewColumn column_ax {
             title: _("ax");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_ax {}
+            factory: SignalListItemFactory factory_ax {};
           }
 
           [column]
-          TreeViewColumn column_ay {
+          ColumnViewColumn column_ay {
             title: _("ay");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_ay {}
+            factory: SignalListItemFactory factory_ay {};
           }
 
           [column]
-          TreeViewColumn column_mass {
+          ColumnViewColumn column_mass {
             title: _("massa");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererText renderer_text_mass {}
+            factory: SignalListItemFactory factory_mass {};
           }
 
           [column]
-          TreeViewColumn column_check {
+          ColumnViewColumn column_check {
             title: _("usar");
             expand: true;
-            alignment: 0.5;
-
-            CellRendererToggle renderer_check {
-
-            }
+            factory: SignalListItemFactory factory_check {};
           }
         }
       }

@@ -19,9 +19,10 @@ struct _GtkApp
         Window_Edit_Particle_Normal window_edit_particle_normal;
         Window_Edit_Force_Normal window_edit_force_normal;
         Window_Simulation window_simulation;
-        GtkTreeStore* tree_store;
-        GtkTreeView* tree_view;
-        GtkTreeSelection* selection;
+        GListStore* root_store;
+        GtkTreeListModel* tree_model;
+        GtkSelectionModel* selection_model;
+        GtkColumnView* column_view;
         Variables variables;
 };
 

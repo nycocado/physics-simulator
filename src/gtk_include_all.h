@@ -35,6 +35,7 @@ typedef enum
 #include "variables.h"
 #include "ui/window_main.h"
 #include "ui/window_simulation.h"
+#include "phys_item.h"
 
 /* GtkApp struct — depends on the foundational structs above */
 #include "app.h"

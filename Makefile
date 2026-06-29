@@ -19,6 +19,7 @@ _BUILD_BUILD_BIN::=$(shell mkdir -p $(BIN_BUILD))
 
 ALL_OBJS = $(BIN_DIR)/run.o \
            $(BIN_DIR)/app.o $(BIN_DIR)/variables.o \
+           $(BIN_DIR)/phys_item.o \
            $(BIN_DIR)/project.o $(BIN_DIR)/log.o $(BIN_DIR)/collection.o \
            $(BIN_DIR)/particles/particle.o \
            $(BIN_DIR)/particles/force_dialog.o $(BIN_DIR)/particles/particle_dialog.o \
@@ -39,6 +40,9 @@ $(BIN_DIR)/app.o: $(SRC_DIR)/app.c $(SRC_DIR)/app.h
 
 $(BIN_DIR)/variables.o: $(SRC_DIR)/variables.c $(SRC_DIR)/variables.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/variables.c $(GTKFLAGS) -o $(BIN_DIR)/variables.o
+
+$(BIN_DIR)/phys_item.o: $(SRC_DIR)/phys_item.c $(SRC_DIR)/phys_item.h
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/phys_item.c $(GTKFLAGS) -o $(BIN_DIR)/phys_item.o
 
 $(BIN_DIR)/project.o: $(SRC_DIR)/project.c $(SRC_DIR)/project.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/project.c $(GTKFLAGS) -o $(BIN_DIR)/project.o

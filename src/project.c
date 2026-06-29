@@ -36,34 +36,19 @@ void save_project(GtkApp app)
         fprintf(file, "\n");
     }
 
-    GtkTreeIter iter;
-    gboolean valid =
-        gtk_tree_model_get_iter_first(GTK_TREE_MODEL(app->tree_store), &iter);
-    while (valid)
+    guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
+    for (guint i = 0; i < n_items; i++)
     {
-        gdouble x, y, vx, vy, ax, ay, mass;
-        gboolean checked;
-        gtk_tree_model_get(
-            GTK_TREE_MODEL(app->tree_store),
-            &iter,
-            COL_X,
-            &x,
-            COL_Y,
-            &y,
-            COL_VX,
-            &vx,
-            COL_VY,
-            &vy,
-            COL_AX,
-            &ax,
-            COL_AY,
-            &ay,
-            COL_MASS,
-            &mass,
-            COL_CHECKED,
-            &checked,
-            -1
-        );
+        g_autoptr(PhysItem) item = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+        gdouble x = phys_item_get_x(item);
+        gdouble y = phys_item_get_y(item);
+        gdouble vx = phys_item_get_vx(item);
+        gdouble vy = phys_item_get_vy(item);
+        gdouble ax = phys_item_get_ax(item);
+        gdouble ay = phys_item_get_ay(item);
+        gdouble mass = phys_item_get_mass(item);
+        gboolean checked = phys_item_get_checked(item);
+
         fprintf(
             file,
             "Partícula %g %g %g %g %g %g %g %d\n",
@@ -77,30 +62,15 @@ void save_project(GtkApp app)
             checked ? 1 : 0
         );
 
-        GtkTreeIter childIter;
-        if (gtk_tree_model_iter_children(
-                GTK_TREE_MODEL(app->tree_store), &childIter, &iter
-            ))
+        GListModel* children = phys_item_get_children(item);
+        guint n_children = g_list_model_get_n_items(children);
+        for (guint j = 0; j < n_children; j++)
         {
-            do
-            {
-                gdouble fx, fy;
-                gtk_tree_model_get(
-                    GTK_TREE_MODEL(app->tree_store),
-                    &childIter,
-                    COL_X,
-                    &fx,
-                    COL_Y,
-                    &fy,
-                    -1
-                );
-                fprintf(file, "Força %g %g\n", fx, fy);
-            } while (gtk_tree_model_iter_next(
-                GTK_TREE_MODEL(app->tree_store), &childIter
-            ));
+            g_autoptr(PhysItem) child = g_list_model_get_item(children, j);
+            gdouble fx = phys_item_get_ax(child);
+            gdouble fy = phys_item_get_ay(child);
+            fprintf(file, "Força %g %g\n", fx, fy);
         }
-        valid =
-            gtk_tree_model_iter_next(GTK_TREE_MODEL(app->tree_store), &iter);
     }
     fclose(file);
 }
@@ -113,10 +83,11 @@ void open_project(GtkApp app)
         create_dialog_error_message("Erro ao abrir o projeto", app);
         return;
     }
-    char* line = NULL;
+    g_list_store_remove_all(app->root_store);
+
     size_t len = 0;
-    GtkTreeIter particle_iter;
-    gboolean has_particle = FALSE;
+    char* line = NULL;
+    PhysItem* current_particle = NULL;
     while (getline(&line, &len, file) != -1)
     {
         size_t line_len = strlen(line);
@@ -171,39 +142,19 @@ void open_project(GtkApp app)
             char* checked_str = strtok(NULL, " ");
             gboolean checked = (checked_str == NULL) ? TRUE
                                                      : (checked_str[0] != '0');
-            gtk_tree_store_append(app->tree_store, &particle_iter, NULL);
-            gtk_tree_store_set(
-                app->tree_store,
-                &particle_iter,
-                COL_X,
-                dx,
-                COL_Y,
-                dy,
-                COL_VX,
-                dvx,
-                COL_VY,
-                dvy,
-                COL_AX,
-                dax,
-                COL_AY,
-                day,
-                COL_MASS,
-                dmass,
-                COL_CHECKED,
-                checked,
-                COL_VISIBLE,
-                TRUE,
-                COL_TYPE,
-                type,
-                -1
+            PhysItem* particle = phys_item_new_particle(
+                dx, dy, dvx, dvy, dax, day, dmass, checked
             );
-            has_particle = TRUE;
+            g_list_store_append(app->root_store, particle);
+
+            if (current_particle) g_object_unref(current_particle);
+            current_particle = particle;
             if (checked)
                 app->variables->simulation.num_particles_use++;
         }
         else if (strcmp(type, "Força") == 0)
         {
-            if (!has_particle)
+            if (!current_particle)
                 continue;
             char* fx_str = strtok(NULL, " ");
             char* fy_str = strtok(NULL, " ");
@@ -211,35 +162,13 @@ void open_project(GtkApp app)
                 continue;
             gdouble dfx = g_ascii_strtod(fx_str, NULL);
             gdouble dfy = g_ascii_strtod(fy_str, NULL);
-            GtkTreeIter child_iter;
-            gtk_tree_store_append(app->tree_store, &child_iter, &particle_iter);
-            gtk_tree_store_set(
-                app->tree_store,
-                &child_iter,
-                COL_X,
-                dfx,
-                COL_Y,
-                dfy,
-                COL_VX,
-                0.0,
-                COL_VY,
-                0.0,
-                COL_AX,
-                0.0,
-                COL_AY,
-                0.0,
-                COL_MASS,
-                0.0,
-                COL_CHECKED,
-                FALSE,
-                COL_VISIBLE,
-                FALSE,
-                COL_TYPE,
-                type,
-                -1
-            );
+            
+            PhysItem* force = phys_item_new_force(dfx, dfy);
+            phys_item_add_child(current_particle, force);
+            g_object_unref(force);
         }
     }
+    if (current_particle) g_object_unref(current_particle);
     free(line);
     fclose(file);
 }
@@ -248,5 +177,5 @@ void close_project(GtkApp app)
 {
     variables_project_wipe(&app->variables->project);
     app->variables->simulation.num_particles_use = 0;
-    gtk_tree_store_clear(app->tree_store);
+    g_list_store_remove_all(app->root_store);
 }

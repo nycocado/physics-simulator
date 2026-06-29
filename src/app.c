@@ -11,9 +11,10 @@ GtkApp gtk_app_new()
     app->window_edit_force_normal = window_edit_force_normal_new();
     app->window_simulation = window_simulation_new();
     app->variables = variables_new();
-    app->tree_store = NULL;
-    app->tree_view = NULL;
-    app->selection = NULL;
+    app->root_store = NULL;
+    app->tree_model = NULL;
+    app->selection_model = NULL;
+    app->column_view = NULL;
     return app;
 }
 

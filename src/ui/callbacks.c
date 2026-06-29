@@ -8,31 +8,11 @@ void on_window_destroy(GtkWidget* widget, gpointer data)
         gtk_window_destroy(GTK_WINDOW(root));
 }
 
-void on_renderer_check_toggled(
-    GtkCellRendererToggle* renderer,
-    gchar* path_str,
-    gpointer data
-)
+void on_check_toggled(GtkCheckButton* button, gpointer data)
 {
-    GtkApp app = (GtkApp)data;
-    GtkTreePath* path = gtk_tree_path_new_from_string(path_str);
-    GtkTreeIter iter;
-    gtk_tree_model_get_iter(GTK_TREE_MODEL(app->tree_store), &iter, path);
-    gboolean checked;
-    gtk_tree_model_get(
-        GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
-    );
-    checked = !checked;
-    gtk_tree_store_set(app->tree_store, &iter, COL_CHECKED, checked, -1);
-    if (checked)
-    {
-        app->variables->simulation.num_particles_use++;
-    }
-    else
-    {
-        app->variables->simulation.num_particles_use--;
-    }
-    gtk_tree_path_free(path);
+    PhysItem* item = PHYS_ITEM(data);
+    gboolean checked = gtk_check_button_get_active(button);
+    phys_item_set_checked(item, checked);
 }
 
 void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data)
@@ -78,34 +58,12 @@ void on_window_add_particle_normal_add_button_clicked(
         GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.mass)
     );
 
-    GtkTreeIter iter;
-    gtk_tree_store_append(app->tree_store, &iter, NULL);
-    gtk_tree_store_set(
-        app->tree_store,
-        &iter,
-        COL_X,
-        xi,
-        COL_Y,
-        yi,
-        COL_VX,
-        vx,
-        COL_VY,
-        vy,
-        COL_AX,
-        ax,
-        COL_AY,
-        ay,
-        COL_MASS,
-        mass,
-        COL_CHECKED,
-        TRUE,
-        COL_VISIBLE,
-        TRUE,
-        COL_TYPE,
-        "Partícula",
-        -1
+    PhysItem* particle = phys_item_new_particle(
+        xi, yi, vx, vy, ax, ay, mass, TRUE
     );
+    g_list_store_append(app->root_store, particle);
     app->variables->simulation.num_particles_use++;
+    g_object_unref(particle);
     gtk_window_destroy(GTK_WINDOW(app->window_add_particle_normal->window));
 }
 
@@ -137,30 +95,20 @@ void on_window_edit_particle_normal_edit_button_clicked(
         GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.mass)
     );
 
-    GtkTreeIter iter;
-    GtkTreeModel* model;
-    gtk_tree_selection_get_selected(
-        gtk_tree_view_get_selection(app->tree_view), &model, &iter
+    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
     );
-    gtk_tree_store_set(
-        app->tree_store,
-        &iter,
-        COL_X,
-        xi,
-        COL_Y,
-        yi,
-        COL_VX,
-        vx,
-        COL_VY,
-        vy,
-        COL_AX,
-        ax,
-        COL_AY,
-        ay,
-        COL_MASS,
-        mass,
-        -1
-    );
+    if (!row) return;
+
+    PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
+    phys_item_set_x(item, xi);
+    phys_item_set_y(item, yi);
+    phys_item_set_vx(item, vx);
+    phys_item_set_vy(item, vy);
+    phys_item_set_ax(item, ax);
+    phys_item_set_ay(item, ay);
+    phys_item_set_mass(item, mass);
+    g_object_unref(item);
     gtk_window_destroy(GTK_WINDOW(app->window_edit_particle_normal->window));
 }
 
@@ -175,10 +123,10 @@ void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
         return;
     }
 
-    GtkTreeModel* model;
-    GtkTreeIter iter;
-    GtkTreeSelection* selection = gtk_tree_view_get_selection(app->tree_view);
-    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
+    );
+    if (!row)
     {
         create_dialog_error_message(
             "Não é possível adicionar uma força sem uma partícula selecionada.",
@@ -187,8 +135,7 @@ void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
         return;
     }
 
-    GtkTreeIter testIter;
-    if (gtk_tree_model_iter_parent(model, &testIter, &iter))
+    if (gtk_tree_list_row_get_depth(row) > 0)
     {
         create_dialog_error_message(
             "Não é possível adicionar uma força em outra força.", app
@@ -213,42 +160,19 @@ void on_window_add_force_normal_add_button_clicked(
         GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons.fy)
     );
 
-    GtkTreeModel* model;
-    GtkTreeIter parentIter, childIter, testIter;
-    gtk_tree_selection_get_selected(
-        gtk_tree_view_get_selection(app->tree_view), &model, &parentIter
+    GtkTreeListRow* parent_row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
     );
-    gtk_tree_store_append(app->tree_store, &childIter, &parentIter);
-    gtk_tree_store_set(
-        app->tree_store,
-        &childIter,
-        COL_X,
-        fx,
-        COL_Y,
-        fy,
-        COL_VX,
-        0.0,
-        COL_VY,
-        0.0,
-        COL_AX,
-        0.0,
-        COL_AY,
-        0.0,
-        COL_MASS,
-        0.0,
-        COL_CHECKED,
-        FALSE,
-        COL_VISIBLE,
-        FALSE,
-        COL_TYPE,
-        "Força",
-        -1
-    );
+    if (!parent_row) return;
 
-    GtkTreePath* path =
-        gtk_tree_model_get_path(GTK_TREE_MODEL(app->tree_store), &parentIter);
-    gtk_tree_view_expand_row(app->tree_view, path, FALSE);
-    gtk_tree_path_free(path);
+    PhysItem* parent_item = PHYS_ITEM(gtk_tree_list_row_get_item(parent_row));
+    PhysItem* force = phys_item_new_force(fx, fy);
+    phys_item_add_child(parent_item, force);
+
+    gtk_tree_list_row_set_expanded(parent_row, TRUE);
+
+    g_object_unref(force);
+    g_object_unref(parent_item);
     gtk_window_destroy(GTK_WINDOW(app->window_add_force_normal->window));
 }
 
@@ -265,12 +189,16 @@ void on_window_edit_force_normal_edit_button_clicked(
         GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy)
     );
 
-    GtkTreeIter iter;
-    GtkTreeModel* model;
-    gtk_tree_selection_get_selected(
-        gtk_tree_view_get_selection(app->tree_view), &model, &iter
+    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
     );
-    gtk_tree_store_set(app->tree_store, &iter, COL_X, fx, COL_Y, fy, -1);
+    if (!row) return;
+
+    PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
+    phys_item_set_ax(item, fx);
+    phys_item_set_ay(item, fy);
+    g_object_unref(item);
+
     gtk_window_destroy(GTK_WINDOW(app->window_edit_force_normal->window));
 }
 
@@ -285,11 +213,10 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         return;
     }
 
-    GtkTreeModel* model;
-    GtkTreeIter iter;
-    if (!gtk_tree_selection_get_selected(
-            gtk_tree_view_get_selection(app->tree_view), &model, &iter
-        ))
+    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
+    );
+    if (!row)
     {
         create_dialog_error_message(
             "Não é possível editar uma partícula sem uma partícula selecionada.",
@@ -298,30 +225,18 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         return;
     }
 
-    GtkTreeIter testIter;
-    if (!gtk_tree_model_iter_parent(model, &testIter, &iter))
+    PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
+
+    if (phys_item_get_item_type(item) == PHYS_ITEM_PARTICLE)
     {
         create_window_edit_particle_normal_widgets(app);
-        gdouble xi, yi, vx, vy, ax, ay, mass;
-        gtk_tree_model_get(
-            model,
-            &iter,
-            COL_X,
-            &xi,
-            COL_Y,
-            &yi,
-            COL_VX,
-            &vx,
-            COL_VY,
-            &vy,
-            COL_AX,
-            &ax,
-            COL_AY,
-            &ay,
-            COL_MASS,
-            &mass,
-            -1
-        );
+        gdouble xi = phys_item_get_x(item);
+        gdouble yi = phys_item_get_y(item);
+        gdouble vx = phys_item_get_vx(item);
+        gdouble vy = phys_item_get_vy(item);
+        gdouble ax = phys_item_get_ax(item);
+        gdouble ay = phys_item_get_ay(item);
+        gdouble mass = phys_item_get_mass(item);
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.x),
@@ -359,8 +274,8 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
     else
     {
         create_window_edit_force_normal_widgets(app);
-        gdouble fx, fy;
-        gtk_tree_model_get(model, &iter, COL_X, &fx, COL_Y, &fy, -1);
+        gdouble fx = phys_item_get_ax(item);
+        gdouble fy = phys_item_get_ay(item);
 
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fx),
@@ -373,6 +288,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
 
         gtk_window_present(GTK_WINDOW(app->window_edit_force_normal->window));
     }
+    g_object_unref(item);
 }
 
 void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
@@ -386,28 +302,48 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
         return;
     }
 
-    GtkTreeModel* model;
-    GtkTreeIter iter;
-    GtkTreeSelection* selection = gtk_tree_view_get_selection(app->tree_view);
-    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
+        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
+    );
+    if (!row)
     {
         create_dialog_error_message(
-            "Não é possível remover uma partícula sem uma partícula "
-            "selecionada.",
+            "Não é possível remover uma partícula sem uma partícula selecionada.",
             app
         );
         return;
     }
 
-    gboolean checked;
-    gtk_tree_model_get(
-        GTK_TREE_MODEL(app->tree_store), &iter, COL_CHECKED, &checked, -1
-    );
-    if (checked)
+    PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
+
+    if (phys_item_get_item_type(item) == PHYS_ITEM_PARTICLE)
     {
-        app->variables->simulation.num_particles_use--;
+        if (phys_item_get_checked(item))
+        {
+            app->variables->simulation.num_particles_use--;
+        }
+
+        guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
+        for (guint i = 0; i < n_items; i++)
+        {
+            g_autoptr(PhysItem) child = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+            if (child == item)
+            {
+                g_list_store_remove(app->root_store, i);
+                break;
+            }
+        }
     }
-    gtk_tree_store_remove(app->tree_store, &iter);
+    else
+    {
+        guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
+        for (guint i = 0; i < n_items; i++)
+        {
+            g_autoptr(PhysItem) particle = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+            phys_item_remove_child(particle, item);
+        }
+    }
+    g_object_unref(item);
 }
 
 static GtkFileFilter* make_sabino_filter(void)
