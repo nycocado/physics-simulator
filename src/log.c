@@ -38,17 +38,6 @@ char* generate_log_name_for_simulation(const char* base_name, GtkApp app)
     return new_path;
 }
 
-void replace_dot_with_comma(char* str)
-{
-    for (char* p = str; *p != '\0'; p++)
-    {
-        if (*p == '.')
-        {
-            *p = ',';
-        }
-    }
-}
-
 void save_simulation_cinematic_log(
     Particle_Cinematic_Collection particle_collection,
     double time,
@@ -119,7 +108,7 @@ void save_simulation_cinematic_log(
                 a_angle,
                 deslocamento
             );
-            replace_dot_with_comma(line);
+            g_strdelimit(line, ".", ',');
             fprintf(file, "%s\n", line);
             g_free(line);
         }
@@ -259,7 +248,7 @@ void save_simulation_dynamic_log(
                 phyc_radian_to_degree(phyc_angle(frx, fry))
             );
             gchar* new_line = g_strconcat(line, force_result_line, NULL);
-            replace_dot_with_comma(new_line);
+            g_strdelimit(new_line, ".", ',');
             fprintf(file, "%s\n", new_line);
             g_free(force_result_line);
             g_free(new_line);
