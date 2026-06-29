@@ -76,17 +76,14 @@ particle_cinematic_collection_new(int num_particles)
     Particle_Cinematic_Collection collection =
         g_new(struct _Particle_Cinematic_Collection, 1);
     collection->particles = g_new(Particle_Cinematic, num_particles);
+    collection->num_particles = num_particles;
     return collection;
 }
 
-void particle_cinematic_collection_free(
-    Particle_Cinematic_Collection collection
-)
+void particle_cinematic_collection_free(Particle_Cinematic_Collection collection)
 {
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
-    {
+    for (int i = 0; i < collection->num_particles; i++)
         particle_cinematic_free(collection->particles[i]);
-    }
     g_free(collection->particles);
     g_free(collection);
 }
@@ -96,15 +93,14 @@ Particle_Dynamic_Collection particle_dynamic_collection_new(int num_particles)
     Particle_Dynamic_Collection collection =
         g_new(struct _Particle_Dynamic_Collection, 1);
     collection->particles = g_new(Particle_Dynamic, num_particles);
+    collection->num_particles = num_particles;
     return collection;
 }
 
 void particle_dynamic_collection_free(Particle_Dynamic_Collection collection)
 {
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
-    {
+    for (int i = 0; i < collection->num_particles; i++)
         particle_dynamic_free(collection->particles[i]);
-    }
     g_free(collection->particles);
     g_free(collection);
 }

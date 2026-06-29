@@ -117,7 +117,7 @@ void save_simulation_cinematic_log(
     fclose(file);
 }
 
-int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
+static int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
 {
     int max_forces = 0;
     for (int i = 0; i < app->variables->simulation->num_particles_use; i++)

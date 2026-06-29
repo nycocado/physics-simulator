@@ -1,9 +1,23 @@
 #include "gtk_include_all.h"
 
+static void on_activate(GApplication* gapp, gpointer data)
+{
+    (void)gapp;
+    GtkApp app = (GtkApp)data;
+    create_window_main_widgets(app);
+    set_columns_attribute(app);
+    gtk_window_present(GTK_WINDOW(app->window_main->window));
+}
+
 int main(int argc, char* argv[])
 {
     GtkApp app = gtk_app_new();
-    run_gtk(argc, argv, app);
+    GtkApplication* gapp = gtk_application_new(
+        "com.simuladorfisica", G_APPLICATION_DEFAULT_FLAGS
+    );
+    g_signal_connect(gapp, "activate", G_CALLBACK(on_activate), app);
+    int status = g_application_run(G_APPLICATION(gapp), argc, argv);
+    g_object_unref(gapp);
     gtk_app_free(app);
-    return 0;
+    return status;
 }

@@ -65,7 +65,31 @@ void create_window_main_widgets(GtkApp app)
     app->window_main->buttons->dynamic =
         GTK_WIDGET(gtk_builder_get_object(builder, "dynamic_button"));
 
-    gtk_builder_connect_signals(builder, app);
+    g_signal_connect(app->window_main->cell_renderer->check, "toggled", G_CALLBACK(on_renderer_check_toggled), app);
+    g_signal_connect(app->window_main->buttons->add_particle, "clicked", G_CALLBACK(on_window_main_add_particle_button_clicked), app);
+    g_signal_connect(app->window_main->buttons->add_force, "clicked", G_CALLBACK(on_window_main_add_force_button_clicked), app);
+    g_signal_connect(app->window_main->buttons->remove, "clicked", G_CALLBACK(on_window_main_remove_button_clicked), app);
+    g_signal_connect(app->window_main->buttons->edit, "clicked", G_CALLBACK(on_window_main_edit_button_clicked), app);
+    g_signal_connect(app->window_main->buttons->cinematic, "clicked", G_CALLBACK(on_window_main_cinematic_button_clicked), app);
+    g_signal_connect(app->window_main->buttons->dynamic, "clicked", G_CALLBACK(on_window_main_dynamic_button_clicked), app);
+
+    GActionMap* wnd = G_ACTION_MAP(GTK_WINDOW(app->window_main->window));
+    static const struct {
+        const char* name;
+        GCallback fn;
+    } menu_actions[] = {
+        {"projects-open", G_CALLBACK(on_menu_projects_open_activate)},
+        {"projects-new", G_CALLBACK(on_menu_projects_new_activate)},
+        {"projects-save", G_CALLBACK(on_menu_projects_save_activate)},
+        {"projects-close", G_CALLBACK(on_menu_projects_close_activate)},
+    };
+    for (int k = 0; k < 4; k++)
+    {
+        GSimpleAction* action = g_simple_action_new(menu_actions[k].name, NULL);
+        g_signal_connect(action, "activate", menu_actions[k].fn, app);
+        g_action_map_add_action(wnd, G_ACTION(action));
+        g_object_unref(action);
+    }
 
     g_object_unref(builder);
 }
@@ -177,7 +201,8 @@ void create_window_add_particle_normal_widgets(GtkApp app)
         0.0
     );
 
-    gtk_builder_connect_signals(builder, app);
+    g_signal_connect(app->window_add_particle_normal->buttons->add, "clicked", G_CALLBACK(on_window_add_particle_normal_add_button_clicked), app);
+    g_signal_connect(app->window_add_particle_normal->buttons->cancel, "clicked", G_CALLBACK(on_window_destroy), app);
 
     gtk_window_set_transient_for(
         GTK_WINDOW(app->window_add_particle_normal->window),
@@ -229,7 +254,8 @@ void create_window_add_force_normal_widgets(GtkApp app)
         0.0
     );
 
-    gtk_builder_connect_signals(builder, app);
+    g_signal_connect(app->window_add_force_normal->buttons->add, "clicked", G_CALLBACK(on_window_add_force_normal_add_button_clicked), app);
+    g_signal_connect(app->window_add_force_normal->buttons->cancel, "clicked", G_CALLBACK(on_window_destroy), app);
 
     gtk_window_set_transient_for(
         GTK_WINDOW(app->window_add_force_normal->window),
@@ -346,7 +372,8 @@ void create_window_edit_particle_normal_widgets(GtkApp app)
         0.0
     );
 
-    gtk_builder_connect_signals(builder, app);
+    g_signal_connect(app->window_edit_particle_normal->buttons->edit, "clicked", G_CALLBACK(on_window_edit_particle_normal_edit_button_clicked), app);
+    g_signal_connect(app->window_edit_particle_normal->buttons->cancel, "clicked", G_CALLBACK(on_window_destroy), app);
 
     gtk_window_set_transient_for(
         GTK_WINDOW(app->window_edit_particle_normal->window),
@@ -398,7 +425,8 @@ void create_window_edit_force_normal_widgets(GtkApp app)
         0.0
     );
 
-    gtk_builder_connect_signals(builder, app);
+    g_signal_connect(app->window_edit_force_normal->buttons->edit, "clicked", G_CALLBACK(on_window_edit_force_normal_edit_button_clicked), app);
+    g_signal_connect(app->window_edit_force_normal->buttons->cancel, "clicked", G_CALLBACK(on_window_destroy), app);
 
     gtk_window_set_transient_for(
         GTK_WINDOW(app->window_edit_force_normal->window),
@@ -431,6 +459,10 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "drawing_area"));
     app->window_simulation->buttons->start =
         GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
+    app->window_simulation->buttons->stop =
+        GTK_WIDGET(gtk_builder_get_object(builder, "stop_button"));
+    app->window_simulation->buttons->refresh =
+        GTK_WIDGET(gtk_builder_get_object(builder, "refresh_button"));
     app->window_simulation->spin_buttons->gravity =
         GTK_WIDGET(gtk_builder_get_object(builder, "spin_button_g"));
     app->window_simulation->spin_buttons->time =
@@ -489,9 +521,34 @@ void create_window_simulation_widgets(int i, GtkApp app)
         app->window_simulation->drawing_area, 1000, 500
     );
 
-    gtk_builder_connect_signals(builder, app);
+    if (i == SIMULATION_CINEMATIC)
+    {
+        g_signal_connect(app->window_simulation->window, "close-request", G_CALLBACK(on_window_cinematic_destroy), app);
+        g_signal_connect(app->window_simulation->buttons->refresh, "clicked", G_CALLBACK(on_cinematic_refresh_button_clicked), app);
+        g_signal_connect(app->window_simulation->buttons->start, "clicked", G_CALLBACK(on_cinematic_start_button_clicked), app);
+        g_signal_connect(app->window_simulation->buttons->stop, "clicked", G_CALLBACK(on_cinematic_stop_button_clicked), app);
+        gtk_drawing_area_set_draw_func(
+            GTK_DRAWING_AREA(app->window_simulation->drawing_area),
+            on_draw_cinematic,
+            app,
+            NULL
+        );
+    }
+    else
+    {
+        g_signal_connect(app->window_simulation->window, "close-request", G_CALLBACK(on_window_dynamic_destroy), app);
+        g_signal_connect(app->window_simulation->buttons->refresh, "clicked", G_CALLBACK(on_dynamic_refresh_button_clicked), app);
+        g_signal_connect(app->window_simulation->buttons->start, "clicked", G_CALLBACK(on_dynamic_start_button_clicked), app);
+        g_signal_connect(app->window_simulation->buttons->stop, "clicked", G_CALLBACK(on_dynamic_stop_button_clicked), app);
+        gtk_drawing_area_set_draw_func(
+            GTK_DRAWING_AREA(app->window_simulation->drawing_area),
+            on_draw_dynamic,
+            app,
+            NULL
+        );
+    }
 
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     if (sim->gravity != 0)
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->gravity),
@@ -524,17 +581,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
 
 void create_dialog_error_message(const gchar* message, GtkApp app)
 {
-    GtkWidget* dialog_error = gtk_message_dialog_new(
-        GTK_WINDOW(app->window_main->window),
-        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-        GTK_MESSAGE_ERROR,
-        GTK_BUTTONS_CLOSE,
-        "%s",
-        message
-    );
-    gtk_window_set_position(
-        GTK_WINDOW(dialog_error), GTK_WIN_POS_CENTER_ON_PARENT
-    );
-    gtk_dialog_run(GTK_DIALOG(dialog_error));
-    gtk_widget_destroy(dialog_error);
+    GtkAlertDialog* dialog = gtk_alert_dialog_new("%s", message);
+    gtk_alert_dialog_show(dialog, GTK_WINDOW(app->window_main->window));
+    g_object_unref(dialog);
 }

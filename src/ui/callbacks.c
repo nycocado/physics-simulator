@@ -2,12 +2,10 @@
 
 void on_window_destroy(GtkWidget* widget, gpointer data)
 {
-    GtkWidget* toplevel = gtk_widget_get_toplevel(widget);
-
-    if (GTK_IS_WINDOW(toplevel))
-    {
-        gtk_widget_destroy(toplevel);
-    }
+    (void)data;
+    GtkWidget* root = GTK_WIDGET(gtk_widget_get_root(widget));
+    if (GTK_IS_WINDOW(root))
+        gtk_window_destroy(GTK_WINDOW(root));
 }
 
 void on_renderer_check_toggled(
@@ -49,7 +47,7 @@ void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data
     }
 
     create_window_add_particle_normal_widgets(app);
-    gtk_widget_show_all(app->window_add_particle_normal->window);
+    gtk_window_present(GTK_WINDOW(app->window_add_particle_normal->window));
 }
 
 void on_window_add_particle_normal_add_button_clicked(
@@ -108,7 +106,7 @@ void on_window_add_particle_normal_add_button_clicked(
         -1
     );
     app->variables->simulation->num_particles_use++;
-    gtk_widget_destroy(app->window_add_particle_normal->window);
+    gtk_window_destroy(GTK_WINDOW(app->window_add_particle_normal->window));
 }
 
 void on_window_edit_particle_normal_edit_button_clicked(
@@ -163,7 +161,7 @@ void on_window_edit_particle_normal_edit_button_clicked(
         mass,
         -1
     );
-    gtk_widget_destroy(app->window_edit_particle_normal->window);
+    gtk_window_destroy(GTK_WINDOW(app->window_edit_particle_normal->window));
 }
 
 void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
@@ -199,7 +197,7 @@ void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
     }
 
     create_window_add_force_normal_widgets(app);
-    gtk_widget_show_all(app->window_add_force_normal->window);
+    gtk_window_present(GTK_WINDOW(app->window_add_force_normal->window));
 }
 
 void on_window_add_force_normal_add_button_clicked(
@@ -251,7 +249,7 @@ void on_window_add_force_normal_add_button_clicked(
         gtk_tree_model_get_path(GTK_TREE_MODEL(app->tree_store), &parentIter);
     gtk_tree_view_expand_row(app->tree_view, path, FALSE);
     gtk_tree_path_free(path);
-    gtk_widget_destroy(app->window_add_force_normal->window);
+    gtk_window_destroy(GTK_WINDOW(app->window_add_force_normal->window));
 }
 
 void on_window_edit_force_normal_edit_button_clicked(
@@ -273,7 +271,7 @@ void on_window_edit_force_normal_edit_button_clicked(
         gtk_tree_view_get_selection(app->tree_view), &model, &iter
     );
     gtk_tree_store_set(app->tree_store, &iter, COL_X, fx, COL_Y, fy, -1);
-    gtk_widget_destroy(app->window_edit_force_normal->window);
+    gtk_window_destroy(GTK_WINDOW(app->window_edit_force_normal->window));
 }
 
 void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
@@ -356,7 +354,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
             mass
         );
 
-        gtk_widget_show_all(app->window_edit_particle_normal->window);
+        gtk_window_present(GTK_WINDOW(app->window_edit_particle_normal->window));
     }
     else
     {
@@ -373,7 +371,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
             fy
         );
 
-        gtk_widget_show_all(app->window_edit_force_normal->window);
+        gtk_window_present(GTK_WINDOW(app->window_edit_force_normal->window));
     }
 }
 
@@ -412,29 +410,39 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
     gtk_tree_store_remove(app->tree_store, &iter);
 }
 
-void on_selection_change_abrir(GtkFileChooser* chooser, gpointer data)
+static GtkFileFilter* make_sabino_filter(void)
 {
-    GtkWidget* dialog = GTK_WIDGET(chooser);
-    GtkWidget* select_button = gtk_dialog_get_widget_for_response(
-        GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT
-    );
-
-    gchar* filename = gtk_file_chooser_get_filename(chooser);
-    gboolean is_valid = filename &&
-                        g_file_test(filename, G_FILE_TEST_IS_REGULAR) &&
-                        g_file_test(filename, G_FILE_TEST_EXISTS) &&
-                        g_str_has_suffix(filename, ".sabino");
-
-    gtk_widget_set_sensitive(select_button, is_valid);
-
-    if (filename)
-    {
-        g_free(filename);
-    }
+    GtkFileFilter* filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Projetos Sabino (*.sabino)");
+    gtk_file_filter_add_pattern(filter, "*.sabino");
+    return filter;
 }
 
-void on_menu_projetos_abrir_activate(GtkMenuItem* item, gpointer data)
+static void on_projetos_abrir_response(
+    GObject* source, GAsyncResult* result, gpointer data
+)
 {
+    GtkApp app = (GtkApp)data;
+    GError* error = NULL;
+    GFile* file = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(source), result, &error);
+    g_object_unref(source);
+    if (file == NULL)
+    {
+        g_clear_error(&error);
+        return;
+    }
+    g_free(app->variables->project->file_path);
+    app->variables->project->file_path = g_file_get_path(file);
+    app->variables->project->is_file_open = TRUE;
+    g_object_unref(file);
+    open_project(app);
+}
+
+void on_menu_projects_open_activate(
+    GSimpleAction* action, GVariant* parameter, gpointer data
+)
+{
+    (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
     if (app->variables->project->is_file_open)
     {
@@ -443,34 +451,28 @@ void on_menu_projetos_abrir_activate(GtkMenuItem* item, gpointer data)
         );
         return;
     }
-    GtkWidget* dialog = gtk_file_chooser_dialog_new(
-        "Abrir Arquivo",
+    GtkFileDialog* dialog = gtk_file_dialog_new();
+    gtk_file_dialog_set_title(dialog, "Abrir Arquivo");
+    GListStore* filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
+    GtkFileFilter* filter = make_sabino_filter();
+    g_list_store_append(filters, filter);
+    g_object_unref(filter);
+    gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));
+    g_object_unref(filters);
+    gtk_file_dialog_open(
+        dialog,
         GTK_WINDOW(app->window_main->window),
-        GTK_FILE_CHOOSER_ACTION_OPEN,
-        "_Cancelar",
-        GTK_RESPONSE_CANCEL,
-        "_Abrir",
-        GTK_RESPONSE_ACCEPT,
-        NULL
-    );
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    g_signal_connect(
-        G_OBJECT(dialog),
-        "response",
-        G_CALLBACK(gtk_response_projetos_abrir),
+        NULL,
+        on_projetos_abrir_response,
         app
     );
-    g_signal_connect(
-        G_OBJECT(dialog),
-        "selection-changed",
-        G_CALLBACK(on_selection_change_abrir),
-        NULL
-    );
-    gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_salvar_activate(GtkMenuItem* item, gpointer data)
+void on_menu_projects_save_activate(
+    GSimpleAction* action, GVariant* parameter, gpointer data
+)
 {
+    (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {
@@ -480,8 +482,47 @@ void on_menu_projetos_salvar_activate(GtkMenuItem* item, gpointer data)
     save_project(app);
 }
 
-void on_menu_projetos_novo_activate(GtkMenuItem* item, gpointer data)
+static void on_projetos_novo_response(
+    GObject* source, GAsyncResult* result, gpointer data
+)
 {
+    GtkApp app = (GtkApp)data;
+    GError* error = NULL;
+    GFile* file =
+        gtk_file_dialog_save_finish(GTK_FILE_DIALOG(source), result, &error);
+    g_object_unref(source);
+    if (file == NULL)
+    {
+        g_clear_error(&error);
+        return;
+    }
+    gchar* path = g_file_get_path(file);
+    g_object_unref(file);
+    if (!g_str_has_suffix(path, ".sabino"))
+    {
+        gchar* with_ext = g_strdup_printf("%s.sabino", path);
+        g_free(path);
+        path = with_ext;
+    }
+    FILE* fp = fopen(path, "w+");
+    if (fp != NULL)
+    {
+        fclose(fp);
+        g_free(app->variables->project->file_path);
+        app->variables->project->file_path = path;
+        app->variables->project->is_file_open = TRUE;
+    }
+    else
+    {
+        g_free(path);
+    }
+}
+
+void on_menu_projects_new_activate(
+    GSimpleAction* action, GVariant* parameter, gpointer data
+)
+{
+    (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
     if (app->variables->project->is_file_open)
     {
@@ -490,33 +531,23 @@ void on_menu_projetos_novo_activate(GtkMenuItem* item, gpointer data)
         );
         return;
     }
-    GtkWidget* dialog = gtk_file_chooser_dialog_new(
-        "Salvar Arquivo",
+    GtkFileDialog* dialog = gtk_file_dialog_new();
+    gtk_file_dialog_set_title(dialog, "Novo Projeto");
+    gtk_file_dialog_set_initial_name(dialog, "projeto.sabino");
+    gtk_file_dialog_save(
+        dialog,
         GTK_WINDOW(app->window_main->window),
-        GTK_FILE_CHOOSER_ACTION_SAVE,
-        "_Cancelar",
-        GTK_RESPONSE_CANCEL,
-        "_Salvar",
-        GTK_RESPONSE_ACCEPT,
-        NULL
-    );
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    gtk_file_chooser_set_do_overwrite_confirmation(
-        GTK_FILE_CHOOSER(dialog), TRUE
-    );
-    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "andre.sabino");
-    g_signal_connect(
-        G_OBJECT(dialog),
-        "response",
-        G_CALLBACK(gtk_response_projetos_novo),
+        NULL,
+        on_projetos_novo_response,
         app
     );
-
-    gtk_widget_show_all(dialog);
 }
 
-void on_menu_projetos_fechar_activate(GtkMenuItem* item, gpointer data)
+void on_menu_projects_close_activate(
+    GSimpleAction* action, GVariant* parameter, gpointer data
+)
 {
+    (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
     if (!app->variables->project->is_file_open)
     {

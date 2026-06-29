@@ -1,13 +1,5 @@
 #include "gtk_include_all.h"
 
-void get_window_size(GtkWidget* widget, GtkApp app)
-{
-    GtkAllocation allocation;
-    gtk_widget_get_allocation(widget, &allocation);
-    app->variables->window_size->width = allocation.width;
-    app->variables->window_size->height = allocation.height;
-}
-
 void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app)
 {
     cairo_set_source_rgb(cr, 1, 1, 1);
@@ -87,13 +79,13 @@ void simulation_window_destroy(GtkApp app)
         app->variables->simulation->timeout_id = 0;
     }
     variables_simulation_wipe(app->variables->simulation);
-    gtk_widget_destroy(app->window_simulation->window);
+    gtk_window_destroy(GTK_WINDOW(app->window_simulation->window));
     app->window_simulation->window = NULL;
 }
 
 void simulation_read_controls(GtkApp app)
 {
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     sim->gravity = gtk_spin_button_get_value(
         GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->gravity)
     );
@@ -110,7 +102,7 @@ void simulation_read_controls(GtkApp app)
 
 void simulation_stop(GtkApp app)
 {
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     if (!sim->is_simulation_running)
         return;
     sim->is_simulation_running = FALSE;
@@ -124,7 +116,7 @@ void simulation_stop(GtkApp app)
 
 void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app)
 {
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     if (sim->timer == NULL)
         sim->timer = g_timer_new();
     if (sim->last_time == 0)

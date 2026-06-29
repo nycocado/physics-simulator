@@ -2,7 +2,6 @@
 
 #include "gtk_include_all.h"
 
-void get_window_size(GtkWidget* widget, GtkApp app);
 void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app);
 void draw_arrow(
     cairo_t* cr,

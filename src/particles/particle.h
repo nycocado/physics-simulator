@@ -38,11 +38,13 @@ struct _Particle_Dynamic
 struct _Particle_Cinematic_Collection
 {
         Particle_Cinematic* particles;
+        int num_particles;
 };
 
 struct _Particle_Dynamic_Collection
 {
         Particle_Dynamic* particles;
+        int num_particles;
 };
 
 Vector create_vector(float x, float y);

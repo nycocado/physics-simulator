@@ -9,7 +9,7 @@ void save_project(GtkApp app)
         return;
     }
 
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     if (sim->gravity != 0 || sim->time != 0 || sim->time_step != 0 ||
         sim->frames != 0)
     {
@@ -129,7 +129,7 @@ void open_project(GtkApp app)
 
         if (strcmp(type, "SETTINGS") == 0)
         {
-            Variables_Simulation* sim = app->variables->simulation;
+            Variables_Simulation sim = app->variables->simulation;
             char* token;
             while ((token = strtok(NULL, " ")) != NULL)
             {

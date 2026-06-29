@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -g -I$(SRC_DIR)
-GTKFLAGS = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
+GTKFLAGS = `pkg-config --cflags --libs gtk4` -rdynamic
 MATHFLAGS = -lm
 GLIBFLAGS = `pkg-config --cflags --libs glib-2.0`
 BIN_DIR = bin
@@ -28,22 +28,22 @@ ALL_OBJS = $(BIN_DIR)/run.o \
 
 _MAKE_SUBDIRS::=$(shell mkdir -p $(BIN_DIR)/particles $(BIN_DIR)/physics $(BIN_DIR)/simulation $(BIN_DIR)/ui)
 
-run.o: $(SRC_DIR)/run.c
+$(BIN_DIR)/run.o: $(SRC_DIR)/run.c
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/run.c $(GTKFLAGS) -o $(BIN_DIR)/run.o
 
-app.o: $(SRC_DIR)/app.c $(SRC_DIR)/app.h
+$(BIN_DIR)/app.o: $(SRC_DIR)/app.c $(SRC_DIR)/app.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/app.c $(GTKFLAGS) -o $(BIN_DIR)/app.o
 
-variables.o: $(SRC_DIR)/variables.c $(SRC_DIR)/variables.h
+$(BIN_DIR)/variables.o: $(SRC_DIR)/variables.c $(SRC_DIR)/variables.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/variables.c $(GTKFLAGS) -o $(BIN_DIR)/variables.o
 
-project.o: $(SRC_DIR)/project.c $(SRC_DIR)/project.h
+$(BIN_DIR)/project.o: $(SRC_DIR)/project.c $(SRC_DIR)/project.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/project.c $(GTKFLAGS) -o $(BIN_DIR)/project.o
 
-log.o: $(SRC_DIR)/log.c $(SRC_DIR)/log.h
+$(BIN_DIR)/log.o: $(SRC_DIR)/log.c $(SRC_DIR)/log.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/log.c $(GTKFLAGS) -o $(BIN_DIR)/log.o
 
-collection.o: $(SRC_DIR)/collection.c $(SRC_DIR)/collection.h
+$(BIN_DIR)/collection.o: $(SRC_DIR)/collection.c $(SRC_DIR)/collection.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/collection.c $(GTKFLAGS) -o $(BIN_DIR)/collection.o
 
 $(BIN_DIR)/particles/buttons.o: $(SRC_DIR)/particles/buttons.c $(SRC_DIR)/particles/buttons.h

@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.24"/>
-  <object class="GtkImage" id="img_add_force">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">bottom</property>
-  </object>
-  <object class="GtkImage" id="img_add_particle">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">gtk-add</property>
-  </object>
-  <object class="GtkImage" id="img_edit">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">gtk-edit</property>
-  </object>
-  <object class="GtkImage" id="img_remove">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">gtk-clear</property>
-  </object>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkTreeStore" id="tree_store">
     <columns>
       <!-- column-name x -->
@@ -46,89 +25,51 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <menu id="menu_model">
+    <submenu>
+      <attribute name="label" translatable="yes">_Projetos</attribute>
+      <item>
+        <attribute name="label" translatable="yes">Abrir</attribute>
+        <attribute name="action">win.projects-open</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Novo</attribute>
+        <attribute name="action">win.projects-new</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Salvar</attribute>
+        <attribute name="action">win.projects-save</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Fechar</attribute>
+        <attribute name="action">win.projects-close</attribute>
+      </item>
+    </submenu>
+  </menu>
   <object class="GtkWindow" id="window_main">
-    <property name="can-focus">False</property>
     <property name="title" translatable="yes">Simulador de Cinemática e Dinâmica - Projeto</property>
-    <property name="window-position">center</property>
     <property name="default-width">1200</property>
     <property name="default-height">800</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox" id="box_all">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar" id="menu_bar">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <child>
-              <object class="GtkMenuItem" id="menu_item_projetos">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">_Projetos</property>
-                <property name="use-underline">True</property>
-                <child type="submenu">
-                  <object class="GtkMenu" id="menu_projetos">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <child>
-                      <object class="GtkMenuItem" id="menu_projetos_abrir">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Abrir</property>
-                        <signal name="activate" handler="on_menu_projetos_abrir_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="menu_projetos_novo">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Novo</property>
-                        <signal name="activate" handler="on_menu_projetos_novo_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="menu_projetos_salvar">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Salvar</property>
-                        <signal name="activate" handler="on_menu_projetos_salvar_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="menu_projetos_fechar">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Fechar</property>
-                        <signal name="activate" handler="on_menu_projetos_fechar_activate" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
+          <object class="GtkPopoverMenuBar" id="menu_bar">
+            <property name="menu-model">menu_model</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="box_content">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <child>
               <object class="GtkScrolledWindow" id="scroll">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="shadow-type">in</property>
+                <property name="has-frame">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
                 <child>
                   <object class="GtkTreeView" id="tree_view">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
                     <property name="model">tree_store</property>
                     <property name="enable-grid-lines">horizontal</property>
                     <child internal-child="selection">
@@ -231,131 +172,56 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkBox" id="box_button">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkBox" id="table_button">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="halign">start</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkButton" id="add_particle_button">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="image">img_add_particle</property>
-                        <property name="always-show-image">True</property>
+                        <property name="icon-name">list-add</property>
                         <signal name="clicked" handler="on_window_main_add_particle_button_clicked" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="add_force_button">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="image">img_add_force</property>
+                        <property name="icon-name">go-down</property>
                         <signal name="clicked" handler="on_window_main_add_force_button_clicked" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="remove_button">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="image">img_remove</property>
-                        <property name="always-show-image">True</property>
+                        <property name="icon-name">list-remove</property>
                         <signal name="clicked" handler="on_window_main_remove_button_clicked" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="edit_button">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="image">img_edit</property>
-                        <property name="always-show-image">True</property>
+                        <property name="icon-name">document-edit</property>
                         <signal name="clicked" handler="on_window_main_edit_button_clicked" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="cinematic_button">
                     <property name="label" translatable="yes">Cinemática</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="on_window_main_cinematic_button_clicked" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="dynamic_button">
                     <property name="label" translatable="yes">Dinâmica</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
                     <signal name="clicked" handler="on_window_main_dynamic_button_clicked" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>

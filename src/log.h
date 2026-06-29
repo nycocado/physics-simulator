@@ -11,7 +11,6 @@ void save_simulation_cinematic_log(
     float gravity,
     GtkApp app
 );
-int calc_num_forces_max(Particle_Dynamic_Collection particle_collection);
 void save_simulation_dynamic_log(
     Particle_Dynamic_Collection particle_collection,
     float time,

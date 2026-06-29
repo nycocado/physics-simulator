@@ -1,13 +1,17 @@
 #include "gtk_include_all.h"
 
-gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr, gpointer data)
+void on_draw_dynamic(
+    GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer data
+)
 {
+    (void)area;
     GtkApp app = (GtkApp)data;
-    get_window_size(widget, app);
+    app->variables->window_size->width = width;
+    app->variables->window_size->height = height;
     set_background_color(cr, 0.2, 0.2, 0.2);
 
-    int x_center = app->variables->window_size->width / 2;
-    int y_center = app->variables->window_size->height / 2;
+    int x_center = width / 2;
+    int y_center = height / 2;
 
     draw_axes(cr, x_center, y_center, app);
 
@@ -24,8 +28,8 @@ gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr, gpointer data)
         float frx = particle->force_resultant->x;
         float fry = particle->force_resultant->y;
 
-        float start_x = x_center + x;
-        float start_y = y_center - y;
+        float start_x = (float)x_center + x;
+        float start_y = (float)y_center - y;
 
         float end_frx = start_x + frx;
         float end_fry = start_y - fry;
@@ -83,7 +87,6 @@ gboolean on_draw_dynamic(GtkWidget* widget, cairo_t* cr, gpointer data)
             draw_title(cr, "fy", start_x + 5, end_fry - 5);
         }
     }
-    return FALSE;
 }
 
 gboolean on_timeout_dynamic(gpointer user_data)
@@ -99,7 +102,7 @@ gboolean on_timeout_dynamic(gpointer user_data)
     if (!app->variables->simulation->is_simulation_running)
         return FALSE;
 
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     GtkWidget* drawing_area = app->window_simulation->drawing_area;
 
     sim->last_time = g_timer_elapsed(sim->timer, NULL);
@@ -136,10 +139,12 @@ gboolean on_timeout_dynamic(gpointer user_data)
     return TRUE;
 }
 
-void on_window_dynamic_destroy(GtkWidget* widget, gpointer data)
+gboolean on_window_dynamic_destroy(GtkWindow* window, gpointer data)
 {
+    (void)window;
     GtkApp app = (GtkApp)data;
     simulation_window_destroy(app);
+    return TRUE;
 }
 
 void on_dynamic_refresh_button_clicked(GtkButton* button, gpointer data)
@@ -196,7 +201,7 @@ void on_dynamic_start_button_clicked(GtkButton* button, gpointer data)
     if (app->variables->simulation->is_simulation_running)
         return;
 
-    Variables_Simulation* sim = app->variables->simulation;
+    Variables_Simulation sim = app->variables->simulation;
     simulation_read_controls(app);
     forces_dynamic_apply(app);
 
@@ -232,5 +237,5 @@ void run_simulation_dynamic(GtkApp app)
         simulation_window_destroy(app);
     particle_dynamic_collection_start(app);
     create_window_simulation_widgets(SIMULATION_DYNAMIC, app);
-    gtk_widget_show_all(app->window_simulation->window);
+    gtk_window_present(GTK_WINDOW(app->window_simulation->window));
 }
