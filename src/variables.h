@@ -12,6 +12,7 @@ typedef struct _Particle_Dynamic_Collection* Particle_Dynamic_Collection;
 struct _Variables_Simulation
 {
         gboolean is_simulation_running;
+        int type;
         int num_particles_use;
         Particle_Cinematic_Collection particle_cinematic_collection;
         Particle_Dynamic_Collection particle_dynamic_collection;

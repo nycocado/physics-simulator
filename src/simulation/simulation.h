@@ -29,3 +29,4 @@ void simulation_window_destroy(GtkApp app);
 void simulation_read_controls(GtkApp app);
 void simulation_stop(GtkApp app);
 void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app);
+void on_simulation_start_button_clicked(GtkButton* button, gpointer data);

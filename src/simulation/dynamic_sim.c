@@ -181,7 +181,7 @@ void on_dynamic_refresh_button_clicked(GtkButton* button, gpointer data)
     gtk_widget_queue_draw(app->window_simulation->drawing_area);
 }
 
-static void forces_dynamic_apply(GtkApp app)
+void forces_dynamic_apply(GtkApp app)
 {
     Particle_Dynamic_Collection collection =
         app->variables->simulation.particle_dynamic_collection;
@@ -208,36 +208,6 @@ static void forces_dynamic_apply(GtkApp app)
         particle->acceleration->y +=
             ((particle->force_resultant->y) / (particle->mass));
     }
-}
-
-void on_dynamic_start_button_clicked(GtkButton* button, gpointer data)
-{
-    GtkApp app = (GtkApp)data;
-    if (app->variables->simulation.is_simulation_running)
-        return;
-
-    Variables_Simulation sim = &app->variables->simulation;
-    simulation_read_controls(app);
-    forces_dynamic_apply(app);
-
-    if (sim->first_time || sim->gravity != sim->gravity_cache ||
-        sim->time_step != sim->time_step_cache || sim->time != sim->time_cache)
-    {
-        save_simulation_dynamic_log(
-            sim->particle_dynamic_collection,
-            sim->time,
-            sim->time_step,
-            sim->gravity,
-            app
-        );
-    }
-
-    sim->first_time = FALSE;
-    sim->gravity_cache = sim->gravity;
-    sim->time_cache = sim->time;
-    sim->time_step_cache = sim->time_step;
-
-    simulation_start_timer(on_timeout_dynamic, app);
 }
 
 void on_dynamic_stop_button_clicked(GtkButton* button, gpointer data)

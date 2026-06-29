@@ -1,6 +1,9 @@
 #include "simulation.h"
 #include "app.h"
+#include "log.h"
 #include "physics/kinematics.h"
+#include "simulation/dynamic_sim.h"
+#include "simulation/kinematic_sim.h"
 #include "ui/callbacks.h"
 #include "variables.h"
 #include <cairo.h>
@@ -33,10 +36,10 @@ void draw_arrow(
 {
     double angle = atan2(end_y - start_y, end_x - start_x);
 
-    double x1 = end_x - ((arrow_length) * cos(angle - arrow_angle));
-    double y1 = end_y - ((arrow_length) * sin(angle - arrow_angle));
-    double x2 = end_x - ((arrow_length) * cos(angle + arrow_angle));
-    double y2 = end_y - ((arrow_length) * sin(angle + arrow_angle));
+    double x1 = end_x - ((arrow_length)*cos(angle - arrow_angle));
+    double y1 = end_y - ((arrow_length)*sin(angle - arrow_angle));
+    double x2 = end_x - ((arrow_length)*cos(angle + arrow_angle));
+    double y2 = end_y - ((arrow_length)*sin(angle + arrow_angle));
 
     cairo_move_to(cr, start_x, start_y);
     cairo_line_to(cr, end_x, end_y);
@@ -133,4 +136,59 @@ void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app)
     sim->is_simulation_running = TRUE;
     int interval = (int)(1000 / sim->frames);
     sim->timeout_id = g_timeout_add(interval, timeout_fn, app);
+}
+
+void on_simulation_start_button_clicked(GtkButton* button, gpointer data)
+{
+    GtkApp app = (GtkApp)data;
+    Variables_Simulation sim = &app->variables->simulation;
+
+    if (sim->is_simulation_running)
+        return;
+
+    simulation_read_controls(app);
+
+    if (sim->type == SIMULATION_DYNAMIC)
+    {
+        forces_dynamic_apply(app);
+    }
+
+    if (sim->first_time || sim->gravity != sim->gravity_cache ||
+        sim->time_step != sim->time_step_cache || sim->time != sim->time_cache)
+    {
+        if (sim->type == SIMULATION_CINEMATIC)
+        {
+            save_simulation_cinematic_log(
+                sim->particle_cinematic_collection,
+                sim->time,
+                sim->time_step,
+                sim->gravity,
+                app
+            );
+        }
+        else if (sim->type == SIMULATION_DYNAMIC)
+        {
+            save_simulation_dynamic_log(
+                sim->particle_dynamic_collection,
+                sim->time,
+                sim->time_step,
+                sim->gravity,
+                app
+            );
+        }
+    }
+
+    sim->first_time = FALSE;
+    sim->gravity_cache = sim->gravity;
+    sim->time_cache = sim->time;
+    sim->time_step_cache = sim->time_step;
+
+    if (sim->type == SIMULATION_CINEMATIC)
+    {
+        simulation_start_timer(on_timeout_cinematic, app);
+    }
+    else if (sim->type == SIMULATION_DYNAMIC)
+    {
+        simulation_start_timer(on_timeout_dynamic, app);
+    }
 }

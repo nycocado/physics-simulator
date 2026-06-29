@@ -339,6 +339,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         );
     }
 
+    app->variables->simulation.type = i;
     app->window_simulation->window =
         GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     app->window_simulation->drawing_area =
@@ -379,7 +380,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         g_signal_connect(
             app->window_simulation->buttons.start,
             "clicked",
-            G_CALLBACK(on_cinematic_start_button_clicked),
+            G_CALLBACK(on_simulation_start_button_clicked),
             app
         );
         g_signal_connect(
@@ -412,7 +413,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         g_signal_connect(
             app->window_simulation->buttons.start,
             "clicked",
-            G_CALLBACK(on_dynamic_start_button_clicked),
+            G_CALLBACK(on_simulation_start_button_clicked),
             app
         );
         g_signal_connect(
