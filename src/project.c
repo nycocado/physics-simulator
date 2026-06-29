@@ -99,11 +99,27 @@ gboolean open_project(GtkApp app)
     app->variables->simulation.num_particles_use = 0;
 
     Variables_Simulation sim = &app->variables->simulation;
-    sim->gravity = g_key_file_get_double(key_file, "Settings", "Gravity", NULL);
-    sim->time = g_key_file_get_double(key_file, "Settings", "Time", NULL);
-    sim->time_step =
-        g_key_file_get_double(key_file, "Settings", "TimeStep", NULL);
-    sim->frames = g_key_file_get_double(key_file, "Settings", "Frames", NULL);
+
+    {
+        GError* err = NULL;
+        double val = g_key_file_get_double(key_file, "Settings", "Gravity", &err);
+        if (!err) sim->gravity = val; else g_error_free(err);
+    }
+    {
+        GError* err = NULL;
+        double val = g_key_file_get_double(key_file, "Settings", "Time", &err);
+        if (!err) sim->time = val; else g_error_free(err);
+    }
+    {
+        GError* err = NULL;
+        double val = g_key_file_get_double(key_file, "Settings", "TimeStep", &err);
+        if (!err) sim->time_step = val; else g_error_free(err);
+    }
+    {
+        GError* err = NULL;
+        double val = g_key_file_get_double(key_file, "Settings", "Frames", &err);
+        if (!err) sim->frames = val; else g_error_free(err);
+    }
 
     int num_particles =
         g_key_file_get_integer(key_file, "Settings", "NumParticles", NULL);

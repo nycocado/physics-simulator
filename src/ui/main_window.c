@@ -19,6 +19,21 @@ static void setup_label(
     gtk_list_item_set_child(list_item, label);
 }
 
+static void setup_type_expander(
+    GtkSignalListItemFactory* factory,
+    GtkListItem* list_item,
+    gpointer data
+)
+{
+    (void)factory;
+    (void)data;
+    GtkWidget* expander = gtk_tree_expander_new();
+    GtkWidget* label = gtk_label_new(NULL);
+    gtk_widget_set_halign(label, GTK_ALIGN_START);
+    gtk_tree_expander_set_child(GTK_TREE_EXPANDER(expander), label);
+    gtk_list_item_set_child(list_item, expander);
+}
+
 static void bind_type(
     GtkSignalListItemFactory* factory,
     GtkListItem* list_item,
@@ -27,21 +42,22 @@ static void bind_type(
 {
     (void)factory;
     (void)data;
-    GtkWidget* label = gtk_list_item_get_child(list_item);
+    GtkWidget* expander = gtk_list_item_get_child(list_item);
     GtkTreeListRow* row_item =
         GTK_TREE_LIST_ROW(gtk_list_item_get_item(list_item));
     if (!row_item)
         return;
+
+    gtk_tree_expander_set_list_row(GTK_TREE_EXPANDER(expander), row_item);
+
     PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row_item));
+    GtkWidget* label = gtk_tree_expander_get_child(GTK_TREE_EXPANDER(expander));
 
     if (phys_item_get_item_type(item) == PHYS_ITEM_PARTICLE)
-    {
         gtk_label_set_text(GTK_LABEL(label), "Partícula");
-    }
     else
-    {
         gtk_label_set_text(GTK_LABEL(label), "Força");
-    }
+
     g_object_unref(item);
 }
 
@@ -167,7 +183,7 @@ static void bind_check(
 void set_columns_attribute(GtkApp app)
 {
     g_signal_connect(
-        app->window_main->factories.type, "setup", G_CALLBACK(setup_label), NULL
+        app->window_main->factories.type, "setup", G_CALLBACK(setup_type_expander), NULL
     );
     g_signal_connect(
         app->window_main->factories.type, "bind", G_CALLBACK(bind_type), NULL
