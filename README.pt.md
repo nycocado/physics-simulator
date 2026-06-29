@@ -1,19 +1,19 @@
 # physics-simulator
 
-Aplicação desktop em GTK3 que simula física de partículas em dois modos — cinemático e dinâmico — desenvolvida para a cadeira de Programação e Algoritmos.
+Aplicação desktop em GTK4 que simula física de partículas em dois modos — cinemático e dinâmico — desenvolvida para a cadeira de Programação e Algoritmos.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3da639.svg)](LICENSE)
 ![Status](https://img.shields.io/badge/status-concluído-6f42c1)
 
 [![C](https://img.shields.io/badge/C-00599C?logo=c&logoColor=white)](https://en.cppreference.com/w/c)
 [![Make](https://img.shields.io/badge/Make-4495D5?logo=make&logoColor=white)](https://www.gnu.org/software/make/)
-[![GTK3](https://img.shields.io/badge/GTK-3-4A86CF?logo=gnome&logoColor=white)](https://docs.gtk.org/gtk3/)
+[![GTK4](https://img.shields.io/badge/GTK-4-4A86CF?logo=gnome&logoColor=white)](https://docs.gtk.org/gtk4/)
 
 Português | [English](README.md)
 
 ## Sobre
 
-Simulador de partículas com dois modos independentes. No modo cinemático as partículas seguem trajetórias com aceleração constante; no modo dinâmico a segunda lei de Newton é aplicada com forças e gravidade configuráveis. A interface é construída com GTK3 e Glade, e as simulações são renderizadas com Cairo.
+Simulador de partículas com dois modos independentes. No modo cinemático as partículas seguem trajetórias com aceleração constante; no modo dinâmico a segunda lei de Newton é aplicada com forças e gravidade configuráveis. A interface é construída com GTK4 e Blueprint, e as simulações são renderizadas com Cairo.
 
 ## Modos de simulação
 
@@ -28,7 +28,7 @@ Simulador de partículas com dois modos independentes. No modo cinemático as pa
 | ---------- | ------ |
 | GCC | 9+ |
 | Make | 4+ |
-| GTK3 | 3.24+ |
+| GTK4 | 4.0+ |
 | Cairo | 1.16+ |
 | GLib | 2.0+ |
 
