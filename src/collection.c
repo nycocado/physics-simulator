@@ -4,7 +4,7 @@ void particle_cinematic_collection_start(GtkApp app)
 {
     Particle_Cinematic_Collection particle_collection =
         particle_cinematic_collection_new(
-            app->variables->simulation->num_particles_use
+            app->variables->simulation.num_particles_use
         );
     GtkTreeIter iter;
     gboolean valid =
@@ -46,7 +46,7 @@ void particle_cinematic_collection_start(GtkApp app)
         valid =
             gtk_tree_model_iter_next(GTK_TREE_MODEL(app->tree_store), &iter);
     }
-    app->variables->simulation->particle_cinematic_collection =
+    app->variables->simulation.particle_cinematic_collection =
         particle_collection;
 }
 
@@ -54,7 +54,7 @@ void particle_dynamic_collection_start(GtkApp app)
 {
     Particle_Dynamic_Collection particle_dynamic_collection =
         particle_dynamic_collection_new(
-            app->variables->simulation->num_particles_use
+            app->variables->simulation.num_particles_use
         );
     GtkTreeIter iter;
     gboolean valid =
@@ -128,6 +128,6 @@ void particle_dynamic_collection_start(GtkApp app)
         valid =
             gtk_tree_model_iter_next(GTK_TREE_MODEL(app->tree_store), &iter);
     }
-    app->variables->simulation->particle_dynamic_collection =
+    app->variables->simulation.particle_dynamic_collection =
         particle_dynamic_collection;
 }

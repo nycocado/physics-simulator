@@ -6,8 +6,8 @@ void on_draw_cinematic(
 {
     (void)area;
     GtkApp app = (GtkApp)data;
-    app->variables->window_size->width = width;
-    app->variables->window_size->height = height;
+    app->variables->window_width = width;
+    app->variables->window_height = height;
     set_background_color(cr, 0.2, 0.2, 0.2);
 
     int x_center = width / 2;
@@ -15,11 +15,11 @@ void on_draw_cinematic(
 
     draw_axes(cr, x_center, y_center, app);
 
-    draw_time(cr, app->variables->simulation->last_time, 10, 20);
+    draw_time(cr, app->variables->simulation.last_time, 10, 20);
 
     Particle_Cinematic_Collection particle_collection =
-        app->variables->simulation->particle_cinematic_collection;
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+        app->variables->simulation.particle_cinematic_collection;
+    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
@@ -76,15 +76,15 @@ gboolean on_timeout_cinematic(gpointer user_data)
     GtkApp app = (GtkApp)user_data;
     if (app->window_simulation->window == NULL)
     {
-        if (app->variables->simulation->timer != NULL)
-            g_timer_stop(app->variables->simulation->timer);
+        if (app->variables->simulation.timer != NULL)
+            g_timer_stop(app->variables->simulation.timer);
         return FALSE;
     }
 
-    if (!app->variables->simulation->is_simulation_running)
+    if (!app->variables->simulation.is_simulation_running)
         return FALSE;
 
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     GtkWidget* drawing_area = app->window_simulation->drawing_area;
 
     sim->last_time = g_timer_elapsed(sim->timer, NULL);
@@ -138,11 +138,11 @@ void on_cinematic_refresh_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
     simulation_stop(app);
-    app->variables->simulation->last_time = 0;
+    app->variables->simulation.last_time = 0;
 
     Particle_Cinematic_Collection collection =
-        app->variables->simulation->particle_cinematic_collection;
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+        app->variables->simulation.particle_cinematic_collection;
+    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Cinematic particle = collection->particles[i];
         particle->position->x = particle->position_i->x;
@@ -156,10 +156,10 @@ void on_cinematic_refresh_button_clicked(GtkButton* button, gpointer data)
 void on_cinematic_start_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (app->variables->simulation->is_simulation_running)
+    if (app->variables->simulation.is_simulation_running)
         return;
 
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     simulation_read_controls(app);
 
     if (sim->first_time || sim->gravity != sim->gravity_cache ||

@@ -20,7 +20,7 @@ _BUILD_BUILD_BIN::=$(shell mkdir -p $(BIN_BUILD))
 ALL_OBJS = $(BIN_DIR)/run.o \
            $(BIN_DIR)/app.o $(BIN_DIR)/variables.o \
            $(BIN_DIR)/project.o $(BIN_DIR)/log.o $(BIN_DIR)/collection.o \
-           $(BIN_DIR)/particles/buttons.o $(BIN_DIR)/particles/particle.o \
+           $(BIN_DIR)/particles/particle.o \
            $(BIN_DIR)/particles/force_dialog.o $(BIN_DIR)/particles/particle_dialog.o \
            $(BIN_DIR)/physics/kinematics.o $(BIN_DIR)/physics/dynamics.o \
            $(BIN_DIR)/simulation/simulation.o $(BIN_DIR)/simulation/kinematic_sim.o \
@@ -49,8 +49,6 @@ $(BIN_DIR)/log.o: $(SRC_DIR)/log.c $(SRC_DIR)/log.h
 $(BIN_DIR)/collection.o: $(SRC_DIR)/collection.c $(SRC_DIR)/collection.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/collection.c $(GTKFLAGS) -o $(BIN_DIR)/collection.o
 
-$(BIN_DIR)/particles/buttons.o: $(SRC_DIR)/particles/buttons.c $(SRC_DIR)/particles/buttons.h
-	$(CC) $(CFLAGS) -c $(SRC_DIR)/particles/buttons.c $(GTKFLAGS) -o $(BIN_DIR)/particles/buttons.o
 
 $(BIN_DIR)/particles/particle.o: $(SRC_DIR)/particles/particle.c $(SRC_DIR)/particles/particle.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/particles/particle.c $(GTKFLAGS) -o $(BIN_DIR)/particles/particle.o

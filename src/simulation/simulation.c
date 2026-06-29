@@ -6,11 +6,11 @@ void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app)
     cairo_set_line_width(cr, 2);
 
     cairo_move_to(cr, 0, y_bottom);
-    cairo_line_to(cr, app->variables->window_size->width, y_bottom);
+    cairo_line_to(cr, app->variables->window_width, y_bottom);
     cairo_stroke(cr);
 
     cairo_move_to(cr, x_center, 0);
-    cairo_line_to(cr, x_center, app->variables->window_size->height);
+    cairo_line_to(cr, x_center, app->variables->window_height);
     cairo_stroke(cr);
 }
 
@@ -73,36 +73,36 @@ void draw_time(cairo_t* cr, double time, double x, double y)
 
 void simulation_window_destroy(GtkApp app)
 {
-    if (app->variables->simulation->timeout_id != 0)
+    if (app->variables->simulation.timeout_id != 0)
     {
-        g_source_remove(app->variables->simulation->timeout_id);
-        app->variables->simulation->timeout_id = 0;
+        g_source_remove(app->variables->simulation.timeout_id);
+        app->variables->simulation.timeout_id = 0;
     }
-    variables_simulation_wipe(app->variables->simulation);
+    variables_simulation_wipe(&app->variables->simulation);
     gtk_window_destroy(GTK_WINDOW(app->window_simulation->window));
     app->window_simulation->window = NULL;
 }
 
 void simulation_read_controls(GtkApp app)
 {
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     sim->gravity = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->gravity)
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.gravity)
     );
     sim->time_step = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->step)
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.step)
     );
     sim->time = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->time)
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.time)
     );
     sim->frames = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons->frames)
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.frames)
     );
 }
 
 void simulation_stop(GtkApp app)
 {
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     if (!sim->is_simulation_running)
         return;
     sim->is_simulation_running = FALSE;
@@ -116,7 +116,7 @@ void simulation_stop(GtkApp app)
 
 void simulation_start_timer(GSourceFunc timeout_fn, GtkApp app)
 {
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     if (sim->timer == NULL)
         sim->timer = g_timer_new();
     if (sim->last_time == 0)

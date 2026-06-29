@@ -4,7 +4,7 @@ char* generate_log_name_for_simulation(const char* base_name, GtkApp app)
 {
     int index = 1;
     gchar* filename = NULL;
-    gchar* path = g_path_get_dirname(app->variables->project->file_path);
+    gchar* path = g_path_get_dirname(app->variables->project.file_path);
     gchar* new_path = NULL;
     FILE* file;
 
@@ -68,7 +68,7 @@ void save_simulation_cinematic_log(
         file, "Particula;t;x;y;vx;vy;v;v angle;ax;ay;a;a angle;deslocamento\n"
     );
 
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
@@ -120,7 +120,7 @@ void save_simulation_cinematic_log(
 static int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
 {
     int max_forces = 0;
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Dynamic particle = particle_collection->particles[i];
         int num_forces = g_list_length(particle->forces);
@@ -166,7 +166,7 @@ void save_simulation_dynamic_log(
     }
     fprintf(file, "frx;fry;fr;fr angle\n");
 
-    for (int i = 0; i < app->variables->simulation->num_particles_use; i++)
+    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 

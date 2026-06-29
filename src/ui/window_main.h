@@ -7,14 +7,6 @@ typedef struct _Cell_Renderer* Cell_Renderer;
 typedef struct _Columns* Columns;
 typedef struct _Buttons_Main* Buttons_Main;
 
-struct _Window_Main
-{
-        GtkWidget* window;
-        Columns columns;
-        Cell_Renderer cell_renderer;
-        Buttons_Main buttons;
-};
-
 struct _Cell_Renderer
 {
         GtkCellRenderer* type;
@@ -51,11 +43,13 @@ struct _Buttons_Main
         GtkWidget* dynamic;
 };
 
+struct _Window_Main
+{
+        GtkWidget* window;
+        struct _Columns columns;
+        struct _Cell_Renderer cell_renderer;
+        struct _Buttons_Main buttons;
+};
+
 Window_Main window_main_new();
 void window_main_free(Window_Main window_main);
-Cell_Renderer cell_renderers_new();
-void cell_renderers_free(Cell_Renderer cell_renderer);
-Columns columns_new();
-void columns_free(Columns columns);
-Buttons_Main buttons_main_new();
-void buttons_main_free(Buttons_Main buttons_main);

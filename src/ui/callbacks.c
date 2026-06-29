@@ -26,11 +26,11 @@ void on_renderer_check_toggled(
     gtk_tree_store_set(app->tree_store, &iter, COL_CHECKED, checked, -1);
     if (checked)
     {
-        app->variables->simulation->num_particles_use++;
+        app->variables->simulation.num_particles_use++;
     }
     else
     {
-        app->variables->simulation->num_particles_use--;
+        app->variables->simulation.num_particles_use--;
     }
     gtk_tree_path_free(path);
 }
@@ -38,7 +38,7 @@ void on_renderer_check_toggled(
 void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível adicionar partículas sem um projeto aberto.", app
@@ -57,25 +57,25 @@ void on_window_add_particle_normal_add_button_clicked(
 {
     GtkApp app = (GtkApp)data;
     gdouble xi = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->x)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.x)
     );
     gdouble yi = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->y)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.y)
     );
     gdouble vx = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->vx)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.vx)
     );
     gdouble vy = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->vy)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.vy)
     );
     gdouble ax = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->ax)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.ax)
     );
     gdouble ay = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->ay)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.ay)
     );
     gdouble mass = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons->mass)
+        GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.mass)
     );
 
     GtkTreeIter iter;
@@ -105,7 +105,7 @@ void on_window_add_particle_normal_add_button_clicked(
         "Partícula",
         -1
     );
-    app->variables->simulation->num_particles_use++;
+    app->variables->simulation.num_particles_use++;
     gtk_window_destroy(GTK_WINDOW(app->window_add_particle_normal->window));
 }
 
@@ -116,25 +116,25 @@ void on_window_edit_particle_normal_edit_button_clicked(
 {
     GtkApp app = (GtkApp)data;
     gdouble xi = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.x)
     );
     gdouble yi = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.y)
     );
     gdouble vx = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.vx)
     );
     gdouble vy = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.vy)
     );
     gdouble ax = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.ax)
     );
     gdouble ay = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.ay)
     );
     gdouble mass = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->mass)
+        GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.mass)
     );
 
     GtkTreeIter iter;
@@ -167,7 +167,7 @@ void on_window_edit_particle_normal_edit_button_clicked(
 void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível adicionar forças sem um projeto aberto.", app
@@ -207,10 +207,10 @@ void on_window_add_force_normal_add_button_clicked(
 {
     GtkApp app = (GtkApp)data;
     gdouble fx = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons->fx)
+        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons.fx)
     );
     gdouble fy = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons->fy)
+        GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons.fy)
     );
 
     GtkTreeModel* model;
@@ -259,10 +259,10 @@ void on_window_edit_force_normal_edit_button_clicked(
 {
     GtkApp app = (GtkApp)data;
     gdouble fx = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx)
+        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fx)
     );
     gdouble fy = gtk_spin_button_get_value(
-        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy)
+        GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy)
     );
 
     GtkTreeIter iter;
@@ -277,7 +277,7 @@ void on_window_edit_force_normal_edit_button_clicked(
 void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível editar partículas sem um projeto aberto.", app
@@ -324,32 +324,32 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         );
 
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->x),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.x),
             xi
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->y),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.y),
             yi
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vx),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.vx),
             vx
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->vy),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.vy),
             vy
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ax),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.ax),
             ax
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons->ay),
+            GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.ay),
             ay
         );
         gtk_spin_button_set_value(
             GTK_SPIN_BUTTON(
-                app->window_edit_particle_normal->spin_buttons->mass
+                app->window_edit_particle_normal->spin_buttons.mass
             ),
             mass
         );
@@ -363,11 +363,11 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         gtk_tree_model_get(model, &iter, COL_X, &fx, COL_Y, &fy, -1);
 
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fx),
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fx),
             fx
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons->fy),
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy),
             fy
         );
 
@@ -378,7 +378,7 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
 void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível remover partículas sem um projeto aberto.", app
@@ -405,7 +405,7 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
     );
     if (checked)
     {
-        app->variables->simulation->num_particles_use--;
+        app->variables->simulation.num_particles_use--;
     }
     gtk_tree_store_remove(app->tree_store, &iter);
 }
@@ -431,9 +431,9 @@ static void on_projetos_abrir_response(
         g_clear_error(&error);
         return;
     }
-    g_free(app->variables->project->file_path);
-    app->variables->project->file_path = g_file_get_path(file);
-    app->variables->project->is_file_open = TRUE;
+    g_free(app->variables->project.file_path);
+    app->variables->project.file_path = g_file_get_path(file);
+    app->variables->project.is_file_open = TRUE;
     g_object_unref(file);
     open_project(app);
 }
@@ -444,7 +444,7 @@ void on_menu_projects_open_activate(
 {
     (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
-    if (app->variables->project->is_file_open)
+    if (app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Já existe um projeto aberto, feche-o antes de abrir outro.", app
@@ -474,7 +474,7 @@ void on_menu_projects_save_activate(
 {
     (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message("Não existe um projeto aberto.", app);
         return;
@@ -508,9 +508,9 @@ static void on_projetos_novo_response(
     if (fp != NULL)
     {
         fclose(fp);
-        g_free(app->variables->project->file_path);
-        app->variables->project->file_path = path;
-        app->variables->project->is_file_open = TRUE;
+        g_free(app->variables->project.file_path);
+        app->variables->project.file_path = path;
+        app->variables->project.is_file_open = TRUE;
     }
     else
     {
@@ -524,7 +524,7 @@ void on_menu_projects_new_activate(
 {
     (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
-    if (app->variables->project->is_file_open)
+    if (app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Já existe um projeto aberto, feche-o antes de abrir outro.", app
@@ -549,7 +549,7 @@ void on_menu_projects_close_activate(
 {
     (void)action; (void)parameter;
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message("Não existe um projeto aberto.", app);
         return;
@@ -560,14 +560,14 @@ void on_menu_projects_close_activate(
 void on_window_main_cinematic_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível iniciar a simulação sem um projeto aberto.", app
         );
         return;
     }
-    if (app->variables->simulation->num_particles_use == 0)
+    if (app->variables->simulation.num_particles_use == 0)
     {
         create_dialog_error_message(
             "Não é possível iniciar a simulação sem partículas.", app
@@ -580,14 +580,14 @@ void on_window_main_cinematic_button_clicked(GtkButton* button, gpointer data)
 void on_window_main_dynamic_button_clicked(GtkButton* button, gpointer data)
 {
     GtkApp app = (GtkApp)data;
-    if (!app->variables->project->is_file_open)
+    if (!app->variables->project.is_file_open)
     {
         create_dialog_error_message(
             "Não é possível iniciar a simulação sem um projeto aberto.", app
         );
         return;
     }
-    if (app->variables->simulation->num_particles_use == 0)
+    if (app->variables->simulation.num_particles_use == 0)
     {
         create_dialog_error_message(
             "Não é possível iniciar a simulação sem partículas.", app

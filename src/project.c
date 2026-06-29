@@ -2,14 +2,14 @@
 
 void save_project(GtkApp app)
 {
-    FILE* file = fopen(app->variables->project->file_path, "w");
+    FILE* file = fopen(app->variables->project.file_path, "w");
     if (file == NULL)
     {
         create_dialog_error_message("Erro ao salvar o projeto", app);
         return;
     }
 
-    Variables_Simulation sim = app->variables->simulation;
+    Variables_Simulation sim = &app->variables->simulation;
     if (sim->gravity != 0 || sim->time != 0 || sim->time_step != 0 ||
         sim->frames != 0)
     {
@@ -107,7 +107,7 @@ void save_project(GtkApp app)
 
 void open_project(GtkApp app)
 {
-    FILE* file = fopen(app->variables->project->file_path, "r");
+    FILE* file = fopen(app->variables->project.file_path, "r");
     if (file == NULL)
     {
         create_dialog_error_message("Erro ao abrir o projeto", app);
@@ -129,7 +129,7 @@ void open_project(GtkApp app)
 
         if (strcmp(type, "SETTINGS") == 0)
         {
-            Variables_Simulation sim = app->variables->simulation;
+            Variables_Simulation sim = &app->variables->simulation;
             char* token;
             while ((token = strtok(NULL, " ")) != NULL)
             {
@@ -199,7 +199,7 @@ void open_project(GtkApp app)
             );
             has_particle = TRUE;
             if (checked)
-                app->variables->simulation->num_particles_use++;
+                app->variables->simulation.num_particles_use++;
         }
         else if (strcmp(type, "Força") == 0)
         {
@@ -246,7 +246,7 @@ void open_project(GtkApp app)
 
 void close_project(GtkApp app)
 {
-    variables_project_wipe(app->variables->project);
-    app->variables->simulation->num_particles_use = 0;
+    variables_project_wipe(&app->variables->project);
+    app->variables->simulation.num_particles_use = 0;
     gtk_tree_store_clear(app->tree_store);
 }
