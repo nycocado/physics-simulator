@@ -1,0 +1,145 @@
+using Gtk 4.0;
+
+Adjustment adjustment_f {
+  upper: 100;
+  value: 60;
+  step-increment: 1;
+  page-increment: 10;
+}
+
+Adjustment adjustment_g {
+  upper: 100;
+  value: 9.80;
+  step-increment: 1;
+  page-increment: 10;
+}
+
+Adjustment adjustment_p {
+  upper: 100;
+  value: 1;
+  step-increment: 1;
+  page-increment: 10;
+}
+
+Adjustment adjustment_t {
+  upper: 100;
+  value: 10;
+  step-increment: 1;
+  page-increment: 10;
+}
+
+Window window_main {
+  title: _("Simulação de Dinâmica");
+  modal: true;
+  destroy => $on_window_dynamic_destroy();
+
+  Box box_all {
+    orientation: vertical;
+
+    Box box_content {
+      vexpand: true;
+
+      DrawingArea drawing_area {
+        hexpand: true;
+        vexpand: true;
+      }
+    }
+
+    Box box_control {
+      Box box_entrys {
+        margin-start: 8;
+        margin-end: 5;
+        margin-top: 5;
+        margin-bottom: 5;
+        orientation: vertical;
+
+        Box box_labels {
+          margin-bottom: 4;
+          homogeneous: true;
+
+          Label label_g {
+            margin-end: 5;
+            label: _("Gravidade");
+          }
+
+          Label label_t {
+            margin-start: 5;
+            label: _("Tempo");
+          }
+
+          Label label_p {
+            label: _("Passos");
+          }
+
+          Label label_f {
+            label: _("Frames");
+          }
+        }
+
+        Box box_spin_button {
+          SpinButton spin_button_g {
+            hexpand: true;
+            margin-end: 5;
+            adjustment: adjustment_g;
+            digits: 2;
+            numeric: true;
+            wrap: true;
+          }
+
+          SpinButton spin_button_t {
+            hexpand: true;
+            margin-start: 5;
+            adjustment: adjustment_t;
+            digits: 2;
+            numeric: true;
+            wrap: true;
+            value: 10;
+          }
+
+          SpinButton spin_button_p {
+            hexpand: true;
+            margin-start: 5;
+            adjustment: adjustment_p;
+            digits: 2;
+            numeric: true;
+            wrap: true;
+            value: 1;
+          }
+
+          SpinButton spin_button_f {
+            hexpand: true;
+            margin-start: 5;
+            adjustment: adjustment_f;
+            numeric: true;
+            wrap: true;
+            value: 60;
+          }
+        }
+      }
+
+      Box box_buttons {
+        margin-end: 5;
+        margin-top: 5;
+        margin-bottom: 5;
+        homogeneous: true;
+
+        Button refresh_button {
+          icon-name: "view-refresh";
+          clicked => $on_dynamic_refresh_button_clicked();
+        }
+
+        Button start_button {
+          icon-name: "media-playback-start";
+          margin-start: 3;
+          margin-end: 3;
+          clicked => $on_dynamic_start_button_clicked();
+        }
+
+        Button stop_button {
+          icon-name: "media-playback-stop";
+          clicked => $on_dynamic_stop_button_clicked();
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,9 @@ BIN_BUILD = bin/build
 SRC_DIR = src
 TEST_DIR = test
 UNITY_DIR = test/unity
+UI_DIR = src/ui/windows
+BLP_FILES = $(wildcard $(UI_DIR)/*.blp)
+UI_FILES = $(BLP_FILES:.blp=.ui)
 
 _BUILD_BIN::=$(shell mkdir -p $(BIN_DIR))
 _BUILD_TESTS_BIN::=$(shell mkdir -p $(BIN_TEST))
@@ -113,7 +116,12 @@ test_locale: unity.o
 test_validation: unity.o
 	$(CC) $(CFLAGS) $(TEST_DIR)/test_validation.c $(BIN_DIR)/unity.o $(GLIBFLAGS) -o $(BIN_TEST)/test_validation
 
-comp: $(ALL_OBJS)
+$(UI_DIR)/%.ui: $(UI_DIR)/%.blp
+	blueprint-compiler compile --output $@ $<
+
+blueprint: $(UI_FILES)
+
+comp: blueprint $(ALL_OBJS)
 	$(CC) $(CFLAGS) $(ALL_OBJS) $(GTKFLAGS) -o $(BIN_BUILD)/simulation_physic $(MATHFLAGS)
 
 run: comp
@@ -138,3 +146,4 @@ valgrind: comp
 
 clean:
 	rm -rf $(BIN_DIR)
+	rm -f $(UI_FILES)

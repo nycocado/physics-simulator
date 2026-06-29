@@ -1,0 +1,182 @@
+using Gtk 4.0;
+
+menu menu_model {
+  submenu {
+    label: _("_Projetos");
+
+    item {
+      label: _("Abrir");
+      action: "win.projects-open";
+    }
+
+    item {
+      label: _("Novo");
+      action: "win.projects-new";
+    }
+
+    item {
+      label: _("Salvar");
+      action: "win.projects-save";
+    }
+
+    item {
+      label: _("Fechar");
+      action: "win.projects-close";
+    }
+  }
+}
+
+Window window_main {
+  title: _("Simulador de Cinemática e Dinâmica - Projeto");
+  default-width: 1200;
+  default-height: 800;
+
+  Box box_all {
+    orientation: vertical;
+
+    PopoverMenuBar menu_bar {
+      menu-model: menu_model;
+    }
+
+    Box box_content {
+      homogeneous: true;
+      hexpand: true;
+      vexpand: true;
+
+      ScrolledWindow scroll {
+        has-frame: true;
+        hexpand: true;
+        vexpand: true;
+
+        TreeView tree_view {
+          enable-grid-lines: horizontal;
+
+          [column]
+          TreeViewColumn column_type {
+            title: _("tipo");
+
+            CellRendererText renderer_text_type {}
+          }
+
+          [column]
+          TreeViewColumn column_x {
+            title: _("x");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_x {}
+          }
+
+          [column]
+          TreeViewColumn column_y {
+            sizing: autosize;
+            title: _("y");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_y {
+              alignment: center;
+            }
+          }
+
+          [column]
+          TreeViewColumn column_vx {
+            sizing: autosize;
+            title: _("vx");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_vx {}
+          }
+
+          [column]
+          TreeViewColumn column_vy {
+            title: _("vy");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_vy {}
+          }
+
+          [column]
+          TreeViewColumn column_ax {
+            title: _("ax");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_ax {}
+          }
+
+          [column]
+          TreeViewColumn column_ay {
+            title: _("ay");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_ay {}
+          }
+
+          [column]
+          TreeViewColumn column_mass {
+            title: _("massa");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererText renderer_text_mass {}
+          }
+
+          [column]
+          TreeViewColumn column_check {
+            title: _("usar");
+            expand: true;
+            alignment: 0.5;
+
+            CellRendererToggle renderer_check {
+              toggled => $on_renderer_check_toggled();
+            }
+          }
+        }
+      }
+
+      Box box_button {
+        orientation: vertical;
+        homogeneous: true;
+
+        Box table_button {
+          halign: start;
+          orientation: vertical;
+
+          Button add_particle_button {
+            icon-name: "list-add";
+            clicked => $on_window_main_add_particle_button_clicked();
+          }
+
+          Button add_force_button {
+            icon-name: "go-down";
+            clicked => $on_window_main_add_force_button_clicked();
+          }
+
+          Button remove_button {
+            icon-name: "list-remove";
+            clicked => $on_window_main_remove_button_clicked();
+          }
+
+          Button edit_button {
+            icon-name: "document-edit";
+            clicked => $on_window_main_edit_button_clicked();
+          }
+        }
+
+        Button cinematic_button {
+          label: _("Cinemática");
+          clicked => $on_window_main_cinematic_button_clicked();
+        }
+
+        Button dynamic_button {
+          label: _("Dinâmica");
+          clicked => $on_window_main_dynamic_button_clicked();
+        }
+      }
+    }
+  }
+}

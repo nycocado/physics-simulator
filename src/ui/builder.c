@@ -4,7 +4,7 @@ void create_window_main_widgets(GtkApp app)
 {
     GtkBuilder* builder = gtk_builder_new();
 
-    gtk_builder_add_from_file(builder, "src/ui/windows/window_main.glade", NULL);
+    gtk_builder_add_from_file(builder, "src/ui/windows/window_main.ui", NULL);
 
     app->window_main->window =
         GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
@@ -48,10 +48,15 @@ void create_window_main_widgets(GtkApp app)
         GTK_CELL_RENDERER(gtk_builder_get_object(builder, "renderer_check"));
     app->tree_view =
         GTK_TREE_VIEW(gtk_builder_get_object(builder, "tree_view"));
-    app->selection =
-        GTK_TREE_SELECTION(gtk_builder_get_object(builder, "tree_selection"));
-    app->tree_store =
-        GTK_TREE_STORE(gtk_builder_get_object(builder, "tree_store"));
+    app->tree_store = gtk_tree_store_new(
+        10,
+        G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE,
+        G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE,
+        G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_STRING
+    );
+    gtk_tree_view_set_model(app->tree_view, GTK_TREE_MODEL(app->tree_store));
+    g_object_unref(app->tree_store);
+    app->selection = gtk_tree_view_get_selection(app->tree_view);
     app->window_main->buttons->add_particle =
         GTK_WIDGET(gtk_builder_get_object(builder, "add_particle_button"));
     app->window_main->buttons->add_force =
@@ -99,7 +104,7 @@ void create_window_add_particle_normal_widgets(GtkApp app)
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/ui/windows/window_add_particle_normal.glade", NULL
+        builder, "src/ui/windows/window_add_particle_normal.ui", NULL
     );
 
     app->window_add_particle_normal->window =
@@ -217,7 +222,7 @@ void create_window_add_force_normal_widgets(GtkApp app)
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/ui/windows/window_add_force_normal.glade", NULL
+        builder, "src/ui/windows/window_add_force_normal.ui", NULL
     );
 
     app->window_add_force_normal->window =
@@ -270,7 +275,7 @@ void create_window_edit_particle_normal_widgets(GtkApp app)
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/ui/windows/window_edit_particle_normal.glade", NULL
+        builder, "src/ui/windows/window_edit_particle_normal.ui", NULL
     );
 
     app->window_edit_particle_normal->window =
@@ -388,7 +393,7 @@ void create_window_edit_force_normal_widgets(GtkApp app)
     GtkBuilder* builder = gtk_builder_new();
 
     gtk_builder_add_from_file(
-        builder, "src/ui/windows/window_edit_force_normal.glade", NULL
+        builder, "src/ui/windows/window_edit_force_normal.ui", NULL
     );
 
     app->window_edit_force_normal->window =
@@ -443,13 +448,13 @@ void create_window_simulation_widgets(int i, GtkApp app)
     if (i == SIMULATION_CINEMATIC)
     {
         gtk_builder_add_from_file(
-            builder, "src/ui/windows/window_cinematic.glade", NULL
+            builder, "src/ui/windows/window_cinematic.ui", NULL
         );
     }
     else if (i == SIMULATION_DYNAMIC)
     {
         gtk_builder_add_from_file(
-            builder, "src/ui/windows/window_dynamic.glade", NULL
+            builder, "src/ui/windows/window_dynamic.ui", NULL
         );
     }
 

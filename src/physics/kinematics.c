@@ -6,7 +6,7 @@
 
 double phyc_position(double si, double v, double a, double t)
 {
-    return si + v * t + 0.5f * a * (t * t);
+    return si + v * t + 0.5 * a * pow(t, 2);
 }
 
 double phyc_velocity(double vi, double a, double t) { return (vi + a * t); }
@@ -23,7 +23,7 @@ double phyc_medium_acceleration(double vi, double vf, double t)
 
 double phyc_magnitude(double bx, double by)
 {
-    return sqrt(bx * bx + by * by);
+    return sqrt(pow(bx, 2) + pow(by, 2));
 }
 
 double phyc_displacement_x_y(double ai, double af, double bi, double bf)
