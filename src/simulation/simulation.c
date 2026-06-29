@@ -1,4 +1,11 @@
-#include "gtk_include_all.h"
+#include "simulation.h"
+#include "app.h"
+#include "physics/kinematics.h"
+#include "ui/callbacks.h"
+#include "variables.h"
+#include <cairo.h>
+#include <gtk/gtk.h>
+#include <stdio.h>
 
 void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app)
 {

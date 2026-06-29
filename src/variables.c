@@ -1,4 +1,7 @@
-#include "gtk_include_all.h"
+#include "variables.h"
+#include "collection.h"
+#include "project.h"
+#include "simulation/dynamic_sim.h"
 
 Variables variables_new()
 {
@@ -13,7 +16,6 @@ void variables_free(Variables variables)
     variables_simulation_wipe(&variables->simulation);
     g_free(variables);
 }
-
 
 void variables_simulation_wipe(Variables_Simulation variables_simulation)
 {
@@ -46,8 +48,6 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
     variables_simulation->first_time = TRUE;
 }
 
-
-
 void variables_project_wipe(Variables_Project variables_project)
 {
     if (variables_project->file_path != NULL)
@@ -58,4 +58,3 @@ void variables_project_wipe(Variables_Project variables_project)
     variables_project->file_path = NULL;
     variables_project->is_file_open = FALSE;
 }
-

@@ -1,6 +1,15 @@
 #pragma once
 
-#include "gtk_include_all.h"
+#include <cairo.h>
+#include <gtk/gtk.h>
+
+typedef struct _GtkApp* GtkApp;
+
+typedef enum
+{
+    SIMULATION_CINEMATIC = 1,
+    SIMULATION_DYNAMIC = 2,
+} SimulationMode;
 
 void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app);
 void draw_arrow(

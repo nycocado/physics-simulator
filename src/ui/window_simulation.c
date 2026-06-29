@@ -1,4 +1,4 @@
-#include "gtk_include_all.h"
+#include "window_simulation.h"
 
 Window_Simulation window_simulation_new()
 {

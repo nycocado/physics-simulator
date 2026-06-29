@@ -1,4 +1,14 @@
-#include "gtk_include_all.h"
+#include "log.h"
+#include "app.h"
+#include "collection.h"
+#include "particles/particle.h"
+#include "physics/dynamics.h"
+#include "physics/kinematics.h"
+#include "project.h"
+#include "simulation/dynamic_sim.h"
+#include "ui/builder.h"
+#include <gtk/gtk.h>
+#include <stdio.h>
 
 char* generate_log_name_for_simulation(const char* base_name, GtkApp app)
 {
@@ -47,7 +57,8 @@ void save_simulation_cinematic_log(
     GtkApp app
 )
 {
-    gchar* filename = generate_log_name_for_simulation("simulacao_cinematica", app);
+    gchar* filename =
+        generate_log_name_for_simulation("simulacao_cinematica", app);
     FILE* file = fopen(filename, "w");
     if (file == NULL)
     {
@@ -117,7 +128,8 @@ void save_simulation_cinematic_log(
     fclose(file);
 }
 
-static int calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
+static int
+calc_num_forces_max(Particle_Dynamic_Collection particle_collection, GtkApp app)
 {
     int max_forces = 0;
     for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
@@ -140,7 +152,8 @@ void save_simulation_dynamic_log(
     GtkApp app
 )
 {
-    gchar* filename = generate_log_name_for_simulation("simulacao_dinamica", app);
+    gchar* filename =
+        generate_log_name_for_simulation("simulacao_dinamica", app);
     FILE* file = fopen(filename, "w");
     if (file == NULL)
     {

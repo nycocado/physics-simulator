@@ -8,18 +8,25 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE(PhysItem, phys_item, PHYS, ITEM, GObject)
 
-typedef enum {
+typedef struct _PhysItem PhysItem;
+typedef enum
+{
     PHYS_ITEM_PARTICLE = 0,
     PHYS_ITEM_FORCE = 1
 } PhysItemType;
 
 PhysItem* phys_item_new_particle(
-    double x, double y, double vx, double vy, double ax, double ay, double mass, gboolean checked
+    double x,
+    double y,
+    double vx,
+    double vy,
+    double ax,
+    double ay,
+    double mass,
+    gboolean checked
 );
 
-PhysItem* phys_item_new_force(
-    double ax, double ay
-);
+PhysItem* phys_item_new_force(double ax, double ay);
 
 PhysItemType phys_item_get_item_type(PhysItem* item);
 

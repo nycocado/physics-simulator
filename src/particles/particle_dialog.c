@@ -1,5 +1,4 @@
-#include "gtk_include_all.h"
-
+#include "particle_dialog.h"
 
 Window_Add_Particle_Normal window_add_particle_normal_new()
 {

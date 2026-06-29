@@ -1,5 +1,5 @@
 #pragma once
-
-#include "gtk_include_all.h"
+typedef struct _GtkApp* GtkApp;
+#include <gtk/gtk.h>
 
 void set_columns_attribute(GtkApp app);

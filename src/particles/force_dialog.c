@@ -1,5 +1,4 @@
-#include "gtk_include_all.h"
-
+#include "force_dialog.h"
 
 Window_Add_Force_Normal window_add_force_normal_new()
 {
@@ -8,7 +7,8 @@ Window_Add_Force_Normal window_add_force_normal_new()
     return window_add_force_normal;
 }
 
-void window_add_force_normal_free(Window_Add_Force_Normal window_add_force_normal
+void window_add_force_normal_free(
+    Window_Add_Force_Normal window_add_force_normal
 )
 {
     g_free(window_add_force_normal);

@@ -1,7 +1,22 @@
-#include "gtk_include_all.h"
+#include "kinematic_sim.h"
+#include "app.h"
+#include "collection.h"
+#include "log.h"
+#include "particles/particle.h"
+#include "physics/kinematics.h"
+#include "simulation/simulation.h"
+#include "ui/builder.h"
+#include "ui/callbacks.h"
+#include "variables.h"
+#include <cairo.h>
+#include <gtk/gtk.h>
 
 void on_draw_cinematic(
-    GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer data
+    GtkDrawingArea* area,
+    cairo_t* cr,
+    int width,
+    int height,
+    gpointer data
 )
 {
     (void)area;

@@ -1,4 +1,17 @@
-#include "gtk_include_all.h"
+#include "callbacks.h"
+#include "app.h"
+#include "log.h"
+#include "particles/force_dialog.h"
+#include "particles/particle_dialog.h"
+#include "phys_item.h"
+#include "project.h"
+#include "simulation/dynamic_sim.h"
+#include "simulation/kinematic_sim.h"
+#include "ui/builder.h"
+#include "ui/window_main.h"
+#include "ui/window_simulation.h"
+#include <gtk/gtk.h>
+#include <stdio.h>
 
 void on_window_destroy(GtkWidget* widget, gpointer data)
 {
@@ -13,19 +26,26 @@ void on_check_toggled(GtkCheckButton* button, gpointer data)
     (void)data;
     PhysItem* item = g_object_get_data(G_OBJECT(button), "item");
     GtkApp app = g_object_get_data(G_OBJECT(button), "app");
-    if (!item || !app) return;
-    
+    if (!item || !app)
+        return;
+
     gboolean checked = gtk_check_button_get_active(button);
     gboolean was_checked = phys_item_get_checked(item);
-    
-    if (checked != was_checked) {
+
+    if (checked != was_checked)
+    {
         phys_item_set_checked(item, checked);
-        if (checked) app->variables->simulation.num_particles_use++;
-        else app->variables->simulation.num_particles_use--;
+        if (checked)
+            app->variables->simulation.num_particles_use++;
+        else
+            app->variables->simulation.num_particles_use--;
     }
 }
 
-void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data)
+void on_window_main_add_particle_button_clicked(
+    GtkButton* button,
+    gpointer data
+)
 {
     GtkApp app = (GtkApp)data;
     if (!app->variables->project.is_file_open)
@@ -68,9 +88,8 @@ void on_window_add_particle_normal_add_button_clicked(
         GTK_SPIN_BUTTON(app->window_add_particle_normal->spin_buttons.mass)
     );
 
-    PhysItem* particle = phys_item_new_particle(
-        xi, yi, vx, vy, ax, ay, mass, TRUE
-    );
+    PhysItem* particle =
+        phys_item_new_particle(xi, yi, vx, vy, ax, ay, mass, TRUE);
     g_list_store_append(app->root_store, particle);
     app->variables->simulation.num_particles_use++;
     g_object_unref(particle);
@@ -105,10 +124,12 @@ void on_window_edit_particle_normal_edit_button_clicked(
         GTK_SPIN_BUTTON(app->window_edit_particle_normal->spin_buttons.mass)
     );
 
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
-    if (!row) return;
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
+    if (!row)
+        return;
 
     PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
     phys_item_set_x(item, xi);
@@ -133,9 +154,10 @@ void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
         return;
     }
 
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
     if (!row)
     {
         create_dialog_error_message(
@@ -170,10 +192,12 @@ void on_window_add_force_normal_add_button_clicked(
         GTK_SPIN_BUTTON(app->window_add_force_normal->spin_buttons.fy)
     );
 
-    GtkTreeListRow* parent_row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
-    if (!parent_row) return;
+    GtkTreeListRow* parent_row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
+    if (!parent_row)
+        return;
 
     PhysItem* parent_item = PHYS_ITEM(gtk_tree_list_row_get_item(parent_row));
     PhysItem* force = phys_item_new_force(fx, fy);
@@ -199,10 +223,12 @@ void on_window_edit_force_normal_edit_button_clicked(
         GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy)
     );
 
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
-    if (!row) return;
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
+    if (!row)
+        return;
 
     PhysItem* item = PHYS_ITEM(gtk_tree_list_row_get_item(row));
     phys_item_set_ax(item, fx);
@@ -223,13 +249,15 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         return;
     }
 
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
     if (!row)
     {
         create_dialog_error_message(
-            "Não é possível editar uma partícula sem uma partícula selecionada.",
+            "Não é possível editar uma partícula sem uma partícula "
+            "selecionada.",
             app
         );
         return;
@@ -279,7 +307,9 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
             mass
         );
 
-        gtk_window_present(GTK_WINDOW(app->window_edit_particle_normal->window));
+        gtk_window_present(
+            GTK_WINDOW(app->window_edit_particle_normal->window)
+        );
     }
     else
     {
@@ -288,12 +318,10 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         gdouble fy = phys_item_get_ay(item);
 
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fx),
-            fx
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fx), fx
         );
         gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy),
-            fy
+            GTK_SPIN_BUTTON(app->window_edit_force_normal->spin_buttons.fy), fy
         );
 
         gtk_window_present(GTK_WINDOW(app->window_edit_force_normal->window));
@@ -312,13 +340,15 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
         return;
     }
 
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
-    );
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
     if (!row)
     {
         create_dialog_error_message(
-            "Não é possível remover uma partícula sem uma partícula selecionada.",
+            "Não é possível remover uma partícula sem uma partícula "
+            "selecionada.",
             app
         );
         return;
@@ -336,7 +366,8 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
         guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
         for (guint i = 0; i < n_items; i++)
         {
-            g_autoptr(PhysItem) child = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+            g_autoptr(PhysItem) child =
+                g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
             if (child == item)
             {
                 g_list_store_remove(app->root_store, i);
@@ -349,7 +380,8 @@ void on_window_main_remove_button_clicked(GtkWidget* widget, gpointer data)
         guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
         for (guint i = 0; i < n_items; i++)
         {
-            g_autoptr(PhysItem) particle = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+            g_autoptr(PhysItem) particle =
+                g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
             phys_item_remove_child(particle, item);
         }
     }
@@ -364,13 +396,13 @@ static GtkFileFilter* make_sabino_filter(void)
     return filter;
 }
 
-static void on_projetos_abrir_response(
-    GObject* source, GAsyncResult* result, gpointer data
-)
+static void
+on_projetos_abrir_response(GObject* source, GAsyncResult* result, gpointer data)
 {
     GtkApp app = (GtkApp)data;
     GError* error = NULL;
-    GFile* file = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(source), result, &error);
+    GFile* file =
+        gtk_file_dialog_open_finish(GTK_FILE_DIALOG(source), result, &error);
     g_object_unref(source);
     if (file == NULL)
     {
@@ -385,10 +417,13 @@ static void on_projetos_abrir_response(
 }
 
 void on_menu_projects_open_activate(
-    GSimpleAction* action, GVariant* parameter, gpointer data
+    GSimpleAction* action,
+    GVariant* parameter,
+    gpointer data
 )
 {
-    (void)action; (void)parameter;
+    (void)action;
+    (void)parameter;
     GtkApp app = (GtkApp)data;
     if (app->variables->project.is_file_open)
     {
@@ -415,10 +450,13 @@ void on_menu_projects_open_activate(
 }
 
 void on_menu_projects_save_activate(
-    GSimpleAction* action, GVariant* parameter, gpointer data
+    GSimpleAction* action,
+    GVariant* parameter,
+    gpointer data
 )
 {
-    (void)action; (void)parameter;
+    (void)action;
+    (void)parameter;
     GtkApp app = (GtkApp)data;
     if (!app->variables->project.is_file_open)
     {
@@ -428,9 +466,8 @@ void on_menu_projects_save_activate(
     save_project(app);
 }
 
-static void on_projetos_novo_response(
-    GObject* source, GAsyncResult* result, gpointer data
-)
+static void
+on_projetos_novo_response(GObject* source, GAsyncResult* result, gpointer data)
 {
     GtkApp app = (GtkApp)data;
     GError* error = NULL;
@@ -465,10 +502,13 @@ static void on_projetos_novo_response(
 }
 
 void on_menu_projects_new_activate(
-    GSimpleAction* action, GVariant* parameter, gpointer data
+    GSimpleAction* action,
+    GVariant* parameter,
+    gpointer data
 )
 {
-    (void)action; (void)parameter;
+    (void)action;
+    (void)parameter;
     GtkApp app = (GtkApp)data;
     if (app->variables->project.is_file_open)
     {
@@ -490,10 +530,13 @@ void on_menu_projects_new_activate(
 }
 
 void on_menu_projects_close_activate(
-    GSimpleAction* action, GVariant* parameter, gpointer data
+    GSimpleAction* action,
+    GVariant* parameter,
+    gpointer data
 )
 {
-    (void)action; (void)parameter;
+    (void)action;
+    (void)parameter;
     GtkApp app = (GtkApp)data;
     if (!app->variables->project.is_file_open)
     {

@@ -18,8 +18,6 @@ struct _Spin_Buttons_Add_Particle_Normal
         GtkWidget* mass;
 };
 
-
-
 typedef struct _Window_Add_Particle_Normal* Window_Add_Particle_Normal;
 
 struct _Window_Add_Particle_Normal

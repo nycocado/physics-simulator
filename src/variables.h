@@ -6,7 +6,8 @@
 typedef struct _Variables* Variables;
 typedef struct _Variables_Simulation* Variables_Simulation;
 typedef struct _Variables_Project* Variables_Project;
-
+typedef struct _Particle_Cinematic_Collection* Particle_Cinematic_Collection;
+typedef struct _Particle_Dynamic_Collection* Particle_Dynamic_Collection;
 
 struct _Variables_Simulation
 {

@@ -5,11 +5,18 @@
 #include "particles/buttons.h"
 #include "particles/force_dialog.h"
 #include "particles/particle_dialog.h"
-#include "variables.h"
 #include "ui/window_main.h"
 #include "ui/window_simulation.h"
+#include "variables.h"
 
 typedef struct _GtkApp* GtkApp;
+typedef struct _Variables* Variables;
+typedef struct _Window_Main* Window_Main;
+typedef struct _Window_Add_Particle_Normal* Window_Add_Particle_Normal;
+typedef struct _Window_Add_Force_Normal* Window_Add_Force_Normal;
+typedef struct _Window_Edit_Particle_Normal* Window_Edit_Particle_Normal;
+typedef struct _Window_Edit_Force_Normal* Window_Edit_Force_Normal;
+typedef struct _Window_Simulation* Window_Simulation;
 
 struct _GtkApp
 {

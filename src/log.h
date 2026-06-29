@@ -1,6 +1,8 @@
 #pragma once
-
-#include "gtk_include_all.h"
+typedef struct _GtkApp* GtkApp;
+typedef struct _Particle_Cinematic_Collection* Particle_Cinematic_Collection;
+typedef struct _Particle_Dynamic_Collection* Particle_Dynamic_Collection;
+#include <gtk/gtk.h>
 
 char* generate_log_name_for_simulation(const char* base_name, GtkApp app);
 void replace_dot_with_comma(char* str);

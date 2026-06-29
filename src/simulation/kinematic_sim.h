@@ -1,8 +1,15 @@
 #pragma once
+typedef struct _GtkApp* GtkApp;
+#include <cairo.h>
+#include <gtk/gtk.h>
 
-#include "gtk_include_all.h"
-
-void on_draw_cinematic(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer data);
+void on_draw_cinematic(
+    GtkDrawingArea* area,
+    cairo_t* cr,
+    int width,
+    int height,
+    gpointer data
+);
 gboolean on_timeout_cinematic(gpointer user_data);
 gboolean on_window_cinematic_destroy(GtkWindow* window, gpointer data);
 void on_cinematic_refresh_button_clicked(GtkButton* button, gpointer data);

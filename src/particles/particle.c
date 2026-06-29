@@ -1,4 +1,6 @@
-#include "gtk_include_all.h"
+#include "particle.h"
+#include "collection.h"
+#include "simulation/dynamic_sim.h"
 
 Vector create_vector(double x, double y)
 {
@@ -9,8 +11,14 @@ Vector create_vector(double x, double y)
     return vector;
 }
 
-Particle_Cinematic
-particle_cinematic_new(double x, double y, double vx, double vy, double ax, double ay)
+Particle_Cinematic particle_cinematic_new(
+    double x,
+    double y,
+    double vx,
+    double vy,
+    double ax,
+    double ay
+)
 {
     Particle_Cinematic particle = g_new(struct _Particle_Cinematic, 1);
 
@@ -80,7 +88,9 @@ particle_cinematic_collection_new(int num_particles)
     return collection;
 }
 
-void particle_cinematic_collection_free(Particle_Cinematic_Collection collection)
+void particle_cinematic_collection_free(
+    Particle_Cinematic_Collection collection
+)
 {
     for (int i = 0; i < collection->num_particles; i++)
         particle_cinematic_free(collection->particles[i]);

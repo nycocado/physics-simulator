@@ -1,4 +1,9 @@
-#include "gtk_include_all.h"
+#include "collection.h"
+#include "app.h"
+#include "particles/particle.h"
+#include "phys_item.h"
+#include "simulation/dynamic_sim.h"
+#include <gtk/gtk.h>
 
 void particle_cinematic_collection_start(GtkApp app)
 {
@@ -11,8 +16,9 @@ void particle_cinematic_collection_start(GtkApp app)
     int i = 0;
     for (guint idx = 0; idx < num_items; idx++)
     {
-        g_autoptr(PhysItem) item = g_list_model_get_item(G_LIST_MODEL(app->root_store), idx);
-        
+        g_autoptr(PhysItem) item =
+            g_list_model_get_item(G_LIST_MODEL(app->root_store), idx);
+
         if (phys_item_get_checked(item))
         {
             gdouble x = phys_item_get_x(item);
@@ -22,9 +28,8 @@ void particle_cinematic_collection_start(GtkApp app)
             gdouble ax = phys_item_get_ax(item);
             gdouble ay = phys_item_get_ay(item);
 
-            Particle_Cinematic particle = particle_cinematic_new(
-                x, y, vx, vy, ax, ay
-            );
+            Particle_Cinematic particle =
+                particle_cinematic_new(x, y, vx, vy, ax, ay);
             particle_collection->particles[i] = particle;
             i++;
         }
@@ -44,8 +49,9 @@ void particle_dynamic_collection_start(GtkApp app)
     int i = 0;
     for (guint idx = 0; idx < num_items; idx++)
     {
-        g_autoptr(PhysItem) item = g_list_model_get_item(G_LIST_MODEL(app->root_store), idx);
-        
+        g_autoptr(PhysItem) item =
+            g_list_model_get_item(G_LIST_MODEL(app->root_store), idx);
+
         if (phys_item_get_checked(item))
         {
             gdouble x = phys_item_get_x(item);
@@ -56,11 +62,10 @@ void particle_dynamic_collection_start(GtkApp app)
             gdouble ay = phys_item_get_ay(item);
             gdouble mass = phys_item_get_mass(item);
 
-            Particle_Dynamic particle = particle_dynamic_new(
-                x, y, vx, vy, ax, ay, mass
-            );
+            Particle_Dynamic particle =
+                particle_dynamic_new(x, y, vx, vy, ax, ay, mass);
 
-            GListModel *children = phys_item_get_children(item);
+            GListModel* children = phys_item_get_children(item);
             guint num_children = g_list_model_get_n_items(children);
             for (guint j = 0; j < num_children; j++)
             {

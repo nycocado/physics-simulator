@@ -1,4 +1,12 @@
-#include "gtk_include_all.h"
+#include "project.h"
+#include "app.h"
+#include "log.h"
+#include "phys_item.h"
+#include "ui/builder.h"
+#include "variables.h"
+#include <gtk/gtk.h>
+#include <stdio.h>
+#include <string.h>
 
 void save_project(GtkApp app)
 {
@@ -16,22 +24,14 @@ void save_project(GtkApp app)
         char buf[G_ASCII_DTOSTR_BUF_SIZE];
         fprintf(file, "SETTINGS");
         fprintf(
-            file,
-            " gravity=%s",
-            g_ascii_dtostr(buf, sizeof(buf), sim->gravity)
+            file, " gravity=%s", g_ascii_dtostr(buf, sizeof(buf), sim->gravity)
+        );
+        fprintf(file, " time=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time));
+        fprintf(
+            file, " step=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time_step)
         );
         fprintf(
-            file, " time=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time)
-        );
-        fprintf(
-            file,
-            " step=%s",
-            g_ascii_dtostr(buf, sizeof(buf), sim->time_step)
-        );
-        fprintf(
-            file,
-            " frames=%s",
-            g_ascii_dtostr(buf, sizeof(buf), sim->frames)
+            file, " frames=%s", g_ascii_dtostr(buf, sizeof(buf), sim->frames)
         );
         fprintf(file, "\n");
     }
@@ -39,7 +39,8 @@ void save_project(GtkApp app)
     guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
     for (guint i = 0; i < n_items; i++)
     {
-        g_autoptr(PhysItem) item = g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
+        g_autoptr(PhysItem) item =
+            g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
         gdouble x = phys_item_get_x(item);
         gdouble y = phys_item_get_y(item);
         gdouble vx = phys_item_get_vx(item);
@@ -75,10 +76,14 @@ void save_project(GtkApp app)
     fclose(file);
 }
 
-static gdouble parse_double_locale_safe(char *str) {
-    if (!str) return 0.0;
-    for (char *p = str; *p; p++) {
-        if (*p == ',') *p = '.';
+static gdouble parse_double_locale_safe(char* str)
+{
+    if (!str)
+        return 0.0;
+    for (char* p = str; *p; p++)
+    {
+        if (*p == ',')
+            *p = '.';
     }
     return g_ascii_strtod(str, NULL);
 }
@@ -99,11 +104,13 @@ void open_project(GtkApp app)
     while (getline(&line, &len, file) != -1)
     {
         size_t line_len = strlen(line);
-        if (line_len > 0 && line[line_len - 1] == '\n') {
+        if (line_len > 0 && line[line_len - 1] == '\n')
+        {
             line[line_len - 1] = '\0';
             line_len--;
         }
-        if (line_len > 0 && line[line_len - 1] == '\r') {
+        if (line_len > 0 && line[line_len - 1] == '\r')
+        {
             line[line_len - 1] = '\0';
             line_len--;
         }
@@ -154,14 +161,15 @@ void open_project(GtkApp app)
             if (dmass <= 0)
                 continue;
             char* checked_str = strtok(NULL, " ");
-            gboolean checked = (checked_str == NULL) ? TRUE
-                                                     : (checked_str[0] != '0');
+            gboolean checked =
+                (checked_str == NULL) ? TRUE : (checked_str[0] != '0');
             PhysItem* particle = phys_item_new_particle(
                 dx, dy, dvx, dvy, dax, day, dmass, checked
             );
             g_list_store_append(app->root_store, particle);
 
-            if (current_particle) g_object_unref(current_particle);
+            if (current_particle)
+                g_object_unref(current_particle);
             current_particle = particle;
             if (checked)
                 app->variables->simulation.num_particles_use++;
@@ -176,13 +184,14 @@ void open_project(GtkApp app)
                 continue;
             gdouble dfx = parse_double_locale_safe(fx_str);
             gdouble dfy = parse_double_locale_safe(fy_str);
-            
+
             PhysItem* force = phys_item_new_force(dfx, dfy);
             phys_item_add_child(current_particle, force);
             g_object_unref(force);
         }
     }
-    if (current_particle) g_object_unref(current_particle);
+    if (current_particle)
+        g_object_unref(current_particle);
     free(line);
     fclose(file);
 }

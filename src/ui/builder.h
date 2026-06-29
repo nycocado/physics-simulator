@@ -1,6 +1,6 @@
 #pragma once
-
-#include "gtk_include_all.h"
+typedef struct _GtkApp* GtkApp;
+#include <gtk/gtk.h>
 
 void create_window_main_widgets(GtkApp app);
 void create_window_add_particle_normal_widgets(GtkApp app);

@@ -27,15 +27,15 @@ typedef enum
 
 /* Foundational structs — no project-header dependencies */
 #include "particles/buttons.h"
-#include "particles/particle.h"
 #include "particles/force_dialog.h"
+#include "particles/particle.h"
 #include "particles/particle_dialog.h"
-#include "physics/kinematics.h"
+#include "phys_item.h"
 #include "physics/dynamics.h"
-#include "variables.h"
+#include "physics/kinematics.h"
 #include "ui/window_main.h"
 #include "ui/window_simulation.h"
-#include "phys_item.h"
+#include "variables.h"
 
 /* GtkApp struct — depends on the foundational structs above */
 #include "app.h"
@@ -44,9 +44,10 @@ typedef enum
 #include "collection.h"
 #include "log.h"
 #include "project.h"
-#include "simulation/simulation.h"
-#include "simulation/kinematic_sim.h"
 #include "simulation/dynamic_sim.h"
+#include "simulation/kinematic_sim.h"
+#include "simulation/simulation.h"
 #include "ui/builder.h"
 #include "ui/callbacks.h"
 #include "ui/main_window.h"
+typedef struct _GtkApp* GtkApp;

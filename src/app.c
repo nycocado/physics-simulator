@@ -1,4 +1,5 @@
-#include "gtk_include_all.h"
+#include "app.h"
+#include <gtk/gtk.h>
 
 GtkApp gtk_app_new()
 {

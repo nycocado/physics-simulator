@@ -10,7 +10,6 @@ struct _Buttons_Add
         GtkWidget* cancel;
 };
 
-
 typedef struct _Buttons_Edit* Buttons_Edit;
 
 struct _Buttons_Edit
@@ -18,4 +17,3 @@ struct _Buttons_Edit
         GtkWidget* edit;
         GtkWidget* cancel;
 };
-

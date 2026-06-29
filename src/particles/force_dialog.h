@@ -12,8 +12,6 @@ struct _Spin_Buttons_Add_Force_Normal
         GtkWidget* fy;
 };
 
-
-
 typedef struct _Window_Add_Force_Normal* Window_Add_Force_Normal;
 
 struct _Window_Add_Force_Normal
@@ -31,7 +29,8 @@ struct _Window_Edit_Force_Normal
 };
 
 Window_Add_Force_Normal window_add_force_normal_new();
-void window_add_force_normal_free(Window_Add_Force_Normal window_add_force_normal
+void window_add_force_normal_free(
+    Window_Add_Force_Normal window_add_force_normal
 );
 
 typedef struct _Window_Edit_Force_Normal* Window_Edit_Force_Normal;
