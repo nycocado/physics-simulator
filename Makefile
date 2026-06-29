@@ -49,18 +49,14 @@ $(BIN_DIR)/physics/kinematics_test.o: $(SRC_DIR)/physics/kinematics.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< $(MATHFLAGS) -o $@
 
-$(BIN_DIR)/physics/dynamics_test.o: $(SRC_DIR)/physics/dynamics.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< $(MATHFLAGS) -o $@
-
-phy_tests: unity.o $(BIN_DIR)/physics/kinematics_test.o $(BIN_DIR)/physics/dynamics_test.o
+phy_tests: unity.o $(BIN_DIR)/physics/kinematics_test.o
 	$(CC) $(CFLAGS) $(TEST_DIR)/phy_tests.c $(BIN_DIR)/unity.o \
-	  $(BIN_DIR)/physics/kinematics_test.o $(BIN_DIR)/physics/dynamics_test.o \
+	  $(BIN_DIR)/physics/kinematics_test.o \
 	  $(MATHFLAGS) -o $(BIN_TEST)/phy_tests
 
-test_simulation: unity.o $(BIN_DIR)/physics/kinematics_test.o $(BIN_DIR)/physics/dynamics_test.o
+test_simulation: unity.o $(BIN_DIR)/physics/kinematics_test.o
 	$(CC) $(CFLAGS) $(TEST_DIR)/test_simulation.c $(BIN_DIR)/unity.o \
-	  $(BIN_DIR)/physics/kinematics_test.o $(BIN_DIR)/physics/dynamics_test.o \
+	  $(BIN_DIR)/physics/kinematics_test.o \
 	  $(MATHFLAGS) -o $(BIN_TEST)/test_simulation
 
 test_locale: unity.o

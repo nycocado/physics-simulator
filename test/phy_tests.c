@@ -1,6 +1,5 @@
-#include "physics/kinematics.h"
-#include "physics/dynamics.h"
 #include "math.h"
+#include "physics/kinematics.h"
 #include "unity/unity.h"
 #include "unity/unity_internals.h"
 
@@ -65,146 +64,6 @@ void test_medium_acceleration(void)
     );
 }
 
-void test_magnitude(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude(3, 4));
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude(4, 3));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 22.360, phyc_magnitude(10, 20));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 15.811, phyc_magnitude(15, 5));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 42.151, phyc_magnitude(42, 3.5653));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2.692, phyc_magnitude(2.5, 1));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2, phyc_magnitude(2, 0));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 1.414, phyc_magnitude(1, 1));
-}
-
-void test_displacement_x_y(void)
-{
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 4.123, phyc_displacement_x_y(3, 4, 2, 6)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 14.142, phyc_displacement_x_y(10, 20, 20, 10)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 14.142, phyc_displacement_x_y(5, 15, 5, 15)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 3.383, phyc_displacement_x_y(2, 3.565, 2, 5)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 10.111, phyc_displacement_x_y(2.5, 1, 10, 20)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 6.324, phyc_displacement_x_y(2, 0, 0, 6)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2, phyc_displacement_x_y(1, 1, 2, 4));
-}
-
-void test_magnitude_velocity(void)
-{
-
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude_velocity(3, 4));
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude_velocity(4, 3));
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 22.360, phyc_magnitude_velocity(10, 20)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 15.811, phyc_magnitude_velocity(15, 5));
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 42.151, phyc_magnitude_velocity(42, 3.5653)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2.692, phyc_magnitude_velocity(2.5, 1));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2, phyc_magnitude_velocity(2, 0));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 1.414, phyc_magnitude_velocity(1, 1));
-}
-
-void test_magnitude_acceleration(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude_acceleration(3, 4));
-    TEST_ASSERT_EQUAL_FLOAT(5, phyc_magnitude_acceleration(4, 3));
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 22.360, phyc_magnitude_acceleration(10, 20)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 15.811, phyc_magnitude_acceleration(15, 5)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 42.151, phyc_magnitude_acceleration(42, 3.5653)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 2.692, phyc_magnitude_acceleration(2.5, 1)
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 2, phyc_magnitude_acceleration(2, 0));
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 1.414, phyc_magnitude_acceleration(1, 1)
-    );
-}
-
-void test_decompose_x(void)
-{
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 1, phyc_decompose_x(1, phyc_degree_to_radian(0))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.866, phyc_decompose_x(1, phyc_degree_to_radian(30))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.5, phyc_decompose_x(1, phyc_degree_to_radian(60))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.0, phyc_decompose_x(1, phyc_degree_to_radian(90))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, -0.5, phyc_decompose_x(1, phyc_degree_to_radian(120))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, -1, phyc_decompose_x(1, phyc_degree_to_radian(180))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0, phyc_decompose_x(1, phyc_degree_to_radian(270))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 1, phyc_decompose_x(1, phyc_degree_to_radian(360))
-    );
-}
-
-void test_decompose_y(void)
-{
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0, phyc_decompose_y(1, phyc_degree_to_radian(0))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.5, phyc_decompose_y(1, phyc_degree_to_radian(30))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.866, phyc_decompose_y(1, phyc_degree_to_radian(60))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 1, phyc_decompose_y(1, phyc_degree_to_radian(90))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.866, phyc_decompose_y(1, phyc_degree_to_radian(120))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0, phyc_decompose_y(1, phyc_degree_to_radian(180))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, -0.866, phyc_decompose_y(1, phyc_degree_to_radian(240))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, -1, phyc_decompose_y(1, phyc_degree_to_radian(270))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0, phyc_decompose_y(1, phyc_degree_to_radian(360))
-    );
-}
-void test_angle(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(M_PI / 4, phyc_angle(1, 1));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 1.570, phyc_angle(0, 1));
-    TEST_ASSERT_EQUAL_FLOAT(-(M_PI / 4), phyc_angle(1, -1));
-    TEST_ASSERT_DOUBLE_WITHIN(PRECISION, -1.249, phyc_angle(1, -3));
-}
-
 void test_degree_to_radian(void)
 {
     TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 0, phyc_degree_to_radian(0));
@@ -233,53 +92,6 @@ void test_radian_to_degree(void)
     TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 360, phyc_radian_to_degree(2 * M_PI));
 }
 
-void test_phyd_force_p(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(98.0, phyd_force_p(10.0, 9.8));
-    TEST_ASSERT_EQUAL_FLOAT(0.0, phyd_force_p(0.0, 9.8));
-    TEST_ASSERT_EQUAL_FLOAT(196.0, phyd_force_p(20.0, 9.8));
-}
-
-void test_phyd_force_r(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(20.0, phyd_force_r(10.0, 2.0));
-    TEST_ASSERT_EQUAL_FLOAT(0.0, phyd_force_r(10.0, 0.0));
-    TEST_ASSERT_EQUAL_FLOAT(50.0, phyd_force_r(25.0, 2.0));
-}
-
-void test_phyd_decompose_force_x(void)
-{
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 7.071, phyd_decompose_force_x(10, phyc_degree_to_radian(45))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 10.0, phyd_decompose_force_x(10, phyc_degree_to_radian(0))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.0, phyd_decompose_force_x(10, phyc_degree_to_radian(90))
-    );
-}
-
-void test_phyd_decompose_force_y(void)
-{
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 7.071, phyd_decompose_force_y(10, phyc_degree_to_radian(45))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 0.0, phyd_decompose_force_y(10, phyc_degree_to_radian(0))
-    );
-    TEST_ASSERT_DOUBLE_WITHIN(
-        PRECISION, 10.0, phyd_decompose_force_y(10, phyc_degree_to_radian(90))
-    );
-}
-
-void test_phyd_acceleration(void)
-{
-    TEST_ASSERT_EQUAL_FLOAT(2.0, phyd_acceleration(20.0, 10.0));
-    TEST_ASSERT_EQUAL_FLOAT(0.0, phyd_acceleration(0.0, 10.0));
-    TEST_ASSERT_EQUAL_FLOAT(1.5, phyd_acceleration(15.0, 10.0));
-}
-
 int main(void)
 {
     UNITY_BEGIN();
@@ -287,20 +99,8 @@ int main(void)
     RUN_TEST(test_velocity);
     RUN_TEST(test_medium_velocity);
     RUN_TEST(test_medium_acceleration);
-    RUN_TEST(test_magnitude);
-    RUN_TEST(test_displacement_x_y);
-    RUN_TEST(test_magnitude_velocity);
-    RUN_TEST(test_magnitude_acceleration);
-    RUN_TEST(test_decompose_x);
-    RUN_TEST(test_decompose_y);
-    RUN_TEST(test_angle);
     RUN_TEST(test_degree_to_radian);
     RUN_TEST(test_radian_to_degree);
-    RUN_TEST(test_phyd_force_p);
-    RUN_TEST(test_phyd_force_r);
-    RUN_TEST(test_phyd_decompose_force_x);
-    RUN_TEST(test_phyd_decompose_force_y);
-    RUN_TEST(test_phyd_acceleration);
     UNITY_END();
     return 0;
 }

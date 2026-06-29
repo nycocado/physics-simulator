@@ -1,5 +1,4 @@
 #include "kinematics.h"
-#include "simulation/kinematic_sim.h"
 #include <math.h>
 
 #ifndef M_PI
