@@ -2,7 +2,7 @@
 
 #include <glib.h>
 
-typedef struct _Vector* Vector;
+typedef struct _Vector Vector;
 typedef struct _Particle_Cinematic* Particle_Cinematic;
 typedef struct _Particle_Dynamic* Particle_Dynamic;
 typedef struct _Particle_Cinematic_Collection* Particle_Cinematic_Collection;
@@ -47,7 +47,7 @@ struct _Particle_Dynamic_Collection
         int num_particles;
 };
 
-Vector create_vector(double x, double y);
+
 Particle_Cinematic particle_cinematic_new(
     double x,
     double y,

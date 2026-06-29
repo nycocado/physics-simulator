@@ -68,12 +68,12 @@ void save_simulation_cinematic_log(
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
-        double xi = particle->position_i->x;
-        double yi = particle->position_i->y;
-        double vxi = particle->velocity_i->x;
-        double vyi = particle->velocity_i->y;
-        double ax = particle->acceleration->x;
-        double ay = particle->acceleration->y;
+        double xi = particle->position_i.x;
+        double yi = particle->position_i.y;
+        double vxi = particle->velocity_i.x;
+        double vyi = particle->velocity_i.y;
+        double ax = particle->acceleration.x;
+        double ay = particle->acceleration.y;
         double g = gravity;
         for (double t = 0; t <= time; t += time_step)
         {
@@ -168,12 +168,12 @@ void save_simulation_dynamic_log(
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 
-        double xi = particle->position_i->x;
-        double yi = particle->position_i->y;
-        double vxi = particle->velocity_i->x;
-        double vyi = particle->velocity_i->y;
-        double ax = particle->acceleration->x;
-        double ay = particle->acceleration->y;
+        double xi = particle->position_i.x;
+        double yi = particle->position_i.y;
+        double vxi = particle->velocity_i.x;
+        double vyi = particle->velocity_i.y;
+        double ax = particle->acceleration.x;
+        double ay = particle->acceleration.y;
         double m = particle->mass;
         double g = gravity;
 
@@ -212,7 +212,7 @@ void save_simulation_dynamic_log(
             GList* forces = particle->forces;
             for (GList* l = forces; l != NULL; l = l->next)
             {
-                Vector force = l->data;
+                Vector* force = l->data;
                 double fx = force->x;
                 double fy = force->y;
                 frx += fx;

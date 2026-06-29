@@ -38,10 +38,10 @@ void on_draw_cinematic(
     {
         Particle_Cinematic particle = particle_collection->particles[i];
 
-        double x = particle->position->x;
-        double y = particle->position->y;
-        double vx = particle->velocity->x;
-        double vy = particle->velocity->y;
+        double x = particle->position.x;
+        double y = particle->position.y;
+        double vx = particle->velocity.x;
+        double vy = particle->velocity.y;
 
         double start_x = (double)x_center + x;
         double start_y = (double)y_center - y;
@@ -112,19 +112,19 @@ gboolean on_timeout_cinematic(gpointer user_data)
     {
         Particle_Cinematic particle = collection->particles[i];
 
-        double xi = particle->position_i->x;
-        double yi = particle->position_i->y;
-        double vxi = particle->velocity_i->x;
-        double vyi = particle->velocity_i->y;
-        double ax = particle->acceleration->x;
-        double ay = particle->acceleration->y;
+        double xi = particle->position_i.x;
+        double yi = particle->position_i.y;
+        double vxi = particle->velocity_i.x;
+        double vyi = particle->velocity_i.y;
+        double ax = particle->acceleration.x;
+        double ay = particle->acceleration.y;
         double g = sim->gravity;
 
-        particle->velocity->x = phyc_velocity(vxi, ax, elapsed);
-        particle->velocity->y = phyc_velocity(vyi, ay - g, elapsed);
+        particle->velocity.x = phyc_velocity(vxi, ax, elapsed);
+        particle->velocity.y = phyc_velocity(vyi, ay - g, elapsed);
 
-        particle->position->x = phyc_position(xi, vxi, ax, elapsed);
-        particle->position->y = phyc_position(yi, vyi, ay - g, elapsed);
+        particle->position.x = phyc_position(xi, vxi, ax, elapsed);
+        particle->position.y = phyc_position(yi, vyi, ay - g, elapsed);
     }
 
     if (elapsed >= total_time)
@@ -160,10 +160,10 @@ void on_cinematic_refresh_button_clicked(GtkButton* button, gpointer data)
     for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Cinematic particle = collection->particles[i];
-        particle->position->x = particle->position_i->x;
-        particle->position->y = particle->position_i->y;
-        particle->velocity->x = particle->velocity_i->x;
-        particle->velocity->y = particle->velocity_i->y;
+        particle->position.x = particle->position_i.x;
+        particle->position.y = particle->position_i.y;
+        particle->velocity.x = particle->velocity_i.x;
+        particle->velocity.y = particle->velocity_i.y;
     }
     gtk_widget_queue_draw(app->window_simulation->drawing_area);
 }

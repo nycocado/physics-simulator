@@ -2,14 +2,7 @@
 #include "collection.h"
 #include "simulation/dynamic_sim.h"
 
-Vector create_vector(double x, double y)
-{
-    Vector vector = g_new(struct _Vector, 1);
 
-    vector->x = x;
-    vector->y = y;
-    return vector;
-}
 
 Particle_Cinematic particle_cinematic_new(
     double x,
@@ -22,21 +15,17 @@ Particle_Cinematic particle_cinematic_new(
 {
     Particle_Cinematic particle = g_new(struct _Particle_Cinematic, 1);
 
-    particle->position_i = create_vector(x, y);
-    particle->position = create_vector(x, y);
-    particle->velocity_i = create_vector(vx, vy);
-    particle->velocity = create_vector(vx, vy);
-    particle->acceleration = create_vector(ax, ay);
+    particle->position_i.x = x; particle->position_i.y = y;
+    particle->position.x = x; particle->position.y = y;
+    particle->velocity_i.x = vx; particle->velocity_i.y = vy;
+    particle->velocity.x = vx; particle->velocity.y = vy;
+    particle->acceleration.x = ax; particle->acceleration.y = ay;
     return particle;
 }
 
 void particle_cinematic_free(Particle_Cinematic particle)
 {
-    g_free(particle->position_i);
-    g_free(particle->position);
-    g_free(particle->velocity);
-    g_free(particle->velocity_i);
-    g_free(particle->acceleration);
+
     g_free(particle);
 }
 
@@ -52,12 +41,12 @@ Particle_Dynamic particle_dynamic_new(
 {
     Particle_Dynamic particle = g_new(struct _Particle_Dynamic, 1);
 
-    particle->position_i = create_vector(x, y);
-    particle->position = create_vector(x, y);
-    particle->velocity_i = create_vector(vx, vy);
-    particle->acceleration_i = create_vector(ax, ay);
-    particle->acceleration = create_vector(ax, ay);
-    particle->force_resultant = create_vector(0, 0);
+    particle->position_i.x = x; particle->position_i.y = y;
+    particle->position.x = x; particle->position.y = y;
+    particle->velocity_i.x = vx; particle->velocity_i.y = vy;
+    particle->acceleration_i.x = ax; particle->acceleration_i.y = ay;
+    particle->acceleration.x = ax; particle->acceleration.y = ay;
+    particle->force_resultant.x = 0; particle->force_resultant.y = 0;
     particle->mass = mass;
     particle->forces = NULL;
     return particle;
@@ -65,12 +54,7 @@ Particle_Dynamic particle_dynamic_new(
 
 void particle_dynamic_free(Particle_Dynamic particle)
 {
-    g_free(particle->position_i);
-    g_free(particle->position);
-    g_free(particle->velocity_i);
-    g_free(particle->acceleration_i);
-    g_free(particle->acceleration);
-    g_free(particle->force_resultant);
+
     if (particle->forces != NULL)
     {
         g_list_free_full(particle->forces, g_free);

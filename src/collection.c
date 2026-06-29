@@ -73,7 +73,8 @@ void particle_dynamic_collection_start(GtkApp app)
                 gdouble force_x = phys_item_get_ax(child);
                 gdouble force_y = phys_item_get_ay(child);
 
-                Vector force = create_vector(force_x, force_y);
+                Vector* force = g_new(Vector, 1);
+                force->x = force_x; force->y = force_y;
                 particle->forces = g_list_append(particle->forces, force);
             }
             particle_dynamic_collection->particles[i] = particle;

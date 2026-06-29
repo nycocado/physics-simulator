@@ -38,10 +38,10 @@ void on_draw_dynamic(
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 
-        double x = particle->position->x;
-        double y = particle->position->y;
-        double frx = particle->force_resultant->x;
-        double fry = particle->force_resultant->y;
+        double x = particle->position.x;
+        double y = particle->position.y;
+        double frx = particle->force_resultant.x;
+        double fry = particle->force_resultant.y;
 
         double start_x = (double)x_center + x;
         double start_y = (double)y_center - y;
@@ -129,15 +129,15 @@ gboolean on_timeout_dynamic(gpointer user_data)
     {
         Particle_Dynamic particle = collection->particles[i];
 
-        double xi = particle->position_i->x;
-        double yi = particle->position_i->y;
-        double vxi = particle->velocity_i->x;
-        double vyi = particle->velocity_i->y;
-        double ax = particle->acceleration->x;
-        double ay = particle->acceleration->y;
+        double xi = particle->position_i.x;
+        double yi = particle->position_i.y;
+        double vxi = particle->velocity_i.x;
+        double vyi = particle->velocity_i.y;
+        double ax = particle->acceleration.x;
+        double ay = particle->acceleration.y;
 
-        particle->position->x = phyc_position(xi, vxi, ax, elapsed);
-        particle->position->y = phyc_position(yi, vyi, ay, elapsed);
+        particle->position.x = phyc_position(xi, vxi, ax, elapsed);
+        particle->position.y = phyc_position(yi, vyi, ay, elapsed);
     }
 
     if (elapsed >= total_time)
@@ -173,10 +173,10 @@ void on_dynamic_refresh_button_clicked(GtkButton* button, gpointer data)
     for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
     {
         Particle_Dynamic particle = collection->particles[i];
-        particle->position->x = particle->position_i->x;
-        particle->position->y = particle->position_i->y;
-        particle->acceleration->x = particle->acceleration_i->x;
-        particle->acceleration->y = particle->acceleration_i->y;
+        particle->position.x = particle->position_i.x;
+        particle->position.y = particle->position_i.y;
+        particle->acceleration.x = particle->acceleration_i.x;
+        particle->acceleration.y = particle->acceleration_i.y;
     }
     gtk_widget_queue_draw(app->window_simulation->drawing_area);
 }
@@ -190,23 +190,23 @@ void forces_dynamic_apply(GtkApp app)
         Particle_Dynamic particle = collection->particles[i];
         GList* forces = particle->forces;
 
-        particle->acceleration->x = particle->acceleration_i->x;
-        particle->acceleration->y = particle->acceleration_i->y;
-        particle->force_resultant->x = 0;
-        particle->force_resultant->y = 0;
+        particle->acceleration.x = particle->acceleration_i.x;
+        particle->acceleration.y = particle->acceleration_i.y;
+        particle->force_resultant.x = 0;
+        particle->force_resultant.y = 0;
 
         for (GList* l = forces; l != NULL; l = l->next)
         {
-            Vector force = l->data;
-            particle->force_resultant->x += force->x;
-            particle->force_resultant->y += force->y;
+            Vector* force = l->data;
+            particle->force_resultant.x += force->x;
+            particle->force_resultant.y += force->y;
         }
-        particle->force_resultant->y -=
+        particle->force_resultant.y -=
             ((particle->mass) * (app->variables->simulation.gravity));
-        particle->acceleration->x +=
-            ((particle->force_resultant->x) / (particle->mass));
-        particle->acceleration->y +=
-            ((particle->force_resultant->y) / (particle->mass));
+        particle->acceleration.x +=
+            ((particle->force_resultant.x) / (particle->mass));
+        particle->acceleration.y +=
+            ((particle->force_resultant.y) / (particle->mass));
     }
 }
 
