@@ -473,7 +473,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_g"));
     gtk_adjustment_configure(
         adjustment,
-        gtk_adjustment_get_value(adjustment),
+        app->variables->simulation.gravity,
         -G_MAXFLOAT,
         G_MAXFLOAT,
         1.0,
@@ -484,7 +484,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_t"));
     gtk_adjustment_configure(
         adjustment,
-        gtk_adjustment_get_value(adjustment),
+        app->variables->simulation.time,
         0.01,
         G_MAXFLOAT,
         1.0,
@@ -495,7 +495,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_p"));
     gtk_adjustment_configure(
         adjustment,
-        gtk_adjustment_get_value(adjustment),
+        app->variables->simulation.time_step,
         0.01,
         G_MAXFLOAT,
         1.0,
@@ -506,7 +506,7 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_f"));
     gtk_adjustment_configure(
         adjustment,
-        gtk_adjustment_get_value(adjustment),
+        app->variables->simulation.frames,
         1,
         G_MAXFLOAT,
         1.0,

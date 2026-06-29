@@ -1,5 +1,15 @@
 using Gtk 4.0;
 
+SignalListItemFactory factory_type {}
+SignalListItemFactory factory_x {}
+SignalListItemFactory factory_y {}
+SignalListItemFactory factory_vx {}
+SignalListItemFactory factory_vy {}
+SignalListItemFactory factory_ax {}
+SignalListItemFactory factory_ay {}
+SignalListItemFactory factory_mass {}
+SignalListItemFactory factory_check {}
+
 menu menu_model {
   submenu {
     label: _("_Projetos");
@@ -52,66 +62,57 @@ Window window_main {
           show-row-separators: true;
           show-column-separators: true;
 
-          [column]
           ColumnViewColumn column_type {
             title: _("tipo");
-            factory: SignalListItemFactory factory_type {};
+            factory: factory_type;
           }
 
-          [column]
           ColumnViewColumn column_x {
             title: _("x");
             expand: true;
-            factory: SignalListItemFactory factory_x {};
+            factory: factory_x;
           }
 
-          [column]
           ColumnViewColumn column_y {
             title: _("y");
             expand: true;
-            factory: SignalListItemFactory factory_y {};
+            factory: factory_y;
           }
 
-          [column]
           ColumnViewColumn column_vx {
             title: _("vx");
             expand: true;
-            factory: SignalListItemFactory factory_vx {};
+            factory: factory_vx;
           }
 
-          [column]
           ColumnViewColumn column_vy {
             title: _("vy");
             expand: true;
-            factory: SignalListItemFactory factory_vy {};
+            factory: factory_vy;
           }
 
-          [column]
           ColumnViewColumn column_ax {
             title: _("ax");
             expand: true;
-            factory: SignalListItemFactory factory_ax {};
+            factory: factory_ax;
           }
 
-          [column]
           ColumnViewColumn column_ay {
             title: _("ay");
             expand: true;
-            factory: SignalListItemFactory factory_ay {};
+            factory: factory_ay;
           }
 
-          [column]
           ColumnViewColumn column_mass {
             title: _("massa");
             expand: true;
-            factory: SignalListItemFactory factory_mass {};
+            factory: factory_mass;
           }
 
-          [column]
           ColumnViewColumn column_check {
             title: _("usar");
             expand: true;
-            factory: SignalListItemFactory factory_check {};
+            factory: factory_check;
           }
         }
       }

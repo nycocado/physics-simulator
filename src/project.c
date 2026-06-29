@@ -75,6 +75,14 @@ void save_project(GtkApp app)
     fclose(file);
 }
 
+static gdouble parse_double_locale_safe(char *str) {
+    if (!str) return 0.0;
+    for (char *p = str; *p; p++) {
+        if (*p == ',') *p = '.';
+    }
+    return g_ascii_strtod(str, NULL);
+}
+
 void open_project(GtkApp app)
 {
     FILE* file = fopen(app->variables->project.file_path, "r");
@@ -91,8 +99,14 @@ void open_project(GtkApp app)
     while (getline(&line, &len, file) != -1)
     {
         size_t line_len = strlen(line);
-        if (line_len > 0 && line[line_len - 1] == '\n')
+        if (line_len > 0 && line[line_len - 1] == '\n') {
             line[line_len - 1] = '\0';
+            line_len--;
+        }
+        if (line_len > 0 && line[line_len - 1] == '\r') {
+            line[line_len - 1] = '\0';
+            line_len--;
+        }
 
         char* type = strtok(line, " ");
         if (!type)
@@ -108,7 +122,7 @@ void open_project(GtkApp app)
                 if (!eq)
                     continue;
                 *eq = '\0';
-                double val = g_ascii_strtod(eq + 1, NULL);
+                double val = parse_double_locale_safe(eq + 1);
                 if (strcmp(token, "gravity") == 0)
                     sim->gravity = val;
                 else if (strcmp(token, "time") == 0)
@@ -130,13 +144,13 @@ void open_project(GtkApp app)
             char* mass = strtok(NULL, " ");
             if (!x || !y || !vx || !vy || !ax || !ay || !mass)
                 continue;
-            gdouble dx = g_ascii_strtod(x, NULL);
-            gdouble dy = g_ascii_strtod(y, NULL);
-            gdouble dvx = g_ascii_strtod(vx, NULL);
-            gdouble dvy = g_ascii_strtod(vy, NULL);
-            gdouble dax = g_ascii_strtod(ax, NULL);
-            gdouble day = g_ascii_strtod(ay, NULL);
-            gdouble dmass = g_ascii_strtod(mass, NULL);
+            gdouble dx = parse_double_locale_safe(x);
+            gdouble dy = parse_double_locale_safe(y);
+            gdouble dvx = parse_double_locale_safe(vx);
+            gdouble dvy = parse_double_locale_safe(vy);
+            gdouble dax = parse_double_locale_safe(ax);
+            gdouble day = parse_double_locale_safe(ay);
+            gdouble dmass = parse_double_locale_safe(mass);
             if (dmass <= 0)
                 continue;
             char* checked_str = strtok(NULL, " ");
@@ -160,8 +174,8 @@ void open_project(GtkApp app)
             char* fy_str = strtok(NULL, " ");
             if (!fx_str || !fy_str)
                 continue;
-            gdouble dfx = g_ascii_strtod(fx_str, NULL);
-            gdouble dfy = g_ascii_strtod(fy_str, NULL);
+            gdouble dfx = parse_double_locale_safe(fx_str);
+            gdouble dfy = parse_double_locale_safe(fy_str);
             
             PhysItem* force = phys_item_new_force(dfx, dfy);
             phys_item_add_child(current_particle, force);

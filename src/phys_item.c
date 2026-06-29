@@ -41,7 +41,7 @@ static void phys_item_set_property(GObject* object, guint property_id, const GVa
 
     switch (property_id) {
         case PROP_ITEM_TYPE:
-            self->type = g_value_get_enum(value);
+            self->type = g_value_get_int(value);
             break;
         case PROP_X:
             self->x = g_value_get_double(value);
@@ -79,7 +79,7 @@ static void phys_item_get_property(GObject* object, guint property_id, GValue* v
 
     switch (property_id) {
         case PROP_ITEM_TYPE:
-            g_value_set_enum(value, self->type);
+            g_value_set_int(value, self->type);
             break;
         case PROP_X:
             g_value_set_double(value, self->x);
@@ -131,9 +131,9 @@ static void phys_item_class_init(PhysItemClass* klass)
     gobject_class->get_property = phys_item_get_property;
     gobject_class->dispose = phys_item_dispose;
 
-    obj_properties[PROP_ITEM_TYPE] = g_param_spec_enum(
+    obj_properties[PROP_ITEM_TYPE] = g_param_spec_int(
         "item-type", "Item Type", "Item Type",
-        G_TYPE_INT, PHYS_ITEM_PARTICLE,
+        PHYS_ITEM_PARTICLE, PHYS_ITEM_FORCE, PHYS_ITEM_PARTICLE,
         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
     );
 

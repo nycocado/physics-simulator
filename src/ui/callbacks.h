@@ -3,11 +3,7 @@
 #include <gtk/gtk.h>
 
 void on_window_destroy(GtkWidget* widget, gpointer data);
-void on_renderer_check_toggled(
-    GtkCellRendererToggle* renderer,
-    gchar* path_str,
-    gpointer data
-);
+void on_check_toggled(GtkCheckButton* button, gpointer data);
 void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data);
 void on_window_add_particle_normal_add_button_clicked(GtkWidget* widget, gpointer data);
 void on_window_edit_particle_normal_edit_button_clicked(GtkWidget* widget, gpointer data);

@@ -10,9 +10,19 @@ void on_window_destroy(GtkWidget* widget, gpointer data)
 
 void on_check_toggled(GtkCheckButton* button, gpointer data)
 {
-    PhysItem* item = PHYS_ITEM(data);
+    (void)data;
+    PhysItem* item = g_object_get_data(G_OBJECT(button), "item");
+    GtkApp app = g_object_get_data(G_OBJECT(button), "app");
+    if (!item || !app) return;
+    
     gboolean checked = gtk_check_button_get_active(button);
-    phys_item_set_checked(item, checked);
+    gboolean was_checked = phys_item_get_checked(item);
+    
+    if (checked != was_checked) {
+        phys_item_set_checked(item, checked);
+        if (checked) app->variables->simulation.num_particles_use++;
+        else app->variables->simulation.num_particles_use--;
+    }
 }
 
 void on_window_main_add_particle_button_clicked(GtkButton* button, gpointer data)
