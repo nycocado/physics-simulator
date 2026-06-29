@@ -1,28 +1,32 @@
 using Gtk 4.0;
 
 Adjustment adjustment_f {
-  upper: 100;
+  lower: 1.0;
+  upper: 1000000000.0;
   value: 60;
   step-increment: 1;
   page-increment: 10;
 }
 
 Adjustment adjustment_g {
-  upper: 100;
+  lower: -1000000000.0;
+  upper: 1000000000.0;
   value: 9.80;
   step-increment: 1;
   page-increment: 10;
 }
 
 Adjustment adjustment_p {
-  upper: 100;
+  lower: 0.01;
+  upper: 1000000000.0;
   value: 1;
   step-increment: 1;
   page-increment: 10;
 }
 
 Adjustment adjustment_t {
-  upper: 100;
+  lower: 0.01;
+  upper: 1000000000.0;
   value: 10;
   step-increment: 1;
   page-increment: 10;

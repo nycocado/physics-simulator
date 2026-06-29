@@ -171,84 +171,6 @@ void create_window_add_particle_normal_widgets(GtkApp app)
     app->window_add_particle_normal->buttons.cancel =
         GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
 
-    GtkAdjustment* adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_x"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_y"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_vx"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_vy"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_ax"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_ay"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_mass"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        0.001,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-
     g_signal_connect(
         app->window_add_particle_normal->buttons.add,
         "clicked",
@@ -288,29 +210,6 @@ void create_window_add_force_normal_widgets(GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "add_button"));
     app->window_add_force_normal->buttons.cancel =
         GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-
-    GtkAdjustment* adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_fx"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_fy"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
 
     g_signal_connect(
         app->window_add_force_normal->buttons.add,
@@ -362,84 +261,6 @@ void create_window_edit_particle_normal_widgets(GtkApp app)
     app->window_edit_particle_normal->buttons.cancel =
         GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
 
-    GtkAdjustment* adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_x"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_y"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_vx"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_vy"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_ax"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_ay"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_mass"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        0.001,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-
     g_signal_connect(
         app->window_edit_particle_normal->buttons.edit,
         "clicked",
@@ -479,29 +300,6 @@ void create_window_edit_force_normal_widgets(GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "edit_button"));
     app->window_edit_force_normal->buttons.cancel =
         GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-
-    GtkAdjustment* adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_fx"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_fy"));
-    gtk_adjustment_configure(
-        adjustment,
-        gtk_adjustment_get_value(adjustment),
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
 
     g_signal_connect(
         app->window_edit_force_normal->buttons.edit,
@@ -559,51 +357,6 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "spin_button_p"));
     app->window_simulation->spin_buttons.frames =
         GTK_WIDGET(gtk_builder_get_object(builder, "spin_button_f"));
-
-    GtkAdjustment* adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_g"));
-    gtk_adjustment_configure(
-        adjustment,
-        app->variables->simulation.gravity,
-        -G_MAXFLOAT,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_t"));
-    gtk_adjustment_configure(
-        adjustment,
-        app->variables->simulation.time,
-        0.01,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_p"));
-    gtk_adjustment_configure(
-        adjustment,
-        app->variables->simulation.time_step,
-        0.01,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
-    adjustment =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment_f"));
-    gtk_adjustment_configure(
-        adjustment,
-        app->variables->simulation.frames,
-        1,
-        G_MAXFLOAT,
-        1.0,
-        10.0,
-        0.0
-    );
 
     gtk_widget_set_size_request(
         app->window_simulation->drawing_area, 1000, 500
