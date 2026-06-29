@@ -411,9 +411,18 @@ on_projetos_abrir_response(GObject* source, GAsyncResult* result, gpointer data)
     }
     g_free(app->variables->project.file_path);
     app->variables->project.file_path = g_file_get_path(file);
-    app->variables->project.is_file_open = TRUE;
     g_object_unref(file);
-    open_project(app);
+
+    if (open_project(app))
+    {
+        app->variables->project.is_file_open = TRUE;
+    }
+    else
+    {
+        g_free(app->variables->project.file_path);
+        app->variables->project.file_path = NULL;
+        app->variables->project.is_file_open = FALSE;
+    }
 }
 
 void on_menu_projects_open_activate(

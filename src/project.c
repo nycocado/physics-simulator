@@ -81,7 +81,7 @@ void save_project(GtkApp app)
     g_key_file_free(key_file);
 }
 
-void open_project(GtkApp app)
+gboolean open_project(GtkApp app)
 {
     GKeyFile* key_file = g_key_file_new();
     g_autoptr(GError) error = NULL;
@@ -92,7 +92,7 @@ void open_project(GtkApp app)
     {
         create_dialog_error_message("Erro ao abrir o projeto", app);
         g_key_file_free(key_file);
-        return;
+        return FALSE;
     }
 
     g_list_store_remove_all(app->root_store);
@@ -163,6 +163,7 @@ void open_project(GtkApp app)
     }
 
     g_key_file_free(key_file);
+    return TRUE;
 }
 
 void close_project(GtkApp app)
