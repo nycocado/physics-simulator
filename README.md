@@ -17,22 +17,23 @@ Particle simulator with two independent modes. In kinematic mode particles follo
 
 ## Simulation modes
 
-| Mode | Description |
-| ---- | ----------- |
-| **Kinematic** | Constant acceleration — position and velocity updated via s = s₀ + v·t + ½·a·t². |
-| **Dynamic** | Variable acceleration — resultant force divided by mass yields acceleration at each step. |
+| Mode          | Description                                                                               |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| **Kinematic** | Constant acceleration — position and velocity updated via s = s₀ + v·t + ½·a·t².          |
+| **Dynamic**   | Variable acceleration — resultant force divided by mass yields acceleration at each step. |
 
 ## Requirements
 
-| Tool | Version |
-| ---- | ------- |
-| GCC | 9+ |
-| Make | 4+ |
-| GTK4 | 4.0+ |
-| Cairo | 1.16+ |
-| GLib | 2.0+ |
+| Tool               | Version |
+| ------------------ | ------- |
+| GCC                | 9+      |
+| Make               | 4+      |
+| GTK4               | 4.0+    |
+| Blueprint Compiler | 0.8+    |
+| Cairo              | 1.16+   |
+| GLib               | 2.0+    |
 
-Tested on Ubuntu/GNOME. Native execution on macOS is not supported.
+Tested on Fedora/GNOME. Native execution on macOS is not supported.
 
 ## How to run
 

@@ -17,22 +17,23 @@ Simulador de partículas com dois modos independentes. No modo cinemático as pa
 
 ## Modos de simulação
 
-| Modo | Descrição |
-| ---- | --------- |
-| **Cinemático** | Aceleração constante — posição e velocidade actualizadas via s = s₀ + v·t + ½·a·t². |
-| **Dinâmico** | Aceleração variável — força resultante dividida pela massa origina a aceleração em cada passo. |
+| Modo           | Descrição                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------- |
+| **Cinemático** | Aceleração constante — posição e velocidade actualizadas via s = s₀ + v·t + ½·a·t².            |
+| **Dinâmico**   | Aceleração variável — força resultante dividida pela massa origina a aceleração em cada passo. |
 
 ## Requisitos
 
-| Ferramenta | Versão |
-| ---------- | ------ |
-| GCC | 9+ |
-| Make | 4+ |
-| GTK4 | 4.0+ |
-| Cairo | 1.16+ |
-| GLib | 2.0+ |
+| Ferramenta         | Versão |
+| ------------------ | ------ |
+| GCC                | 9+     |
+| Make               | 4+     |
+| GTK4               | 4.0+   |
+| Blueprint Compiler | 0.8+   |
+| Cairo              | 1.16+  |
+| GLib               | 2.0+   |
 
-Testado em Ubuntu/GNOME. Execução nativa em macOS não é suportada.
+Testado em Fedora/GNOME. Execução nativa em macOS não é suportada.
 
 ## Como executar
 
