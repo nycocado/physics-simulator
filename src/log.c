@@ -16,22 +16,19 @@ char* generate_log_name_for_simulation(const char* base_name, GtkApp app)
     gchar* filename = NULL;
     gchar* path = g_path_get_dirname(app->variables->project.file_path);
     gchar* new_path = NULL;
-    FILE* file;
-
+    gboolean exists;
     do
     {
         filename = g_strdup_printf("%s_%d.csv", base_name, index);
         new_path = g_build_filename(path, filename, NULL);
-        file = fopen(new_path, "r");
-        if (file != NULL)
+        exists = g_file_test(new_path, G_FILE_TEST_EXISTS);
+        if (exists)
         {
-            fclose(file);
-
             g_free(filename);
             g_free(new_path);
         }
         index++;
-    } while (file != NULL);
+    } while (exists);
 
     g_free(filename);
     g_free(path);
