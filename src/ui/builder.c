@@ -430,26 +430,21 @@ void create_window_simulation_widgets(int i, GtkApp app)
     }
 
     Variables_Simulation sim = &app->variables->simulation;
-    if (sim->gravity != 0)
-        gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.gravity),
-            sim->gravity
-        );
-    if (sim->time != 0)
-        gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.time),
-            sim->time
-        );
-    if (sim->time_step != 0)
-        gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.step),
-            sim->time_step
-        );
-    if (sim->frames != 0)
-        gtk_spin_button_set_value(
-            GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.frames),
-            sim->frames
-        );
+    gtk_spin_button_set_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.gravity),
+        sim->gravity
+    );
+    gtk_spin_button_set_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.time), sim->time
+    );
+    gtk_spin_button_set_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.step),
+        sim->time_step
+    );
+    gtk_spin_button_set_value(
+        GTK_SPIN_BUTTON(app->window_simulation->spin_buttons.frames),
+        sim->frames
+    );
 
     gtk_window_set_transient_for(
         GTK_WINDOW(app->window_simulation->window),

@@ -10,190 +10,159 @@
 
 void save_project(GtkApp app)
 {
-    FILE* file = fopen(app->variables->project.file_path, "w");
-    if (file == NULL)
-    {
-        create_dialog_error_message("Erro ao salvar o projeto", app);
-        return;
-    }
-
+    GKeyFile* key_file = g_key_file_new();
     Variables_Simulation sim = &app->variables->simulation;
-    if (sim->gravity != 0 || sim->time != 0 || sim->time_step != 0 ||
-        sim->frames != 0)
-    {
-        char buf[G_ASCII_DTOSTR_BUF_SIZE];
-        fprintf(file, "SETTINGS");
-        fprintf(
-            file, " gravity=%s", g_ascii_dtostr(buf, sizeof(buf), sim->gravity)
-        );
-        fprintf(file, " time=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time));
-        fprintf(
-            file, " step=%s", g_ascii_dtostr(buf, sizeof(buf), sim->time_step)
-        );
-        fprintf(
-            file, " frames=%s", g_ascii_dtostr(buf, sizeof(buf), sim->frames)
-        );
-        fprintf(file, "\n");
-    }
+
+    g_key_file_set_double(key_file, "Settings", "Gravity", sim->gravity);
+    g_key_file_set_double(key_file, "Settings", "Time", sim->time);
+    g_key_file_set_double(key_file, "Settings", "TimeStep", sim->time_step);
+    g_key_file_set_double(key_file, "Settings", "Frames", sim->frames);
 
     guint n_items = g_list_model_get_n_items(G_LIST_MODEL(app->root_store));
+    g_key_file_set_integer(key_file, "Settings", "NumParticles", n_items);
+
     for (guint i = 0; i < n_items; i++)
     {
         g_autoptr(PhysItem) item =
             g_list_model_get_item(G_LIST_MODEL(app->root_store), i);
-        gdouble x = phys_item_get_x(item);
-        gdouble y = phys_item_get_y(item);
-        gdouble vx = phys_item_get_vx(item);
-        gdouble vy = phys_item_get_vy(item);
-        gdouble ax = phys_item_get_ax(item);
-        gdouble ay = phys_item_get_ay(item);
-        gdouble mass = phys_item_get_mass(item);
-        gboolean checked = phys_item_get_checked(item);
+        char group_name[32];
+        g_snprintf(group_name, sizeof(group_name), "Particle_%u", i);
 
-        fprintf(
-            file,
-            "Partícula %g %g %g %g %g %g %g %d\n",
-            x,
-            y,
-            vx,
-            vy,
-            ax,
-            ay,
-            mass,
-            checked ? 1 : 0
+        g_key_file_set_double(key_file, group_name, "X", phys_item_get_x(item));
+        g_key_file_set_double(key_file, group_name, "Y", phys_item_get_y(item));
+        g_key_file_set_double(
+            key_file, group_name, "VX", phys_item_get_vx(item)
+        );
+        g_key_file_set_double(
+            key_file, group_name, "VY", phys_item_get_vy(item)
+        );
+        g_key_file_set_double(
+            key_file, group_name, "AX", phys_item_get_ax(item)
+        );
+        g_key_file_set_double(
+            key_file, group_name, "AY", phys_item_get_ay(item)
+        );
+        g_key_file_set_double(
+            key_file, group_name, "Mass", phys_item_get_mass(item)
+        );
+        g_key_file_set_boolean(
+            key_file, group_name, "Checked", phys_item_get_checked(item)
         );
 
         GListModel* children = phys_item_get_children(item);
         guint n_children = g_list_model_get_n_items(children);
+        g_key_file_set_integer(key_file, group_name, "NumForces", n_children);
+
         for (guint j = 0; j < n_children; j++)
         {
             g_autoptr(PhysItem) child = g_list_model_get_item(children, j);
-            gdouble fx = phys_item_get_ax(child);
-            gdouble fy = phys_item_get_ay(child);
-            fprintf(file, "Força %g %g\n", fx, fy);
+            char force_group[64];
+            g_snprintf(
+                force_group, sizeof(force_group), "Particle_%u_Force_%u", i, j
+            );
+
+            g_key_file_set_double(
+                key_file, force_group, "FX", phys_item_get_ax(child)
+            );
+            g_key_file_set_double(
+                key_file, force_group, "FY", phys_item_get_ay(child)
+            );
         }
     }
-    fclose(file);
-}
 
-static gdouble parse_double_locale_safe(char* str)
-{
-    if (!str)
-        return 0.0;
-    for (char* p = str; *p; p++)
+    g_autoptr(GError) error = NULL;
+    if (!g_key_file_save_to_file(
+            key_file, app->variables->project.file_path, &error
+        ))
     {
-        if (*p == ',')
-            *p = '.';
+        create_dialog_error_message("Erro ao salvar o projeto", app);
     }
-    return g_ascii_strtod(str, NULL);
+
+    g_key_file_free(key_file);
 }
 
 void open_project(GtkApp app)
 {
-    FILE* file = fopen(app->variables->project.file_path, "r");
-    if (file == NULL)
+    GKeyFile* key_file = g_key_file_new();
+    g_autoptr(GError) error = NULL;
+
+    if (!g_key_file_load_from_file(
+            key_file, app->variables->project.file_path, G_KEY_FILE_NONE, &error
+        ))
     {
         create_dialog_error_message("Erro ao abrir o projeto", app);
+        g_key_file_free(key_file);
         return;
     }
+
     g_list_store_remove_all(app->root_store);
+    app->variables->simulation.num_particles_use = 0;
 
-    size_t len = 0;
-    char* line = NULL;
-    PhysItem* current_particle = NULL;
-    while (getline(&line, &len, file) != -1)
+    Variables_Simulation sim = &app->variables->simulation;
+    sim->gravity = g_key_file_get_double(key_file, "Settings", "Gravity", NULL);
+    sim->time = g_key_file_get_double(key_file, "Settings", "Time", NULL);
+    sim->time_step =
+        g_key_file_get_double(key_file, "Settings", "TimeStep", NULL);
+    sim->frames = g_key_file_get_double(key_file, "Settings", "Frames", NULL);
+
+    int num_particles =
+        g_key_file_get_integer(key_file, "Settings", "NumParticles", NULL);
+
+    for (int i = 0; i < num_particles; i++)
     {
-        size_t line_len = strlen(line);
-        if (line_len > 0 && line[line_len - 1] == '\n')
-        {
-            line[line_len - 1] = '\0';
-            line_len--;
-        }
-        if (line_len > 0 && line[line_len - 1] == '\r')
-        {
-            line[line_len - 1] = '\0';
-            line_len--;
-        }
+        char group_name[32];
+        g_snprintf(group_name, sizeof(group_name), "Particle_%d", i);
 
-        char* type = strtok(line, " ");
-        if (!type)
+        if (!g_key_file_has_group(key_file, group_name))
             continue;
 
-        if (strcmp(type, "SETTINGS") == 0)
+        double x = g_key_file_get_double(key_file, group_name, "X", NULL);
+        double y = g_key_file_get_double(key_file, group_name, "Y", NULL);
+        double vx = g_key_file_get_double(key_file, group_name, "VX", NULL);
+        double vy = g_key_file_get_double(key_file, group_name, "VY", NULL);
+        double ax = g_key_file_get_double(key_file, group_name, "AX", NULL);
+        double ay = g_key_file_get_double(key_file, group_name, "AY", NULL);
+        double mass = g_key_file_get_double(key_file, group_name, "Mass", NULL);
+        gboolean checked =
+            g_key_file_get_boolean(key_file, group_name, "Checked", NULL);
+
+        if (mass <= 0)
+            continue;
+
+        PhysItem* particle =
+            phys_item_new_particle(x, y, vx, vy, ax, ay, mass, checked);
+        g_list_store_append(app->root_store, particle);
+
+        if (checked)
         {
-            Variables_Simulation sim = &app->variables->simulation;
-            char* token;
-            while ((token = strtok(NULL, " ")) != NULL)
-            {
-                char* eq = strchr(token, '=');
-                if (!eq)
-                    continue;
-                *eq = '\0';
-                double val = parse_double_locale_safe(eq + 1);
-                if (strcmp(token, "gravity") == 0)
-                    sim->gravity = val;
-                else if (strcmp(token, "time") == 0)
-                    sim->time = val;
-                else if (strcmp(token, "step") == 0)
-                    sim->time_step = val;
-                else if (strcmp(token, "frames") == 0)
-                    sim->frames = val;
-            }
+            app->variables->simulation.num_particles_use++;
         }
-        else if (strcmp(type, "Partícula") == 0)
+
+        int num_forces =
+            g_key_file_get_integer(key_file, group_name, "NumForces", NULL);
+        for (int j = 0; j < num_forces; j++)
         {
-            char* x = strtok(NULL, " ");
-            char* y = strtok(NULL, " ");
-            char* vx = strtok(NULL, " ");
-            char* vy = strtok(NULL, " ");
-            char* ax = strtok(NULL, " ");
-            char* ay = strtok(NULL, " ");
-            char* mass = strtok(NULL, " ");
-            if (!x || !y || !vx || !vy || !ax || !ay || !mass)
-                continue;
-            gdouble dx = parse_double_locale_safe(x);
-            gdouble dy = parse_double_locale_safe(y);
-            gdouble dvx = parse_double_locale_safe(vx);
-            gdouble dvy = parse_double_locale_safe(vy);
-            gdouble dax = parse_double_locale_safe(ax);
-            gdouble day = parse_double_locale_safe(ay);
-            gdouble dmass = parse_double_locale_safe(mass);
-            if (dmass <= 0)
-                continue;
-            char* checked_str = strtok(NULL, " ");
-            gboolean checked =
-                (checked_str == NULL) ? TRUE : (checked_str[0] != '0');
-            PhysItem* particle = phys_item_new_particle(
-                dx, dy, dvx, dvy, dax, day, dmass, checked
+            char force_group[64];
+            g_snprintf(
+                force_group, sizeof(force_group), "Particle_%d_Force_%d", i, j
             );
-            g_list_store_append(app->root_store, particle);
 
-            if (current_particle)
-                g_object_unref(current_particle);
-            current_particle = particle;
-            if (checked)
-                app->variables->simulation.num_particles_use++;
-        }
-        else if (strcmp(type, "Força") == 0)
-        {
-            if (!current_particle)
+            if (!g_key_file_has_group(key_file, force_group))
                 continue;
-            char* fx_str = strtok(NULL, " ");
-            char* fy_str = strtok(NULL, " ");
-            if (!fx_str || !fy_str)
-                continue;
-            gdouble dfx = parse_double_locale_safe(fx_str);
-            gdouble dfy = parse_double_locale_safe(fy_str);
 
-            PhysItem* force = phys_item_new_force(dfx, dfy);
-            phys_item_add_child(current_particle, force);
+            double fx =
+                g_key_file_get_double(key_file, force_group, "FX", NULL);
+            double fy =
+                g_key_file_get_double(key_file, force_group, "FY", NULL);
+
+            PhysItem* force = phys_item_new_force(fx, fy);
+            phys_item_add_child(particle, force);
             g_object_unref(force);
         }
+        g_object_unref(particle);
     }
-    if (current_particle)
-        g_object_unref(current_particle);
-    free(line);
-    fclose(file);
+
+    g_key_file_free(key_file);
 }
 
 void close_project(GtkApp app)

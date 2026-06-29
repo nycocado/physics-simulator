@@ -7,6 +7,10 @@ Variables variables_new()
 {
     Variables variables = g_new0(struct _Variables, 1);
     variables->simulation.first_time = TRUE;
+    variables->simulation.gravity = 9.80;
+    variables->simulation.time = 10.0;
+    variables->simulation.time_step = 0.01;
+    variables->simulation.frames = 60.0;
     return variables;
 }
 
@@ -46,6 +50,10 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
     variables_simulation->particle_cinematic_collection = NULL;
     variables_simulation->particle_dynamic_collection = NULL;
     variables_simulation->first_time = TRUE;
+    variables_simulation->gravity = 9.80;
+    variables_simulation->time = 10.0;
+    variables_simulation->time_step = 0.01;
+    variables_simulation->frames = 60.0;
 }
 
 void variables_project_wipe(Variables_Project variables_project)
