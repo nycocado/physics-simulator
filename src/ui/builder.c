@@ -78,7 +78,7 @@ void create_window_main_widgets(GtkApp app)
     g_signal_connect(app->window_main->buttons->cinematic, "clicked", G_CALLBACK(on_window_main_cinematic_button_clicked), app);
     g_signal_connect(app->window_main->buttons->dynamic, "clicked", G_CALLBACK(on_window_main_dynamic_button_clicked), app);
 
-    GActionMap* wnd = G_ACTION_MAP(GTK_WINDOW(app->window_main->window));
+    GSimpleActionGroup* action_group = g_simple_action_group_new();
     static const struct {
         const char* name;
         GCallback fn;
@@ -92,9 +92,11 @@ void create_window_main_widgets(GtkApp app)
     {
         GSimpleAction* action = g_simple_action_new(menu_actions[k].name, NULL);
         g_signal_connect(action, "activate", menu_actions[k].fn, app);
-        g_action_map_add_action(wnd, G_ACTION(action));
+        g_action_map_add_action(G_ACTION_MAP(action_group), G_ACTION(action));
         g_object_unref(action);
     }
+    gtk_widget_insert_action_group(app->window_main->window, "win", G_ACTION_GROUP(action_group));
+    g_object_unref(action_group);
 
     g_object_unref(builder);
 }

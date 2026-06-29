@@ -31,7 +31,7 @@ Adjustment adjustment_t {
 Window window_main {
   title: _("Simulação de Cinemática");
   modal: true;
-  destroy => $on_window_cinematic_destroy();
+
 
   Box box_all {
     orientation: vertical;
@@ -125,19 +125,19 @@ Window window_main {
 
         Button refresh_button {
           icon-name: "view-refresh";
-          clicked => $on_cinematic_refresh_button_clicked();
+
         }
 
         Button start_button {
           icon-name: "media-playback-start";
           margin-start: 3;
           margin-end: 3;
-          clicked => $on_cinematic_start_button_clicked();
+
         }
 
         Button stop_button {
           icon-name: "media-playback-stop";
-          clicked => $on_cinematic_stop_button_clicked();
+
         }
       }
     }

@@ -2,10 +2,10 @@
 
 static void on_activate(GApplication* gapp, gpointer data)
 {
-    (void)gapp;
     GtkApp app = (GtkApp)data;
     create_window_main_widgets(app);
     set_columns_attribute(app);
+    gtk_window_set_application(GTK_WINDOW(app->window_main->window), GTK_APPLICATION(gapp));
     gtk_window_present(GTK_WINDOW(app->window_main->window));
 }
 
