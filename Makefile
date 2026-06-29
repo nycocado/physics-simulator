@@ -12,35 +12,35 @@ TEST_DIR = test
 UNITY_DIR = test/unity
 UI_DIR = src/ui/windows
 
-# Auto-discovery of files
+
 SRCS = $(shell find $(SRC_DIR) -name "*.c")
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(SRCS))
 
 BLP_FILES = $(wildcard $(UI_DIR)/*.blp)
 UI_FILES = $(BLP_FILES:.blp=.ui)
 
-# Ensure directories exist
+
 $(shell mkdir -p $(BIN_DIR) $(BIN_TEST) $(BIN_BUILD))
 
-# Pattern rule for UI files
+
 $(UI_DIR)/%.ui: $(UI_DIR)/%.blp
 	blueprint-compiler compile --output $@ $<
 
 blueprint: $(UI_FILES)
 
-# Pattern rule for object files (replaces all the manual 50 lines)
+
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< $(GTKFLAGS) -o $@
 
-# Main Application
+
 comp: blueprint $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(GTKFLAGS) -o $(BIN_BUILD)/simulation_physic $(MATHFLAGS)
 
 run: comp
 	$(BIN_BUILD)/simulation_physic
 
-# Tests
+
 unity.o:
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -c $(UNITY_DIR)/unity.c $(GTKFLAGS) -o $(BIN_DIR)/unity.o
