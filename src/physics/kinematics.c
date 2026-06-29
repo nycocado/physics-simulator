@@ -22,8 +22,6 @@ double phyc_medium_acceleration(double vi, double vf, double t)
     return (vf - vi) / t;
 }
 
-
-
 double phyc_degree_to_radian(double degree) { return degree * (M_PI / 180.0); }
 
 double phyc_radian_to_degree(double radian) { return radian * (180.0 / M_PI); }

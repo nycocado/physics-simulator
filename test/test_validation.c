@@ -1,6 +1,6 @@
-#include <glib.h>
 #include "unity/unity.h"
 #include "unity/unity_internals.h"
+#include <glib.h>
 
 void setUp(void) {}
 void tearDown(void) {}

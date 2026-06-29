@@ -1,6 +1,6 @@
-#include <glib.h>
 #include "unity/unity.h"
 #include "unity/unity_internals.h"
+#include <glib.h>
 
 #define PRECISION 0.001
 
@@ -17,7 +17,8 @@ void test_dot_decimal_parses_correctly(void)
 
 /* g_ascii_strtod always uses '.' as decimal separator regardless of locale.
  * A comma-decimal string like "9,8" is read as 9 (stops at the comma).
- * This guarantees dot-decimal .sabino files are parsed identically in any locale. */
+ * This guarantees dot-decimal .sabino files are parsed identically in any
+ * locale. */
 void test_comma_decimal_stops_at_comma(void)
 {
     TEST_ASSERT_DOUBLE_WITHIN(PRECISION, 9.0, g_ascii_strtod("9,8", NULL));
