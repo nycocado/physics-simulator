@@ -3,7 +3,6 @@
 #include "collection.h"
 #include "log.h"
 #include "particles/particle.h"
-#include "physics/dynamics.h"
 #include "physics/kinematics.h"
 #include "simulation/simulation.h"
 #include "ui/builder.h"
@@ -203,11 +202,11 @@ static void forces_dynamic_apply(GtkApp app)
             particle->force_resultant->y += force->y;
         }
         particle->force_resultant->y -=
-            phyd_force_p(particle->mass, app->variables->simulation.gravity);
+            ((particle->mass) * (app->variables->simulation.gravity));
         particle->acceleration->x +=
-            phyd_acceleration(particle->force_resultant->x, particle->mass);
+            ((particle->force_resultant->x) / (particle->mass));
         particle->acceleration->y +=
-            phyd_acceleration(particle->force_resultant->y, particle->mass);
+            ((particle->force_resultant->y) / (particle->mass));
     }
 }
 

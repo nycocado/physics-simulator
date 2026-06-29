@@ -2,7 +2,6 @@
 #include "app.h"
 #include "collection.h"
 #include "particles/particle.h"
-#include "physics/dynamics.h"
 #include "physics/kinematics.h"
 #include "project.h"
 #include "simulation/dynamic_sim.h"
@@ -82,11 +81,11 @@ void save_simulation_cinematic_log(
             double y = phyc_position(yi, vyi, ay - g, t);
             double vx = phyc_velocity(vxi, ax, t);
             double vy = phyc_velocity(vyi, ay - g, t);
-            double v = phyc_magnitude_velocity(vx, vy);
-            double v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
-            double a = phyc_magnitude_acceleration(ax, ay);
-            double a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
-            double deslocamento = phyc_displacement_x_y(xi, x, yi, y);
+            double v = hypot(vx, vy);
+            double v_angle = phyc_radian_to_degree(atan2(vy, vx));
+            double a = hypot(ax, ay);
+            double a_angle = phyc_radian_to_degree(atan2(ay, ax));
+            double deslocamento = hypot((x) - (xi), (y) - (yi));
 
             gchar* line = g_strdup_printf(
                 "%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%."
@@ -184,12 +183,12 @@ void save_simulation_dynamic_log(
             double y = phyc_position(yi, vyi, ay, t);
             double vx = phyc_velocity(vxi, ax, t);
             double vy = phyc_velocity(vyi, ay, t);
-            double v = phyc_magnitude_velocity(vx, vy);
-            double v_angle = phyc_radian_to_degree(phyc_angle(vx, vy));
-            double a = phyc_magnitude_acceleration(ax, ay);
-            double a_angle = phyc_radian_to_degree(phyc_angle(ax, ay));
+            double v = hypot(vx, vy);
+            double v_angle = phyc_radian_to_degree(atan2(vy, vx));
+            double a = hypot(ax, ay);
+            double a_angle = phyc_radian_to_degree(atan2(ay, ax));
             double frx = 0;
-            double fry = -phyd_force_p(m, g);
+            double fry = -((m) * (g));
 
             GString* line = g_string_new("");
             g_string_printf(
@@ -223,8 +222,8 @@ void save_simulation_dynamic_log(
                     "%.2f;%.2f;%.2f;%.2f;",
                     fx,
                     fy,
-                    phyc_magnitude(fx, fy),
-                    phyc_radian_to_degree(phyc_angle(fx, fy))
+                    hypot(fx, fy),
+                    phyc_radian_to_degree(atan2(fy, fx))
                 );
             }
 
@@ -237,8 +236,8 @@ void save_simulation_dynamic_log(
                 "%.2f;%.2f;%.2f;%.2f",
                 frx,
                 fry,
-                phyc_magnitude_velocity(frx, fry),
-                phyc_radian_to_degree(phyc_angle(frx, fry))
+                hypot(frx, fry),
+                phyc_radian_to_degree(atan2(fry, frx))
             );
             g_strdelimit(line->str, ".", ',');
             fprintf(file, "%s\n", line->str);

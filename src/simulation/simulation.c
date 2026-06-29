@@ -31,12 +31,12 @@ void draw_arrow(
     double arrow_angle
 )
 {
-    double angle = phyc_angle(end_x - start_x, end_y - start_y);
+    double angle = atan2(end_y - start_y, end_x - start_x);
 
-    double x1 = end_x - phyc_decompose_x(arrow_length, angle - arrow_angle);
-    double y1 = end_y - phyc_decompose_y(arrow_length, angle - arrow_angle);
-    double x2 = end_x - phyc_decompose_x(arrow_length, angle + arrow_angle);
-    double y2 = end_y - phyc_decompose_y(arrow_length, angle + arrow_angle);
+    double x1 = end_x - ((arrow_length) * cos(angle - arrow_angle));
+    double y1 = end_y - ((arrow_length) * sin(angle - arrow_angle));
+    double x2 = end_x - ((arrow_length) * cos(angle + arrow_angle));
+    double y2 = end_y - ((arrow_length) * sin(angle + arrow_angle));
 
     cairo_move_to(cr, start_x, start_y);
     cairo_line_to(cr, end_x, end_y);
