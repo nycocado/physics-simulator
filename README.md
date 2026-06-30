@@ -30,6 +30,7 @@ Particle simulator with two independent modes. In kinematic mode particles follo
   - **Auto-zoom**: Dynamically scales the viewport to fit all active particles.
   - **Follow particle**: Tracks a specific particle, keeping it centered.
 - **Particle trails**: Renders the historical path of particles.
+- **Data export**: Automatically saves detailed simulation logs to CSV files containing positions, velocities, and forces for each particle over time.
 - **Project management**: Save and load simulation states as `.physic` project files.
 
 ## Requirements

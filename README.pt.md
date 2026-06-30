@@ -30,6 +30,7 @@ Simulador de partículas com dois modos independentes. No modo cinemático as pa
   - **Zoom automático**: Escala dinamicamente a área visível para focar todas as partículas.
   - **Seguir partícula**: Foca a câmara numa partícula específica, mantendo-a centralizada.
 - **Rastos**: Desenha o percurso histórico das partículas.
+- **Exportação de dados**: Guarda automaticamente registos detalhados da simulação em ficheiros CSV, contendo posições, velocidades e forças a cada instante.
 - **Projetos**: Guarde e carregue as simulações através de ficheiros de projeto `.physic`.
 
 ## Requisitos
