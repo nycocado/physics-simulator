@@ -20,12 +20,14 @@ Particle_Cinematic particle_cinematic_new(
     particle->velocity_i.x = vx; particle->velocity_i.y = vy;
     particle->velocity.x = vx; particle->velocity.y = vy;
     particle->acceleration.x = ax; particle->acceleration.y = ay;
+    particle->trail = g_array_new(FALSE, FALSE, sizeof(Vector));
     return particle;
 }
 
 void particle_cinematic_free(Particle_Cinematic particle)
 {
-
+    if (particle->trail)
+        g_array_free(particle->trail, TRUE);
     g_free(particle);
 }
 
@@ -49,16 +51,16 @@ Particle_Dynamic particle_dynamic_new(
     particle->force_resultant.x = 0; particle->force_resultant.y = 0;
     particle->mass = mass;
     particle->forces = NULL;
+    particle->trail = g_array_new(FALSE, FALSE, sizeof(Vector));
     return particle;
 }
 
 void particle_dynamic_free(Particle_Dynamic particle)
 {
-
+    if (particle->trail)
+        g_array_free(particle->trail, TRUE);
     if (particle->forces != NULL)
-    {
         g_list_free_full(particle->forces, g_free);
-    }
     g_free(particle);
 }
 

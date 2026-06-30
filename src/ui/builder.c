@@ -359,9 +359,12 @@ void create_window_simulation_widgets(int i, GtkApp app)
     app->window_simulation->spin_buttons.frames =
         GTK_WIDGET(gtk_builder_get_object(builder, "spin_button_f"));
 
-    gtk_widget_set_size_request(
-        app->window_simulation->drawing_area, 1000, 500
-    );
+    app->window_simulation->follow_check =
+        GTK_WIDGET(gtk_builder_get_object(builder, "follow_check"));
+    app->window_simulation->zoom_check =
+        GTK_WIDGET(gtk_builder_get_object(builder, "zoom_check"));
+    app->window_simulation->trail_check =
+        GTK_WIDGET(gtk_builder_get_object(builder, "trail_check"));
 
     if (i == SIMULATION_CINEMATIC)
     {

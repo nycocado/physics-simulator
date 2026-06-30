@@ -51,158 +51,115 @@ Adjustment adjustment_y {
 }
 
 Window window_main {
+  title: _("Editar Partícula");
   modal: true;
-  default-width: 250;
+  default-width: 320;
   default-height: -1;
+  resizable: false;
 
-  Box box_all {
-    visible: true;
-    margin-start: 15;
-    margin-end: 15;
-    margin-top: 15;
-    margin-bottom: 15;
+  Box {
     orientation: vertical;
+    margin-start: 16;
+    margin-end: 16;
+    margin-top: 16;
+    margin-bottom: 16;
+    spacing: 16;
 
-    Box box_data {
-      visible: true;
+    Grid {
+      row-spacing: 8;
+      column-spacing: 12;
 
-      Box box_label {
-        visible: true;
-        margin-end: 10;
-        orientation: vertical;
-        homogeneous: true;
-
-        Label label_x {
-          visible: true;
-          label: _("x");
-        }
-
-        Label label_y {
-          visible: true;
-          label: _("y");
-        }
-
-        Label label_vx {
-          visible: true;
-          label: _("vx");
-        }
-
-        Label label_vy {
-          visible: true;
-          label: _("vy");
-        }
-
-        Label label_ax {
-          visible: true;
-          label: _("ax");
-        }
-
-        Label label_ay {
-          visible: true;
-          label: _("ay");
-        }
-
-        Label label_mass {
-          visible: true;
-          label: _("mass");
-        }
+      Label { label: _("X₀ (m)"); halign: end;
+        layout { column: 0; row: 0; }
+      }
+      SpinButton spin_button_x {
+        hexpand: true;
+        adjustment: adjustment_x;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 0; }
       }
 
-      Box box_entry {
-        visible: true;
-        orientation: vertical;
-        homogeneous: true;
+      Label { label: _("Y₀ (m)"); halign: end;
+        layout { column: 0; row: 1; }
+      }
+      SpinButton spin_button_y {
+        hexpand: true;
+        adjustment: adjustment_y;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 1; }
+      }
 
-        SpinButton spin_button_x {
-          visible: true;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_x;
-          digits: 2;
-          numeric: true;
-        }
+      Label { label: _("Vx₀ (m/s)"); halign: end;
+        layout { column: 0; row: 2; }
+      }
+      SpinButton spin_button_vx {
+        hexpand: true;
+        adjustment: adjustment_vx;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 2; }
+      }
 
-        SpinButton spin_button_y {
-          visible: true;
-          margin-top: 3;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_y;
-          digits: 2;
-          numeric: true;
-        }
+      Label { label: _("Vy₀ (m/s)"); halign: end;
+        layout { column: 0; row: 3; }
+      }
+      SpinButton spin_button_vy {
+        hexpand: true;
+        adjustment: adjustment_vy;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 3; }
+      }
 
-        SpinButton spin_button_vx {
-          visible: true;
-          margin-top: 3;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_vx;
-          digits: 2;
-          numeric: true;
-        }
+      Label { label: _("Ax (m/s²)"); halign: end;
+        layout { column: 0; row: 4; }
+      }
+      SpinButton spin_button_ax {
+        hexpand: true;
+        adjustment: adjustment_ax;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 4; }
+      }
 
-        SpinButton spin_button_vy {
-          visible: true;
-          margin-top: 3;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_vy;
-          digits: 2;
-          numeric: true;
-        }
+      Label { label: _("Ay (m/s²)"); halign: end;
+        layout { column: 0; row: 5; }
+      }
+      SpinButton spin_button_ay {
+        hexpand: true;
+        adjustment: adjustment_ay;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 5; }
+      }
 
-        SpinButton spin_button_ax {
-          visible: true;
-          margin-top: 2;
-          margin-bottom: 2;
-          text: _("0,00");
-          adjustment: adjustment_ax;
-          digits: 2;
-          numeric: true;
-        }
-
-        SpinButton spin_button_ay {
-          visible: true;
-          margin-top: 3;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_ay;
-          digits: 2;
-          numeric: true;
-        }
-
-        SpinButton spin_button_mass {
-          visible: true;
-          margin-top: 3;
-          text: _("0,00");
-          adjustment: adjustment_mass;
-          digits: 2;
-          numeric: true;
-          value: 1;
-        }
+      Label { label: _("Massa (kg)"); halign: end;
+        layout { column: 0; row: 6; }
+      }
+      SpinButton spin_button_mass {
+        hexpand: true;
+        adjustment: adjustment_mass;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 6; }
       }
     }
 
-    Box box_buttons {
-      visible: true;
-      margin-start: 10;
-      margin-end: 10;
-      margin-top: 10;
+    Box {
       homogeneous: true;
-
-      Button edit_button {
-        label: _("Editar");
-        visible: true;
-        margin-end: 5;
-
-      }
+      spacing: 8;
 
       Button cancel_button {
         label: _("Cancelar");
-        visible: true;
-        margin-start: 5;
+        tooltip-text: _("Cancelar sem salvar");
+      }
 
+      Button edit_button {
+        label: _("Salvar");
+        tooltip-text: _("Salvar alterações da partícula");
+        styles ["suggested-action"]
       }
     }
   }

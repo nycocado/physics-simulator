@@ -63,54 +63,54 @@ Window window_main {
           show-column-separators: true;
 
           ColumnViewColumn column_type {
-            title: _("tipo");
+            title: _("Tipo");
             factory: factory_type;
           }
 
           ColumnViewColumn column_x {
-            title: _("x");
+            title: _("X (m)");
             expand: true;
             factory: factory_x;
           }
 
           ColumnViewColumn column_y {
-            title: _("y");
+            title: _("Y (m)");
             expand: true;
             factory: factory_y;
           }
 
           ColumnViewColumn column_vx {
-            title: _("vx");
+            title: _("Vx (m/s)");
             expand: true;
             factory: factory_vx;
           }
 
           ColumnViewColumn column_vy {
-            title: _("vy");
+            title: _("Vy (m/s)");
             expand: true;
             factory: factory_vy;
           }
 
           ColumnViewColumn column_ax {
-            title: _("ax");
+            title: _("Ax (m/s²)");
             expand: true;
             factory: factory_ax;
           }
 
           ColumnViewColumn column_ay {
-            title: _("ay");
+            title: _("Ay (m/s²)");
             expand: true;
             factory: factory_ay;
           }
 
           ColumnViewColumn column_mass {
-            title: _("massa");
+            title: _("Massa (kg)");
             expand: true;
             factory: factory_mass;
           }
 
           ColumnViewColumn column_check {
-            title: _("usar");
+            title: _("Usar");
             expand: true;
             factory: factory_check;
           }
@@ -127,22 +127,22 @@ Window window_main {
 
           Button add_particle_button {
             icon-name: "list-add";
-
+            tooltip-text: _("Adicionar partícula");
           }
 
           Button add_force_button {
             icon-name: "go-down";
-
+            tooltip-text: _("Adicionar força à partícula selecionada");
           }
 
           Button remove_button {
             icon-name: "list-remove";
-
+            tooltip-text: _("Remover item selecionado");
           }
 
           Button edit_button {
             icon-name: "document-edit";
-
+            tooltip-text: _("Editar item selecionado");
           }
         }
 

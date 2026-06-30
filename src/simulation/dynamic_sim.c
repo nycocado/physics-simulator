@@ -23,82 +23,141 @@ void on_draw_dynamic(
     GtkApp app = (GtkApp)data;
     app->variables->window_width = width;
     app->variables->window_height = height;
-    set_background_color(cr, 0.2, 0.2, 0.2);
+    set_background_color(cr, 0.15, 0.15, 0.18);
 
-    int x_center = width / 2;
-    int y_center = height / 2;
-
-    draw_axes(cr, x_center, y_center, app);
-
-    draw_time(cr, app->variables->simulation.last_time, 10, 20);
-
+    Variables_Simulation sim = &app->variables->simulation;
     Particle_Dynamic_Collection particle_collection =
-        app->variables->simulation.particle_dynamic_collection;
-    for (int i = 0; i < app->variables->simulation.num_particles_use; i++)
+        sim->particle_dynamic_collection;
+    int n = sim->num_particles_use;
+
+    gboolean follow = gtk_check_button_get_active(
+        GTK_CHECK_BUTTON(app->window_simulation->follow_check)
+    );
+    gboolean do_zoom = gtk_check_button_get_active(
+        GTK_CHECK_BUTTON(app->window_simulation->zoom_check)
+    );
+    gboolean show_trail = gtk_check_button_get_active(
+        GTK_CHECK_BUTTON(app->window_simulation->trail_check)
+    );
+
+    double cam_x = 0.0, cam_y = 0.0;
+    if (follow && particle_collection && n > 0)
+    {
+        Particle_Dynamic p0 = particle_collection->particles[0];
+        cam_x = p0->position.x;
+        cam_y = p0->position.y;
+    }
+
+    double scale = 1.0;
+    if (do_zoom && particle_collection && n > 1)
+    {
+        double min_x = 1e18, max_x = -1e18;
+        double min_y = 1e18, max_y = -1e18;
+        for (int i = 0; i < n; i++)
+        {
+            double px = particle_collection->particles[i]->position.x - cam_x;
+            double py = particle_collection->particles[i]->position.y - cam_y;
+            if (px < min_x) min_x = px;
+            if (px > max_x) max_x = px;
+            if (py < min_y) min_y = py;
+            if (py > max_y) max_y = py;
+        }
+        double range_x = max_x - min_x;
+        double range_y = max_y - min_y;
+        if (range_x > 1.0)
+            scale = (width * 0.7) / range_x;
+        if (range_y > 1.0)
+        {
+            double sy = (height * 0.7) / range_y;
+            if (sy < scale) scale = sy;
+        }
+        if (scale < 0.1) scale = 0.1;
+        if (scale > 500.0) scale = 500.0;
+    }
+
+    double x_center = width  / 2.0;
+    double y_center = height / 2.0;
+
+    /* Axes */
+    cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 0.6);
+    cairo_set_line_width(cr, 1.0);
+    double axis_y = y_center + cam_y * scale;
+    cairo_move_to(cr, 0, axis_y);
+    cairo_line_to(cr, width, axis_y);
+    cairo_stroke(cr);
+    double axis_x = x_center - cam_x * scale;
+    cairo_move_to(cr, axis_x, 0);
+    cairo_line_to(cr, axis_x, height);
+    cairo_stroke(cr);
+    cairo_set_source_rgba(cr, 0.6, 0.6, 0.6, 0.8);
+    cairo_move_to(cr, width - 16, axis_y - 6);
+    cairo_show_text(cr, "X");
+    cairo_move_to(cr, axis_x + 4, 14);
+    cairo_show_text(cr, "Y");
+
+    draw_time(cr, sim->last_time, 10, 20);
+
+    if (!particle_collection)
+        return;
+
+    double arrow_length = 10.0;
+    double arrow_angle  = G_PI / 6.0;
+
+    for (int i = 0; i < n; i++)
     {
         Particle_Dynamic particle = particle_collection->particles[i];
 
-        double x = particle->position.x;
-        double y = particle->position.y;
-        double frx = particle->force_resultant.x;
-        double fry = particle->force_resultant.y;
+        double px = (particle->position.x - cam_x) * scale;
+        double py = (particle->position.y - cam_y) * scale;
 
-        double start_x = (double)x_center + x;
-        double start_y = (double)y_center - y;
+        double start_x = x_center + px;
+        double start_y = y_center - py;
 
-        double end_frx = start_x + frx;
-        double end_fry = start_y - fry;
+        /* Trail */
+        if (show_trail && particle->trail && particle->trail->len > 1)
+        {
+            guint trail_len = particle->trail->len;
+            for (guint t = 1; t < trail_len; t++)
+            {
+                Vector* tp      = &g_array_index(particle->trail, Vector, t);
+                Vector* tp_prev = &g_array_index(particle->trail, Vector, t - 1);
+                double tx  = x_center + (tp->x - cam_x) * scale;
+                double ty  = y_center - (tp->y - cam_y) * scale;
+                double tx0 = x_center + (tp_prev->x - cam_x) * scale;
+                double ty0 = y_center - (tp_prev->y - cam_y) * scale;
+                double alpha = (double)t / trail_len * 0.6;
+                cairo_set_source_rgba(cr, 1.0, 0.6, 0.2, alpha);
+                cairo_set_line_width(cr, 1.5);
+                cairo_move_to(cr, tx0, ty0);
+                cairo_line_to(cr, tx, ty);
+                cairo_stroke(cr);
+            }
+        }
 
         draw_particle(cr, start_x, start_y, 5);
 
-        double arrow_length = 10.0;
-        double arrow_angle = G_PI / 6.0;
+        double frx = particle->force_resultant.x * scale;
+        double fry = particle->force_resultant.y * scale;
+        double end_frx = start_x + frx;
+        double end_fry = start_y - fry;
 
-        cairo_set_source_rgb(cr, 0, 1, 0);
+        cairo_set_source_rgb(cr, 0, 0.85, 0.4);
         cairo_set_line_width(cr, 2);
 
         if (frx != 0 || fry != 0)
         {
-            draw_arrow(
-                cr,
-                start_x,
-                start_y,
-                end_frx,
-                end_fry,
-                arrow_length,
-                arrow_angle
-            );
+            draw_arrow(cr, start_x, start_y, end_frx, end_fry, arrow_length, arrow_angle);
             if (frx != 0 && fry != 0)
-            {
                 draw_title(cr, "f", end_frx + 5, end_fry);
-            }
         }
-
         if (frx != 0)
         {
-            draw_arrow(
-                cr,
-                start_x,
-                start_y,
-                end_frx,
-                start_y,
-                arrow_length,
-                arrow_angle
-            );
+            draw_arrow(cr, start_x, start_y, end_frx, start_y, arrow_length, arrow_angle);
             draw_title(cr, "fx", end_frx + 5, start_y);
         }
-
         if (fry != 0)
         {
-            draw_arrow(
-                cr,
-                start_x,
-                start_y,
-                start_x,
-                end_fry,
-                arrow_length,
-                arrow_angle
-            );
+            draw_arrow(cr, start_x, start_y, start_x, end_fry, arrow_length, arrow_angle);
             draw_title(cr, "fy", start_x + 5, end_fry - 5);
         }
     }
@@ -138,6 +197,15 @@ gboolean on_timeout_dynamic(gpointer user_data)
 
         particle->position.x = phyc_position(xi, vxi, ax, elapsed);
         particle->position.y = phyc_position(yi, vyi, ay, elapsed);
+
+        /* Record trail point */
+        if (particle->trail)
+        {
+            Vector pt = {particle->position.x, particle->position.y};
+            g_array_append_val(particle->trail, pt);
+            if (particle->trail->len > 500)
+                g_array_remove_index(particle->trail, 0);
+        }
     }
 
     if (elapsed >= total_time)
@@ -177,6 +245,8 @@ void on_dynamic_refresh_button_clicked(GtkButton* button, gpointer data)
         particle->position.y = particle->position_i.y;
         particle->acceleration.x = particle->acceleration_i.x;
         particle->acceleration.y = particle->acceleration_i.y;
+        if (particle->trail)
+            g_array_set_size(particle->trail, 0);
     }
     gtk_widget_queue_draw(app->window_simulation->drawing_area);
 }

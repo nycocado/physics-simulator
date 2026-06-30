@@ -27,6 +27,9 @@ struct _Window_Simulation
         GtkWidget* drawing_area;
         struct _Spin_Buttons_Simulation spin_buttons;
         struct _Buttons_Simulation buttons;
+        GtkWidget* follow_check;
+        GtkWidget* zoom_check;
+        GtkWidget* trail_check;
 };
 
 Window_Simulation window_simulation_new();

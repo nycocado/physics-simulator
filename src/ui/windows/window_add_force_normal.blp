@@ -15,83 +15,60 @@ Adjustment adjustment_fy {
 }
 
 Window window_main {
+  title: _("Adicionar Força");
   modal: true;
-  default-width: 250;
+  default-width: 280;
   default-height: -1;
+  resizable: false;
 
-  Box box_all {
-    visible: true;
-    margin-start: 15;
-    margin-end: 15;
-    margin-top: 15;
-    margin-bottom: 15;
+  Box {
     orientation: vertical;
+    margin-start: 16;
+    margin-end: 16;
+    margin-top: 16;
+    margin-bottom: 16;
+    spacing: 16;
 
-    Box box_data {
-      visible: true;
+    Grid {
+      row-spacing: 8;
+      column-spacing: 12;
 
-      Box box_label {
-        visible: true;
-        margin-end: 10;
-        orientation: vertical;
-        homogeneous: true;
-
-        Label label_fx {
-          visible: true;
-          label: _("fx");
-        }
-
-        Label label_fy {
-          visible: true;
-          label: _("fy");
-        }
+      Label { label: _("Fx (N)"); halign: end;
+        layout { column: 0; row: 0; }
+      }
+      SpinButton spin_button_fx {
+        hexpand: true;
+        adjustment: adjustment_fx;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 0; }
       }
 
-      Box box_entry {
-        visible: true;
-        orientation: vertical;
-        homogeneous: true;
-
-        SpinButton spin_button_fx {
-          visible: true;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_fx;
-          digits: 2;
-          numeric: true;
-        }
-
-        SpinButton spin_button_fy {
-          visible: true;
-          margin-top: 3;
-          margin-bottom: 3;
-          text: _("0,00");
-          adjustment: adjustment_fy;
-          digits: 2;
-          numeric: true;
-        }
+      Label { label: _("Fy (N)"); halign: end;
+        layout { column: 0; row: 1; }
+      }
+      SpinButton spin_button_fy {
+        hexpand: true;
+        adjustment: adjustment_fy;
+        digits: 2;
+        numeric: true;
+        layout { column: 1; row: 1; }
       }
     }
 
-    Box box_buttons {
-      visible: true;
-      margin-start: 10;
-      margin-end: 10;
-      margin-top: 10;
+    Box {
       homogeneous: true;
-
-      Button add_button {
-        label: _("Adicionar");
-        visible: true;
-        margin-end: 5;
-
-      }
+      spacing: 8;
 
       Button cancel_button {
         label: _("Cancelar");
-        visible: true;
-        margin-start: 5;
+        tooltip-text: _("Cancelar sem adicionar");
+      }
 
+      Button add_button {
+        label: _("Adicionar");
+        tooltip-text: _("Adicionar força à partícula");
+        styles ["suggested-action"]
       }
     }
   }

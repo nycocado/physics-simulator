@@ -35,109 +35,123 @@ Adjustment adjustment_t {
 Window window_main {
   title: _("Simulação de Cinemática");
   modal: true;
+  default-width: 1000;
+  default-height: 700;
 
-
-  Box box_all {
+  Box {
     orientation: vertical;
 
-    Box box_content {
+    DrawingArea drawing_area {
+      hexpand: true;
       vexpand: true;
-
-      DrawingArea drawing_area {
-        hexpand: true;
-        vexpand: true;
-      }
     }
 
-    Box box_control {
-      Box box_entrys {
-        margin-start: 8;
-        margin-end: 5;
-        margin-top: 5;
-        margin-bottom: 5;
-        orientation: vertical;
+    Box {
+      orientation: horizontal;
+      margin-start: 8;
+      margin-end: 8;
+      margin-top: 6;
+      margin-bottom: 6;
+      spacing: 12;
 
-        Box box_labels {
-          margin-bottom: 4;
-          homogeneous: true;
+      Grid {
+        hexpand: true;
+        row-spacing: 4;
+        column-spacing: 10;
 
-          Label label_g {
-            margin-end: 5;
-            label: _("Gravidade");
-          }
-
-          Label label_t {
-            margin-start: 5;
-            label: _("Tempo");
-          }
-
-          Label label_p {
-            label: _("Passos");
-          }
-
-          Label label_f {
-            label: _("Frames");
-          }
+        Label { label: _("Gravidade (m/s²)"); halign: end;
+          layout { column: 0; row: 0; }
+        }
+        SpinButton spin_button_g {
+          hexpand: true;
+          adjustment: adjustment_g;
+          digits: 2;
+          numeric: true;
+          tooltip-text: _("Aceleração gravitacional");
+          layout { column: 1; row: 0; }
         }
 
-        Box box_spin_button {
-          SpinButton spin_button_g {
-            hexpand: true;
-            margin-end: 5;
-            adjustment: adjustment_g;
-            digits: 2;
-            numeric: true;
-          }
+        Label { label: _("Tempo (s)"); halign: end;
+          layout { column: 2; row: 0; }
+        }
+        SpinButton spin_button_t {
+          hexpand: true;
+          adjustment: adjustment_t;
+          digits: 2;
+          numeric: true;
+          tooltip-text: _("Duração total da simulação");
+          layout { column: 3; row: 0; }
+        }
 
-          SpinButton spin_button_t {
-            hexpand: true;
-            margin-start: 5;
-            adjustment: adjustment_t;
-            digits: 2;
-            numeric: true;
-            value: 10;
-          }
+        Label { label: _("Passo (s)"); halign: end;
+          layout { column: 0; row: 1; }
+        }
+        SpinButton spin_button_p {
+          hexpand: true;
+          adjustment: adjustment_p;
+          digits: 2;
+          numeric: true;
+          tooltip-text: _("Intervalo de tempo entre cálculos");
+          layout { column: 1; row: 1; }
+        }
 
-          SpinButton spin_button_p {
-            hexpand: true;
-            margin-start: 5;
-            adjustment: adjustment_p;
-            digits: 2;
-            numeric: true;
-            value: 1;
-          }
-
-          SpinButton spin_button_f {
-            hexpand: true;
-            margin-start: 5;
-            adjustment: adjustment_f;
-            numeric: true;
-            value: 60;
-          }
+        Label { label: _("Frames/s"); halign: end;
+          layout { column: 2; row: 1; }
+        }
+        SpinButton spin_button_f {
+          hexpand: true;
+          adjustment: adjustment_f;
+          numeric: true;
+          tooltip-text: _("Taxa de atualização do gráfico");
+          layout { column: 3; row: 1; }
         }
       }
 
-      Box box_buttons {
-        margin-end: 5;
-        margin-top: 5;
-        margin-bottom: 5;
+      Separator { orientation: vertical; }
+
+      Box {
+        orientation: vertical;
+        spacing: 4;
+        valign: center;
+
+        CheckButton follow_check {
+          label: _("Seguir partícula");
+          tooltip-text: _("Mantém a câmera centralizada na primeira partícula ativa");
+        }
+
+        CheckButton zoom_check {
+          label: _("Zoom automático");
+          tooltip-text: _("Ajusta o zoom para manter todas as partículas visíveis");
+        }
+
+        CheckButton trail_check {
+          label: _("Mostrar rastro");
+          tooltip-text: _("Desenha o trajeto histórico de cada partícula");
+        }
+      }
+
+      Separator { orientation: vertical; }
+
+      Box {
+        orientation: vertical;
+        spacing: 4;
+        valign: center;
         homogeneous: true;
 
         Button refresh_button {
           icon-name: "view-refresh";
-
+          tooltip-text: _("Reiniciar simulação");
         }
 
         Button start_button {
           icon-name: "media-playback-start";
-          margin-start: 3;
-          margin-end: 3;
-
+          tooltip-text: _("Iniciar simulação");
+          styles ["suggested-action"]
         }
 
         Button stop_button {
           icon-name: "media-playback-stop";
-
+          tooltip-text: _("Parar simulação");
         }
       }
     }

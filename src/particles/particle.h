@@ -21,6 +21,7 @@ struct _Particle_Cinematic
         Vector velocity_i;
         Vector velocity;
         Vector acceleration;
+        GArray* trail;
 };
 
 struct _Particle_Dynamic
@@ -33,6 +34,7 @@ struct _Particle_Dynamic
         Vector force_resultant;
         double mass;
         GList* forces;
+        GArray* trail;
 };
 
 struct _Particle_Cinematic_Collection
