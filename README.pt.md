@@ -50,7 +50,7 @@ Testado em Fedora/GNOME. Execução nativa em macOS não é suportada.
 
 ```bash
 make run          # compilar e lançar o simulador
-make phy_test     # executar testes unitários de física
+make all_tests    # executar todos os testes unitários
 make clean        # remover artefactos de build
 ```
 

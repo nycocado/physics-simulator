@@ -50,7 +50,7 @@ Tested on Fedora/GNOME. Native execution on macOS is not supported.
 
 ```bash
 make run          # compile and launch the simulator
-make phy_test     # run physics unit tests
+make all_tests    # run all unit tests
 make clean        # remove build artifacts
 ```
 
