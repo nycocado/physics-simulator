@@ -18,6 +18,8 @@
 static GListModel* create_model_func_wrapper(gpointer item, gpointer user_data)
 {
     (void)user_data;
+    if (phys_item_get_item_type(PHYS_ITEM(item)) == PHYS_ITEM_FORCE)
+        return NULL;
     return phys_item_get_children(PHYS_ITEM(item));
 }
 

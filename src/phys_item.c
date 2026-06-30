@@ -371,7 +371,7 @@ void phys_item_set_checked(PhysItem* item, gboolean val)
 
 GListModel* phys_item_get_children(PhysItem* item)
 {
-    return G_LIST_MODEL(item->children);
+    return G_LIST_MODEL(g_object_ref(item->children));
 }
 
 void phys_item_add_child(PhysItem* item, PhysItem* child)
