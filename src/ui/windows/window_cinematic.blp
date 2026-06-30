@@ -32,6 +32,14 @@ Adjustment adjustment_t {
   page-increment: 10;
 }
 
+Adjustment adjustment_follow {
+  lower: 1;
+  upper: 100;
+  value: 1;
+  step-increment: 1;
+  page-increment: 1;
+}
+
 Window window_main {
   title: _("Simulação de Cinemática");
   modal: true;
@@ -111,12 +119,25 @@ Window window_main {
 
       Box {
         orientation: vertical;
-        spacing: 4;
+        spacing: 6;
         valign: center;
 
-        CheckButton follow_check {
-          label: _("Seguir partícula");
-          tooltip-text: _("Mantém a câmera centralizada na primeira partícula ativa");
+        Box {
+          orientation: horizontal;
+          spacing: 6;
+
+          CheckButton follow_check {
+            label: _("Seguir partícula nº");
+            tooltip-text: _("Mantém a câmera centralizada na partícula escolhida");
+          }
+
+          SpinButton follow_spin {
+            adjustment: adjustment_follow;
+            numeric: true;
+            digits: 0;
+            width-chars: 3;
+            tooltip-text: _("Índice da partícula a seguir (1 = primeira)");
+          }
         }
 
         CheckButton zoom_check {

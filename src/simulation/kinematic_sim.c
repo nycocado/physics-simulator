@@ -40,41 +40,62 @@ void on_draw_cinematic(
         GTK_CHECK_BUTTON(app->window_simulation->trail_check)
     );
 
-    /* Compute camera offset from first particle when follow mode is on */
+    /* ---- Camera & zoom ---- */
     double cam_x = 0.0, cam_y = 0.0;
-    if (follow && particle_collection && n > 0)
-    {
-        Particle_Cinematic p0 = particle_collection->particles[0];
-        cam_x = p0->position.x;
-        cam_y = p0->position.y;
-    }
+    double scale  = 1.0;
 
-    /* Compute auto-zoom scale to fit all particles */
-    double scale = 1.0;
-    if (do_zoom && particle_collection && n > 1)
+    /* Bounding box of all particles (in world coords) */
+    double bb_min_x = 1e18, bb_max_x = -1e18;
+    double bb_min_y = 1e18, bb_max_y = -1e18;
+    if (particle_collection)
     {
-        double min_x = 1e18, max_x = -1e18;
-        double min_y = 1e18, max_y = -1e18;
         for (int i = 0; i < n; i++)
         {
-            double px = particle_collection->particles[i]->position.x - cam_x;
-            double py = particle_collection->particles[i]->position.y - cam_y;
-            if (px < min_x) min_x = px;
-            if (px > max_x) max_x = px;
-            if (py < min_y) min_y = py;
-            if (py > max_y) max_y = py;
+            double px = particle_collection->particles[i]->position.x;
+            double py = particle_collection->particles[i]->position.y;
+            if (px < bb_min_x) bb_min_x = px;
+            if (px > bb_max_x) bb_max_x = px;
+            if (py < bb_min_y) bb_min_y = py;
+            if (py > bb_max_y) bb_max_y = py;
         }
-        double range_x = max_x - min_x;
-        double range_y = max_y - min_y;
-        if (range_x > 1.0)
-            scale = (width * 0.7) / range_x;
-        if (range_y > 1.0)
+    }
+
+    /* Follow: center on chosen particle */
+    if (follow && particle_collection && n > 0)
+    {
+        int follow_idx = (int)gtk_spin_button_get_value(
+            GTK_SPIN_BUTTON(app->window_simulation->follow_spin)
+        ) - 1;
+        if (follow_idx < 0) follow_idx = 0;
+        if (follow_idx >= n) follow_idx = n - 1;
+        cam_x = particle_collection->particles[follow_idx]->position.x;
+        cam_y = particle_collection->particles[follow_idx]->position.y;
+    }
+
+    /* Auto-zoom: fit all particles with 15% margin */
+    if (do_zoom && particle_collection && n > 0 && bb_min_x <= bb_max_x)
+    {
+        /* When not following, center on centroid */
+        if (!follow)
         {
-            double sy = (height * 0.7) / range_y;
-            if (sy < scale) scale = sy;
+            cam_x = (bb_min_x + bb_max_x) / 2.0;
+            cam_y = (bb_min_y + bb_max_y) / 2.0;
         }
-        if (scale < 0.1) scale = 0.1;
-        if (scale > 500.0) scale = 500.0;
+        double range_x = bb_max_x - bb_min_x;
+        double range_y = bb_max_y - bb_min_y;
+        /* Use the farthest particle from cam for the followed case */
+        if (follow)
+        {
+            range_x = 2.0 * (fabs(bb_max_x - cam_x) > fabs(bb_min_x - cam_x)
+                             ? fabs(bb_max_x - cam_x) : fabs(bb_min_x - cam_x));
+            range_y = 2.0 * (fabs(bb_max_y - cam_y) > fabs(bb_min_y - cam_y)
+                             ? fabs(bb_max_y - cam_y) : fabs(bb_min_y - cam_y));
+        }
+        double sx = (range_x > 0.001) ? (width  * 0.80) / range_x : 500.0;
+        double sy = (range_y > 0.001) ? (height * 0.80) / range_y : 500.0;
+        scale = (sx < sy) ? sx : sy;
+        if (scale < 0.01)   scale = 0.01;
+        if (scale > 1000.0) scale = 1000.0;
     }
 
     double x_center = width  / 2.0;

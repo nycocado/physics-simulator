@@ -30,6 +30,7 @@ struct _Window_Simulation
         GtkWidget* follow_check;
         GtkWidget* zoom_check;
         GtkWidget* trail_check;
+        GtkWidget* follow_spin;
 };
 
 Window_Simulation window_simulation_new();

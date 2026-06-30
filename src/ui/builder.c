@@ -365,6 +365,8 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "zoom_check"));
     app->window_simulation->trail_check =
         GTK_WIDGET(gtk_builder_get_object(builder, "trail_check"));
+    app->window_simulation->follow_spin =
+        GTK_WIDGET(gtk_builder_get_object(builder, "follow_spin"));
 
     if (i == SIMULATION_CINEMATIC)
     {
