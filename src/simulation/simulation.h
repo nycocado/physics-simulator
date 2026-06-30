@@ -12,6 +12,16 @@ typedef enum
 } SimulationMode;
 
 void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app);
+void draw_axis_ticks(
+    cairo_t* cr,
+    int width,
+    int height,
+    double x_center,
+    double y_center,
+    double cam_x,
+    double cam_y,
+    double scale
+);
 void draw_arrow(
     cairo_t* cr,
     double start_x,

@@ -24,6 +24,114 @@ void draw_axes(cairo_t* cr, int x_center, int y_bottom, GtkApp app)
     cairo_stroke(cr);
 }
 
+/* Return a "nice" tick step for the given raw spacing */
+static double nice_step(double raw)
+{
+    if (raw <= 0) return 1.0;
+    double magnitude = pow(10.0, floor(log10(raw)));
+    double n = raw / magnitude;
+    double nice = (n < 1.5) ? 1.0 : (n < 3.5) ? 2.0 : (n < 7.5) ? 5.0 : 10.0;
+    return nice * magnitude;
+}
+
+void draw_axis_ticks(
+    cairo_t* cr,
+    int width,
+    int height,
+    double x_center,
+    double y_center,
+    double cam_x,
+    double cam_y,
+    double scale
+)
+{
+    /* Target ~70 px between ticks */
+    double step = nice_step(70.0 / (scale > 0 ? scale : 1.0));
+
+    const double TICK_LEN  = 5.0;
+    const double LABEL_PAD = 4.0;
+
+    cairo_set_font_size(cr, 10.0);
+
+    /* ---- X axis ticks (horizontal) ---- */
+    /* Visible physics-X range */
+    double x_min = (-x_center) / scale + cam_x;
+    double x_max = (width - x_center) / scale + cam_x;
+
+    double first_x = ceil(x_min / step) * step;
+    for (double xv = first_x; xv <= x_max + step * 0.5; xv += step)
+    {
+        double cx = x_center + (xv - cam_x) * scale;
+        if (cx < 0 || cx > width) continue;
+
+        /* Axis Y position in canvas */
+        double axis_y = y_center + cam_y * scale;
+        if (axis_y < 0) axis_y = 0;
+        if (axis_y > height) axis_y = height - 1;
+
+        /* Tick mark */
+        cairo_set_source_rgba(cr, 0.6, 0.6, 0.6, 0.9);
+        cairo_set_line_width(cr, 1.0);
+        cairo_move_to(cr, cx, axis_y - TICK_LEN);
+        cairo_line_to(cr, cx, axis_y + TICK_LEN);
+        cairo_stroke(cr);
+
+        /* Label — skip very small values near origin */
+        if (fabs(xv) < step * 0.01) continue;
+        char buf[32];
+        if (fabs(xv) >= 100.0)
+            g_snprintf(buf, sizeof(buf), "%.0f", xv);
+        else if (fabs(xv) >= 10.0)
+            g_snprintf(buf, sizeof(buf), "%.1f", xv);
+        else
+            g_snprintf(buf, sizeof(buf), "%.2f", xv);
+
+        cairo_set_source_rgba(cr, 0.75, 0.75, 0.75, 0.9);
+        double label_y = axis_y + TICK_LEN + LABEL_PAD + 10.0;
+        if (label_y > height - 2) label_y = axis_y - TICK_LEN - LABEL_PAD;
+        cairo_move_to(cr, cx - 12, label_y);
+        cairo_show_text(cr, buf);
+    }
+
+    /* ---- Y axis ticks (vertical) ---- */
+    /* Visible physics-Y range (canvas Y is inverted) */
+    double y_min = -(height - y_center) / scale + cam_y;
+    double y_max = y_center / scale + cam_y;
+
+    double first_y = ceil(y_min / step) * step;
+    for (double yv = first_y; yv <= y_max + step * 0.5; yv += step)
+    {
+        double cy = y_center - (yv - cam_y) * scale;
+        if (cy < 0 || cy > height) continue;
+
+        double axis_x = x_center - cam_x * scale;
+        if (axis_x < 0) axis_x = 0;
+        if (axis_x > width) axis_x = width - 1;
+
+        cairo_set_source_rgba(cr, 0.6, 0.6, 0.6, 0.9);
+        cairo_set_line_width(cr, 1.0);
+        cairo_move_to(cr, axis_x - TICK_LEN, cy);
+        cairo_line_to(cr, axis_x + TICK_LEN, cy);
+        cairo_stroke(cr);
+
+        if (fabs(yv) < step * 0.01) continue;
+        char buf[32];
+        if (fabs(yv) >= 100.0)
+            g_snprintf(buf, sizeof(buf), "%.0f", yv);
+        else if (fabs(yv) >= 10.0)
+            g_snprintf(buf, sizeof(buf), "%.1f", yv);
+        else
+            g_snprintf(buf, sizeof(buf), "%.2f", yv);
+
+        cairo_set_source_rgba(cr, 0.75, 0.75, 0.75, 0.9);
+        double label_x = axis_x + TICK_LEN + LABEL_PAD;
+        if (label_x > width - 40) label_x = axis_x - TICK_LEN - LABEL_PAD - 35;
+        cairo_move_to(cr, label_x, cy + 4);
+        cairo_show_text(cr, buf);
+    }
+}
+
+
 void draw_arrow(
     cairo_t* cr,
     double start_x,

@@ -100,6 +100,8 @@ void on_draw_cinematic(
     cairo_move_to(cr, axis_x + 4, 14);
     cairo_show_text(cr, "Y");
 
+    draw_axis_ticks(cr, width, height, x_center, y_center, cam_x, cam_y, scale);
+
     draw_time(cr, sim->last_time, 10, 20);
 
     if (!particle_collection)
