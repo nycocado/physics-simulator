@@ -26,7 +26,7 @@ Particle simulator with two independent modes. In kinematic mode particles follo
 
 - **Vector graphics**: Render particles, velocities, and forces with magnitudes and directions using Cairo.
 - **Simulation playback**: Start, stop, and restart simulations with configurable time steps, frames per second, total duration, and gravity.
-- **Camera controls**: 
+- **Camera controls**:
   - **Auto-zoom**: Dynamically scales the viewport to fit all active particles.
   - **Follow particle**: Tracks a specific particle, keeping it centered.
 - **Particle trails**: Renders the historical path of particles.
