@@ -22,6 +22,16 @@ Particle simulator with two independent modes. In kinematic mode particles follo
 | **Kinematic** | Constant acceleration — position and velocity updated via s = s₀ + v·t + ½·a·t².          |
 | **Dynamic**   | Variable acceleration — resultant force divided by mass yields acceleration at each step. |
 
+## Features
+
+- **Vector graphics**: Render particles, velocities, and forces with magnitudes and directions using Cairo.
+- **Simulation playback**: Start, stop, and restart simulations with configurable time steps, frames per second, total duration, and gravity.
+- **Camera controls**: 
+  - **Auto-zoom**: Dynamically scales the viewport to fit all active particles.
+  - **Follow particle**: Tracks a specific particle, keeping it centered.
+- **Particle trails**: Renders the historical path of particles.
+- **Project management**: Save and load simulation states as `.physic` project files.
+
 ## Requirements
 
 | Tool               | Version |

@@ -22,6 +22,16 @@ Simulador de partículas com dois modos independentes. No modo cinemático as pa
 | **Cinemático** | Aceleração constante — posição e velocidade actualizadas via s = s₀ + v·t + ½·a·t².            |
 | **Dinâmico**   | Aceleração variável — força resultante dividida pela massa origina a aceleração em cada passo. |
 
+## Funcionalidades
+
+- **Gráficos vetoriais**: Renderiza partículas, velocidades e forças com as suas magnitudes e direções usando Cairo.
+- **Controlos de simulação**: Inicie, pare e reinicie simulações ajustando os passos de tempo, frames por segundo, duração e gravidade.
+- **Controlos de câmara**:
+  - **Zoom automático**: Escala dinamicamente a área visível para focar todas as partículas.
+  - **Seguir partícula**: Foca a câmara numa partícula específica, mantendo-a centralizada.
+- **Rastos**: Desenha o percurso histórico das partículas.
+- **Projetos**: Guarde e carregue as simulações através de ficheiros de projeto `.physic`.
+
 ## Requisitos
 
 | Ferramenta         | Versão |
