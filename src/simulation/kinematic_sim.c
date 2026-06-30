@@ -51,14 +51,23 @@ void on_draw_cinematic(
         {
             double px = particle_collection->particles[i]->position.x;
             double py = particle_collection->particles[i]->position.y;
-            if (px < bb_min_x)
-                bb_min_x = px;
-            if (px > bb_max_x)
-                bb_max_x = px;
-            if (py < bb_min_y)
-                bb_min_y = py;
-            if (py > bb_max_y)
-                bb_max_y = py;
+            double vx = particle_collection->particles[i]->velocity.x;
+            double vy = particle_collection->particles[i]->velocity.y;
+
+            double pts_x[2] = {px, px + vx};
+            double pts_y[2] = {py, py + vy};
+
+            for (int j = 0; j < 2; j++)
+            {
+                if (pts_x[j] < bb_min_x)
+                    bb_min_x = pts_x[j];
+                if (pts_x[j] > bb_max_x)
+                    bb_max_x = pts_x[j];
+                if (pts_y[j] < bb_min_y)
+                    bb_min_y = pts_y[j];
+                if (pts_y[j] > bb_max_y)
+                    bb_max_y = pts_y[j];
+            }
         }
     }
 

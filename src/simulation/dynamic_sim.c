@@ -51,14 +51,23 @@ void on_draw_dynamic(
         {
             double px = particle_collection->particles[i]->position.x;
             double py = particle_collection->particles[i]->position.y;
-            if (px < bb_min_x)
-                bb_min_x = px;
-            if (px > bb_max_x)
-                bb_max_x = px;
-            if (py < bb_min_y)
-                bb_min_y = py;
-            if (py > bb_max_y)
-                bb_max_y = py;
+            double fx = particle_collection->particles[i]->force_resultant.x;
+            double fy = particle_collection->particles[i]->force_resultant.y;
+
+            double pts_x[2] = {px, px + fx};
+            double pts_y[2] = {py, py + fy};
+
+            for (int j = 0; j < 2; j++)
+            {
+                if (pts_x[j] < bb_min_x)
+                    bb_min_x = pts_x[j];
+                if (pts_x[j] > bb_max_x)
+                    bb_max_x = pts_x[j];
+                if (pts_y[j] < bb_min_y)
+                    bb_min_y = pts_y[j];
+                if (pts_y[j] > bb_max_y)
+                    bb_max_y = pts_y[j];
+            }
         }
     }
 
