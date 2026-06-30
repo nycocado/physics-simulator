@@ -183,7 +183,10 @@ static void bind_check(
 void set_columns_attribute(GtkApp app)
 {
     g_signal_connect(
-        app->window_main->factories.type, "setup", G_CALLBACK(setup_type_expander), NULL
+        app->window_main->factories.type,
+        "setup",
+        G_CALLBACK(setup_type_expander),
+        NULL
     );
     g_signal_connect(
         app->window_main->factories.type, "bind", G_CALLBACK(bind_type), NULL

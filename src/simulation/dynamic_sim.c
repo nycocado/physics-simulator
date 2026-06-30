@@ -40,11 +40,9 @@ void on_draw_dynamic(
         GTK_CHECK_BUTTON(app->window_simulation->trail_check)
     );
 
-    /* ---- Camera & zoom ---- */
-    double cam_x = 0.0, cam_y = 0.0;
-    double scale  = 1.0;
+    double target_cam_x = 0.0, target_cam_y = 0.0;
+    double target_scale = 1.0;
 
-    /* Bounding box of all particles (in world coords) */
     double bb_min_x = 1e18, bb_max_x = -1e18;
     double bb_min_y = 1e18, bb_max_y = -1e18;
     if (particle_collection)
@@ -53,54 +51,83 @@ void on_draw_dynamic(
         {
             double px = particle_collection->particles[i]->position.x;
             double py = particle_collection->particles[i]->position.y;
-            if (px < bb_min_x) bb_min_x = px;
-            if (px > bb_max_x) bb_max_x = px;
-            if (py < bb_min_y) bb_min_y = py;
-            if (py > bb_max_y) bb_max_y = py;
+            if (px < bb_min_x)
+                bb_min_x = px;
+            if (px > bb_max_x)
+                bb_max_x = px;
+            if (py < bb_min_y)
+                bb_min_y = py;
+            if (py > bb_max_y)
+                bb_max_y = py;
         }
     }
 
-    /* Follow: center on chosen particle */
     if (follow && particle_collection && n > 0)
     {
-        int follow_idx = (int)gtk_spin_button_get_value(
-            GTK_SPIN_BUTTON(app->window_simulation->follow_spin)
-        ) - 1;
-        if (follow_idx < 0) follow_idx = 0;
-        if (follow_idx >= n) follow_idx = n - 1;
-        cam_x = particle_collection->particles[follow_idx]->position.x;
-        cam_y = particle_collection->particles[follow_idx]->position.y;
+        int follow_idx =
+            (int)gtk_spin_button_get_value(
+                GTK_SPIN_BUTTON(app->window_simulation->follow_spin)
+            ) -
+            1;
+        if (follow_idx < 0)
+            follow_idx = 0;
+        if (follow_idx >= n)
+            follow_idx = n - 1;
+        target_cam_x = particle_collection->particles[follow_idx]->position.x;
+        target_cam_y = particle_collection->particles[follow_idx]->position.y;
     }
 
-    /* Auto-zoom: fit all particles with 20% margin */
     if (do_zoom && particle_collection && n > 0 && bb_min_x <= bb_max_x)
     {
         if (!follow)
         {
-            cam_x = (bb_min_x + bb_max_x) / 2.0;
-            cam_y = (bb_min_y + bb_max_y) / 2.0;
+            target_cam_x = (bb_min_x + bb_max_x) / 2.0;
+            target_cam_y = (bb_min_y + bb_max_y) / 2.0;
         }
         double range_x = bb_max_x - bb_min_x;
         double range_y = bb_max_y - bb_min_y;
         if (follow)
         {
-            range_x = 2.0 * (fabs(bb_max_x - cam_x) > fabs(bb_min_x - cam_x)
-                             ? fabs(bb_max_x - cam_x) : fabs(bb_min_x - cam_x));
-            range_y = 2.0 * (fabs(bb_max_y - cam_y) > fabs(bb_min_y - cam_y)
-                             ? fabs(bb_max_y - cam_y) : fabs(bb_min_y - cam_y));
+            range_x = 2.0 * (fabs(bb_max_x - target_cam_x) >
+                                     fabs(bb_min_x - target_cam_x)
+                                 ? fabs(bb_max_x - target_cam_x)
+                                 : fabs(bb_min_x - target_cam_x));
+            range_y = 2.0 * (fabs(bb_max_y - target_cam_y) >
+                                     fabs(bb_min_y - target_cam_y)
+                                 ? fabs(bb_max_y - target_cam_y)
+                                 : fabs(bb_min_y - target_cam_y));
         }
-        double sx = (range_x > 0.001) ? (width  * 0.80) / range_x : 500.0;
+        double sx = (range_x > 0.001) ? (width * 0.80) / range_x : 500.0;
         double sy = (range_y > 0.001) ? (height * 0.80) / range_y : 500.0;
-        scale = (sx < sy) ? sx : sy;
-        if (scale < 0.01)   scale = 0.01;
-        if (scale > 1000.0) scale = 1000.0;
+        target_scale = (sx < sy) ? sx : sy;
+        if (target_scale < 0.01)
+            target_scale = 0.01;
+        if (target_scale > 1000.0)
+            target_scale = 1000.0;
     }
 
+    if (!sim->camera_initialized)
+    {
+        sim->cam_x = target_cam_x;
+        sim->cam_y = target_cam_y;
+        sim->scale = target_scale;
+        sim->camera_initialized = TRUE;
+    }
+    else
+    {
+        double lerp = 0.08;
+        sim->cam_x += (target_cam_x - sim->cam_x) * lerp;
+        sim->cam_y += (target_cam_y - sim->cam_y) * lerp;
+        sim->scale += (target_scale - sim->scale) * lerp;
+    }
 
-    double x_center = width  / 2.0;
+    double cam_x = sim->cam_x;
+    double cam_y = sim->cam_y;
+    double scale = sim->scale;
+
+    double x_center = width / 2.0;
     double y_center = height / 2.0;
 
-    /* Axes */
     cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 0.6);
     cairo_set_line_width(cr, 1.0);
     double axis_y = y_center + cam_y * scale;
@@ -125,7 +152,7 @@ void on_draw_dynamic(
         return;
 
     double arrow_length = 10.0;
-    double arrow_angle  = G_PI / 6.0;
+    double arrow_angle = G_PI / 6.0;
 
     for (int i = 0; i < n; i++)
     {
@@ -137,16 +164,16 @@ void on_draw_dynamic(
         double start_x = x_center + px;
         double start_y = y_center - py;
 
-        /* Trail */
         if (show_trail && particle->trail && particle->trail->len > 1)
         {
             guint trail_len = particle->trail->len;
             for (guint t = 1; t < trail_len; t++)
             {
-                Vector* tp      = &g_array_index(particle->trail, Vector, t);
-                Vector* tp_prev = &g_array_index(particle->trail, Vector, t - 1);
-                double tx  = x_center + (tp->x - cam_x) * scale;
-                double ty  = y_center - (tp->y - cam_y) * scale;
+                Vector* tp = &g_array_index(particle->trail, Vector, t);
+                Vector* tp_prev =
+                    &g_array_index(particle->trail, Vector, t - 1);
+                double tx = x_center + (tp->x - cam_x) * scale;
+                double ty = y_center - (tp->y - cam_y) * scale;
                 double tx0 = x_center + (tp_prev->x - cam_x) * scale;
                 double ty0 = y_center - (tp_prev->y - cam_y) * scale;
                 double alpha = (double)t / trail_len * 0.6;
@@ -170,18 +197,42 @@ void on_draw_dynamic(
 
         if (frx != 0 || fry != 0)
         {
-            draw_arrow(cr, start_x, start_y, end_frx, end_fry, arrow_length, arrow_angle);
+            draw_arrow(
+                cr,
+                start_x,
+                start_y,
+                end_frx,
+                end_fry,
+                arrow_length,
+                arrow_angle
+            );
             if (frx != 0 && fry != 0)
                 draw_title(cr, "f", end_frx + 5, end_fry);
         }
         if (frx != 0)
         {
-            draw_arrow(cr, start_x, start_y, end_frx, start_y, arrow_length, arrow_angle);
+            draw_arrow(
+                cr,
+                start_x,
+                start_y,
+                end_frx,
+                start_y,
+                arrow_length,
+                arrow_angle
+            );
             draw_title(cr, "fx", end_frx + 5, start_y);
         }
         if (fry != 0)
         {
-            draw_arrow(cr, start_x, start_y, start_x, end_fry, arrow_length, arrow_angle);
+            draw_arrow(
+                cr,
+                start_x,
+                start_y,
+                start_x,
+                end_fry,
+                arrow_length,
+                arrow_angle
+            );
             draw_title(cr, "fy", start_x + 5, end_fry - 5);
         }
     }
@@ -222,7 +273,6 @@ gboolean on_timeout_dynamic(gpointer user_data)
         particle->position.x = phyc_position(xi, vxi, ax, elapsed);
         particle->position.y = phyc_position(yi, vyi, ay, elapsed);
 
-        /* Record trail point */
         if (particle->trail)
         {
             Vector pt = {particle->position.x, particle->position.y};
@@ -259,6 +309,7 @@ void on_dynamic_refresh_button_clicked(GtkButton* button, gpointer data)
     GtkApp app = (GtkApp)data;
     simulation_stop(app);
     app->variables->simulation.last_time = 0;
+    app->variables->simulation.camera_initialized = FALSE;
 
     Particle_Dynamic_Collection collection =
         app->variables->simulation.particle_dynamic_collection;

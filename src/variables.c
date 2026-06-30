@@ -54,6 +54,7 @@ void variables_simulation_wipe(Variables_Simulation variables_simulation)
     variables_simulation->time = 10.0;
     variables_simulation->time_step = 0.01;
     variables_simulation->frames = 60.0;
+    variables_simulation->camera_initialized = FALSE;
 }
 
 void variables_project_wipe(Variables_Project variables_project)

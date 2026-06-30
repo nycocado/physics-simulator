@@ -371,9 +371,12 @@ void create_window_simulation_widgets(int i, GtkApp app)
         GTK_WIDGET(gtk_builder_get_object(builder, "follow_spin"));
 
     int max_particles = app->variables->simulation.num_particles_use;
-    if (max_particles < 1) max_particles = 1;
+    if (max_particles < 1)
+        max_particles = 1;
     gtk_spin_button_set_range(
-        GTK_SPIN_BUTTON(app->window_simulation->follow_spin), 1.0, (double)max_particles
+        GTK_SPIN_BUTTON(app->window_simulation->follow_spin),
+        1.0,
+        (double)max_particles
     );
 
     if (i == SIMULATION_CINEMATIC)

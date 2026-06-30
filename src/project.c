@@ -102,23 +102,38 @@ gboolean open_project(GtkApp app)
 
     {
         GError* err = NULL;
-        double val = g_key_file_get_double(key_file, "Settings", "Gravity", &err);
-        if (!err) sim->gravity = val; else g_error_free(err);
+        double val =
+            g_key_file_get_double(key_file, "Settings", "Gravity", &err);
+        if (!err)
+            sim->gravity = val;
+        else
+            g_error_free(err);
     }
     {
         GError* err = NULL;
         double val = g_key_file_get_double(key_file, "Settings", "Time", &err);
-        if (!err) sim->time = val; else g_error_free(err);
+        if (!err)
+            sim->time = val;
+        else
+            g_error_free(err);
     }
     {
         GError* err = NULL;
-        double val = g_key_file_get_double(key_file, "Settings", "TimeStep", &err);
-        if (!err) sim->time_step = val; else g_error_free(err);
+        double val =
+            g_key_file_get_double(key_file, "Settings", "TimeStep", &err);
+        if (!err)
+            sim->time_step = val;
+        else
+            g_error_free(err);
     }
     {
         GError* err = NULL;
-        double val = g_key_file_get_double(key_file, "Settings", "Frames", &err);
-        if (!err) sim->frames = val; else g_error_free(err);
+        double val =
+            g_key_file_get_double(key_file, "Settings", "Frames", &err);
+        if (!err)
+            sim->frames = val;
+        else
+            g_error_free(err);
     }
 
     int num_particles =

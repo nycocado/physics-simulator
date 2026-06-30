@@ -2,8 +2,6 @@
 #include "collection.h"
 #include "simulation/dynamic_sim.h"
 
-
-
 Particle_Cinematic particle_cinematic_new(
     double x,
     double y,
@@ -15,11 +13,16 @@ Particle_Cinematic particle_cinematic_new(
 {
     Particle_Cinematic particle = g_new(struct _Particle_Cinematic, 1);
 
-    particle->position_i.x = x; particle->position_i.y = y;
-    particle->position.x = x; particle->position.y = y;
-    particle->velocity_i.x = vx; particle->velocity_i.y = vy;
-    particle->velocity.x = vx; particle->velocity.y = vy;
-    particle->acceleration.x = ax; particle->acceleration.y = ay;
+    particle->position_i.x = x;
+    particle->position_i.y = y;
+    particle->position.x = x;
+    particle->position.y = y;
+    particle->velocity_i.x = vx;
+    particle->velocity_i.y = vy;
+    particle->velocity.x = vx;
+    particle->velocity.y = vy;
+    particle->acceleration.x = ax;
+    particle->acceleration.y = ay;
     particle->trail = g_array_new(FALSE, FALSE, sizeof(Vector));
     return particle;
 }
@@ -43,12 +46,18 @@ Particle_Dynamic particle_dynamic_new(
 {
     Particle_Dynamic particle = g_new(struct _Particle_Dynamic, 1);
 
-    particle->position_i.x = x; particle->position_i.y = y;
-    particle->position.x = x; particle->position.y = y;
-    particle->velocity_i.x = vx; particle->velocity_i.y = vy;
-    particle->acceleration_i.x = ax; particle->acceleration_i.y = ay;
-    particle->acceleration.x = ax; particle->acceleration.y = ay;
-    particle->force_resultant.x = 0; particle->force_resultant.y = 0;
+    particle->position_i.x = x;
+    particle->position_i.y = y;
+    particle->position.x = x;
+    particle->position.y = y;
+    particle->velocity_i.x = vx;
+    particle->velocity_i.y = vy;
+    particle->acceleration_i.x = ax;
+    particle->acceleration_i.y = ay;
+    particle->acceleration.x = ax;
+    particle->acceleration.y = ay;
+    particle->force_resultant.x = 0;
+    particle->force_resultant.y = 0;
     particle->mass = mass;
     particle->forces = NULL;
     particle->trail = g_array_new(FALSE, FALSE, sizeof(Vector));

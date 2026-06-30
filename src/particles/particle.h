@@ -49,7 +49,6 @@ struct _Particle_Dynamic_Collection
         int num_particles;
 };
 
-
 Particle_Cinematic particle_cinematic_new(
     double x,
     double y,

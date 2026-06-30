@@ -27,6 +27,10 @@ struct _Variables_Simulation
         GTimer* timer;
         guint timeout_id;
         gboolean first_time;
+        double cam_x;
+        double cam_y;
+        double scale;
+        gboolean camera_initialized;
 };
 
 struct _Variables_Project

@@ -63,10 +63,19 @@ void on_window_main_add_particle_button_clicked(
     g_object_set_data_full(G_OBJECT(win), "builder", builder, g_object_unref);
     g_object_set_data(G_OBJECT(win), "app", app);
 
-    GtkWidget* add_btn = GTK_WIDGET(gtk_builder_get_object(builder, "add_button"));
-    GtkWidget* cancel_btn = GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-    g_signal_connect(add_btn, "clicked", G_CALLBACK(on_window_add_particle_normal_add_button_clicked), win);
-    g_signal_connect(cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL);
+    GtkWidget* add_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "add_button"));
+    GtkWidget* cancel_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
+    g_signal_connect(
+        add_btn,
+        "clicked",
+        G_CALLBACK(on_window_add_particle_normal_add_button_clicked),
+        win
+    );
+    g_signal_connect(
+        cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL
+    );
 
     gtk_window_set_transient_for(win, GTK_WINDOW(app->window_main->window));
     gtk_window_present(win);
@@ -81,15 +90,30 @@ void on_window_add_particle_normal_add_button_clicked(
     GtkBuilder* builder = g_object_get_data(G_OBJECT(win), "builder");
     GtkApp app = g_object_get_data(G_OBJECT(win), "app");
 
-    gdouble xi = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x")));
-    gdouble yi = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y")));
-    gdouble vx = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx")));
-    gdouble vy = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy")));
-    gdouble ax = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax")));
-    gdouble ay = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay")));
-    gdouble mass = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_mass")));
+    gdouble xi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x"))
+    );
+    gdouble yi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y"))
+    );
+    gdouble vx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx"))
+    );
+    gdouble vy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy"))
+    );
+    gdouble ax = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax"))
+    );
+    gdouble ay = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay"))
+    );
+    gdouble mass = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_mass"))
+    );
 
-    PhysItem* particle = phys_item_new_particle(xi, yi, vx, vy, ax, ay, mass, TRUE);
+    PhysItem* particle =
+        phys_item_new_particle(xi, yi, vx, vy, ax, ay, mass, TRUE);
     g_list_store_append(app->root_store, particle);
     app->variables->simulation.num_particles_use++;
     g_object_unref(particle);
@@ -105,17 +129,32 @@ void on_window_edit_particle_normal_edit_button_clicked(
     GtkBuilder* builder = g_object_get_data(G_OBJECT(win), "builder");
     GtkApp app = g_object_get_data(G_OBJECT(win), "app");
 
-    gdouble xi = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x")));
-    gdouble yi = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y")));
-    gdouble vx = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx")));
-    gdouble vy = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy")));
-    gdouble ax = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax")));
-    gdouble ay = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay")));
-    gdouble mass = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_mass")));
-
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
+    gdouble xi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x"))
     );
+    gdouble yi = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y"))
+    );
+    gdouble vx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx"))
+    );
+    gdouble vy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy"))
+    );
+    gdouble ax = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax"))
+    );
+    gdouble ay = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay"))
+    );
+    gdouble mass = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_mass"))
+    );
+
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
     if (!row)
         return;
 
@@ -163,18 +202,26 @@ void on_window_main_add_force_button_clicked(GtkButton* button, gpointer data)
         return;
     }
 
-    GtkBuilder* builder = gtk_builder_new_from_file(
-        "src/ui/windows/window_add_force_normal.ui"
-    );
+    GtkBuilder* builder =
+        gtk_builder_new_from_file("src/ui/windows/window_add_force_normal.ui");
     GtkWindow* win = GTK_WINDOW(gtk_builder_get_object(builder, "window_main"));
     g_object_set_data_full(G_OBJECT(win), "builder", builder, g_object_unref);
     g_object_set_data(G_OBJECT(win), "app", app);
     g_object_set_data(G_OBJECT(win), "row", row);
 
-    GtkWidget* add_btn = GTK_WIDGET(gtk_builder_get_object(builder, "add_button"));
-    GtkWidget* cancel_btn = GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-    g_signal_connect(add_btn, "clicked", G_CALLBACK(on_window_add_force_normal_add_button_clicked), win);
-    g_signal_connect(cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL);
+    GtkWidget* add_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "add_button"));
+    GtkWidget* cancel_btn =
+        GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
+    g_signal_connect(
+        add_btn,
+        "clicked",
+        G_CALLBACK(on_window_add_force_normal_add_button_clicked),
+        win
+    );
+    g_signal_connect(
+        cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL
+    );
 
     gtk_window_set_transient_for(win, GTK_WINDOW(app->window_main->window));
     gtk_window_present(win);
@@ -190,8 +237,12 @@ void on_window_add_force_normal_add_button_clicked(
     (void)g_object_get_data(G_OBJECT(win), "app");
     GtkTreeListRow* parent_row = g_object_get_data(G_OBJECT(win), "row");
 
-    gdouble fx = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx")));
-    gdouble fy = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy")));
+    gdouble fx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx"))
+    );
+    gdouble fy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy"))
+    );
 
     if (!parent_row)
         return;
@@ -214,12 +265,17 @@ void on_window_edit_force_normal_edit_button_clicked(
     GtkBuilder* builder = g_object_get_data(G_OBJECT(win), "builder");
     GtkApp app = g_object_get_data(G_OBJECT(win), "app");
 
-    gdouble fx = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx")));
-    gdouble fy = gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy")));
-
-    GtkTreeListRow* row = GTK_TREE_LIST_ROW(
-        gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(app->selection_model))
+    gdouble fx = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx"))
     );
+    gdouble fy = gtk_spin_button_get_value(
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy"))
+    );
+
+    GtkTreeListRow* row =
+        GTK_TREE_LIST_ROW(gtk_single_selection_get_selected_item(
+            GTK_SINGLE_SELECTION(app->selection_model)
+        ));
     if (!row)
         return;
 
@@ -262,22 +318,57 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         GtkBuilder* builder = gtk_builder_new_from_file(
             "src/ui/windows/window_edit_particle_normal.ui"
         );
-        GtkWindow* win = GTK_WINDOW(gtk_builder_get_object(builder, "window_main"));
-        g_object_set_data_full(G_OBJECT(win), "builder", builder, g_object_unref);
+        GtkWindow* win =
+            GTK_WINDOW(gtk_builder_get_object(builder, "window_main"));
+        g_object_set_data_full(
+            G_OBJECT(win), "builder", builder, g_object_unref
+        );
         g_object_set_data(G_OBJECT(win), "app", app);
 
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x")),  phys_item_get_x(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y")),  phys_item_get_y(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx")), phys_item_get_vx(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy")), phys_item_get_vy(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax")), phys_item_get_ax(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay")), phys_item_get_ay(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_mass")), phys_item_get_mass(item));
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_x")),
+            phys_item_get_x(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_y")),
+            phys_item_get_y(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vx")),
+            phys_item_get_vx(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_vy")),
+            phys_item_get_vy(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ax")),
+            phys_item_get_ax(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_ay")),
+            phys_item_get_ay(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(
+                gtk_builder_get_object(builder, "spin_button_mass")
+            ),
+            phys_item_get_mass(item)
+        );
 
-        GtkWidget* edit_btn = GTK_WIDGET(gtk_builder_get_object(builder, "edit_button"));
-        GtkWidget* cancel_btn = GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-        g_signal_connect(edit_btn, "clicked", G_CALLBACK(on_window_edit_particle_normal_edit_button_clicked), win);
-        g_signal_connect(cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL);
+        GtkWidget* edit_btn =
+            GTK_WIDGET(gtk_builder_get_object(builder, "edit_button"));
+        GtkWidget* cancel_btn =
+            GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
+        g_signal_connect(
+            edit_btn,
+            "clicked",
+            G_CALLBACK(on_window_edit_particle_normal_edit_button_clicked),
+            win
+        );
+        g_signal_connect(
+            cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL
+        );
 
         gtk_window_set_transient_for(win, GTK_WINDOW(app->window_main->window));
         gtk_window_present(win);
@@ -287,17 +378,35 @@ void on_window_main_edit_button_clicked(GtkWidget* widget, gpointer data)
         GtkBuilder* builder = gtk_builder_new_from_file(
             "src/ui/windows/window_edit_force_normal.ui"
         );
-        GtkWindow* win = GTK_WINDOW(gtk_builder_get_object(builder, "window_main"));
-        g_object_set_data_full(G_OBJECT(win), "builder", builder, g_object_unref);
+        GtkWindow* win =
+            GTK_WINDOW(gtk_builder_get_object(builder, "window_main"));
+        g_object_set_data_full(
+            G_OBJECT(win), "builder", builder, g_object_unref
+        );
         g_object_set_data(G_OBJECT(win), "app", app);
 
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx")), phys_item_get_ax(item));
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy")), phys_item_get_ay(item));
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fx")),
+            phys_item_get_ax(item)
+        );
+        gtk_spin_button_set_value(
+            GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "spin_button_fy")),
+            phys_item_get_ay(item)
+        );
 
-        GtkWidget* edit_btn = GTK_WIDGET(gtk_builder_get_object(builder, "edit_button"));
-        GtkWidget* cancel_btn = GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
-        g_signal_connect(edit_btn, "clicked", G_CALLBACK(on_window_edit_force_normal_edit_button_clicked), win);
-        g_signal_connect(cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL);
+        GtkWidget* edit_btn =
+            GTK_WIDGET(gtk_builder_get_object(builder, "edit_button"));
+        GtkWidget* cancel_btn =
+            GTK_WIDGET(gtk_builder_get_object(builder, "cancel_button"));
+        g_signal_connect(
+            edit_btn,
+            "clicked",
+            G_CALLBACK(on_window_edit_force_normal_edit_button_clicked),
+            win
+        );
+        g_signal_connect(
+            cancel_btn, "clicked", G_CALLBACK(on_window_destroy), NULL
+        );
 
         gtk_window_set_transient_for(win, GTK_WINDOW(app->window_main->window));
         gtk_window_present(win);
